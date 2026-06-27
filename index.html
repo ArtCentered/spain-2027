@@ -52,6 +52,9 @@
   .ov-sp-h{font-weight:700;font-size:13px;margin-bottom:6px;}
   .ov-special ul{margin:0;padding-left:18px;}
   .ov-special li{font-size:13px;line-height:1.5;margin-bottom:4px;color:var(--ink);}
+  .ov-allbtn{display:block;width:100%;margin-top:14px;padding:12px;border:none;border-radius:11px;
+    color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;letter-spacing:.2px;}
+  .ov-allbtn:hover{filter:brightness(1.08);}
 
   .pin{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
     box-shadow:0 2px 6px rgba(0,0,0,.4);border:2px solid #fff;cursor:pointer;transition:transform .15s, opacity .25s;}
@@ -682,6 +685,18 @@ let activeKey = null, current = 0, curImgs = [], lbIdx = 0;
 const card = document.getElementById('daycard');
 const hint = document.getElementById('hint');
 
+// Flat, day-ordered photo list per trip — powers "browse all photos" in the lightbox.
+const TRIP_PHOTOS = {};
+function buildTripPhotos(){
+  TRIP_ORDER.forEach(key=>{
+    const list = [];
+    itineraries[key].days.forEach(day=>{
+      ((PHOTOS[key] && PHOTOS[key][day.d]) || []).forEach(src=> list.push({src, d:day.d, title:day.title}));
+    });
+    TRIP_PHOTOS[key] = list;
+  });
+}
+
 function renderAll(){
   TRIP_ORDER.forEach(key=>{
     const it = itineraries[key], color = TRIP_COLORS[key];
@@ -776,31 +791,43 @@ function openOverview(){
     row('🚆','Getting around',o.travel)+
     row('📏','Distances',o.distance)+
     `<div class="ov-special"><div class="ov-sp-h" style="color:${color}">✨ What makes it special</div>`+
-    `<ul>${o.unique.map(u=>`<li>${u}</li>`).join('')}</ul></div>`;
+    `<ul>${o.unique.map(u=>`<li>${u}</li>`).join('')}</ul></div>`+
+    `<button class="ov-allbtn" style="background:${color}" onclick="openAllPhotos()">📷 Browse all ${(TRIP_PHOTOS[activeKey]||[]).length} photos</button>`;
   document.getElementById('overlay').classList.add('show');
 }
 function closeOverview(){ document.getElementById('overlay').classList.remove('show'); }
 
-// Fullscreen photo lightbox — opens the active gallery photo big, with captions.
+// Fullscreen photo lightbox — spans the WHOLE active trip's photos so you can
+// flip through all of them in one go; opens at whichever photo you clicked.
 function activeGalIndex(){
   const imgs = [...document.querySelectorAll('#cardGal img')];
   const i = imgs.findIndex(x=>x.classList.contains('active'));
   return i<0 ? 0 : i;
 }
 function renderLb(){
-  const src = curImgs[lbIdx];
-  document.getElementById('lbImg').src = src;
-  const cap = CAPTIONS[src] || '';
-  const ctx = curImgs.length>1 ? `${lbIdx+1} / ${curImgs.length}` : '';
-  document.getElementById('lbCap').innerHTML = `${cap}<span class="lb-count">${ctx}</span>`;
+  const list = TRIP_PHOTOS[activeKey] || [];
+  const item = list[lbIdx]; if(!item) return;
+  document.getElementById('lbImg').src = item.src;
+  const cap = CAPTIONS[item.src] || '';
+  document.getElementById('lbCap').innerHTML = `Day ${item.d} · ${cap}<span class="lb-count">${lbIdx+1} / ${list.length}</span>`;
 }
 function openLightbox(){
-  if(!curImgs.length) return;
-  lbIdx = activeGalIndex();
+  const list = TRIP_PHOTOS[activeKey] || [];
+  if(!list.length) return;
+  const clicked = curImgs[activeGalIndex()];
+  const gi = list.findIndex(p=>p.src===clicked);
+  lbIdx = gi<0 ? 0 : gi;
   renderLb();
   document.getElementById('lightbox').classList.add('show');
 }
-function lbStep(d){ lbIdx = (lbIdx + d + curImgs.length) % curImgs.length; renderLb(); }
+function openAllPhotos(){
+  const list = TRIP_PHOTOS[activeKey] || [];
+  if(!list.length) return;
+  closeOverview();
+  lbIdx = 0; renderLb();
+  document.getElementById('lightbox').classList.add('show');
+}
+function lbStep(d){ const n=(TRIP_PHOTOS[activeKey]||[]).length; if(!n) return; lbIdx=(lbIdx+d+n)%n; renderLb(); }
 function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); }
 function lbBackdrop(e){ if(e.target.id==='lightbox') closeLightbox(); }
 
@@ -822,6 +849,7 @@ document.addEventListener('keydown', e=>{
 // Draw all three trips, then open with an overview of the whole of Spain and
 // the Andalucía proposal active. Buttons/pins take it from there.
 function frameAll(){ const p = TRIP_ORDER.flatMap(k=>itineraries[k].stops.map(s=>s.ll)); map.fitBounds(L.latLngBounds(p).pad(0.08)); }
+buildTripPhotos();
 renderAll();
 setActive('andalucia', false);
 openDay(0, false);
