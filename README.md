@@ -5,6 +5,7 @@ toggle at the top to switch between two options:
 
 - **Option A — Andalucía (The South):** Málaga → Granada → Córdoba → Seville.
 - **Option B — Castile (Toledo & the Center):** Madrid · Segovia · Cuenca · Toledo — a rail-based trip built around Toledo, with the Prado/Guernica, the Guadarrama and Ciudad Encantada hikes, and the Tajo gorge. Round-trip Madrid, ~$8–10k for two.
+- **Option C — Green Spain (The North):** Bilbao · San Sebastián · Oviedo · Cangas de Onís — the Basque Country and Asturias, with the Guggenheim, pintxos, Gaztelugatxe and the Flysch coast, plus big Picos de Europa hikes (Covadonga lakes, Ruta del Cares). Open-jaw (in to Bilbao, home from Asturias), ~$8–10k for two.
 
 Tap a numbered pin for that day's plan, or step through the trip with the ‹ › buttons. Toggle Map / Satellite, top-right.
 

@@ -18,7 +18,7 @@
   #map{position:absolute;inset:0;}
 
   /* ===== Itinerary switcher ===== */
-  .switch{display:flex;gap:7px;margin-top:9px;}
+  .switch{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px;}
   .switch button{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.32);
     border-radius:999px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;}
   .switch button:hover{background:rgba(255,255,255,.26);}
@@ -91,8 +91,9 @@
     <h1 id="trip-title">🇪🇸 Spain 2027 — Day by Day</h1>
     <p id="trip-sub"></p>
     <div class="switch">
-      <button id="btn-andalucia" class="active" onclick="loadItinerary('andalucia')">🌅 Andalucía · South</button>
-      <button id="btn-castile" onclick="loadItinerary('castile')">🏰 Castile · Toledo &amp; Center</button>
+      <button class="active" data-key="andalucia" onclick="loadItinerary('andalucia')">🌅 Andalucía · South</button>
+      <button data-key="castile" onclick="loadItinerary('castile')">🏰 Castile · Center</button>
+      <button data-key="north" onclick="loadItinerary('north')">⛰️ Green Spain · North</button>
     </div>
   </header>
   <div id="main">
@@ -289,6 +290,98 @@ const itineraries = {
     ],
   },
 
+  /* ---------------- OPTION C — GREEN SPAIN (THE NORTH) ----------------
+     Basque Country + Asturias: Bilbao, San Sebastián, Oviedo, Cangas de Onís
+     and the Picos de Europa. Open-jaw — fly into Bilbao, home from Asturias —
+     to skip the backtrack. Coast legs are by train/bus; the Picos hikes need a
+     bus or the Covadonga shuttle (noted on those days), like the other plans. */
+  north: {
+    title: "🇪🇸 Spain 2027 — Green Spain · The North",
+    sub: "Option C for Mike · Sep 10–20 · Bilbao · San Sebastián · Oviedo · Picos de Europa · ~$8–10k for two · tap a pin or use ‹ ›",
+    stops: [
+      { type:"city", label:"1", name:"Bilbao",            ll:[43.2630,-2.9350] },
+      { type:"hike", label:"🥾", name:"San Juan de Gaztelugatxe", ll:[43.4470,-2.7855] },
+      { type:"city", label:"2", name:"San Sebastián",     ll:[43.3183,-1.9812] },
+      { type:"hike", label:"🥾", name:"Flysch Coast (Zumaia)", ll:[43.2990,-2.2560] },
+      { type:"city", label:"3", name:"Oviedo",            ll:[43.3614,-5.8493] },
+      { type:"city", label:"4", name:"Cangas de Onís",    ll:[43.3508,-5.1300] },
+      { type:"hike", label:"🥾", name:"Lagos de Covadonga", ll:[43.2720,-4.9970] },
+      { type:"hike", label:"🥾", name:"Ruta del Cares",    ll:[43.2530,-4.8400] },
+    ],
+    routes: [
+      { type:"train", pts:[[43.2630,-2.9350],[43.3183,-1.9812]] },   // Bilbao–San Sebastián
+      { type:"train", pts:[[43.3183,-1.9812],[43.3614,-5.8493]] },   // long coast leg west to Oviedo
+      { type:"train", pts:[[43.3614,-5.8493],[43.3508,-5.1300]] },   // Oviedo–Cangas de Onís
+      { type:"hike",  pts:[[43.2630,-2.9350],[43.4470,-2.7855]] },   // Bilbao → Gaztelugatxe
+      { type:"hike",  pts:[[43.3183,-1.9812],[43.2990,-2.2560]] },   // San Sebastián → Flysch
+      { type:"hike",  pts:[[43.3508,-5.1300],[43.2720,-4.9970]] },   // Cangas → Covadonga lakes
+      { type:"hike",  pts:[[43.3508,-5.1300],[43.2530,-4.8400]] },   // Cangas → Cares gorge
+    ],
+    days: [
+      { d:1, date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive Bilbao", stop:0,
+        hero:"✈️", tag:"✈️ EUG → BIO · 2 connections",
+        acts:[ ["✈️","Travel day from Eugene — two connections (West Coast hub → Europe → Bilbao, BIO)"],
+               ["🚇","Easy transfer into town — Bilbao is compact and walkable"],
+               ["🚶","First wander of the Casco Viejo (old town) and its Seven Streets"],
+               ["🍢","First pintxos crawl; the Mercado de la Ribera on the river"],
+               ["💶","Budget plan: ~$8–10k for two — open-jaw (in to Bilbao, home from Asturias) skips the backtrack"] ] },
+      { d:2, date:"Sun · Sep 12", title:"Bilbao & the Guggenheim", stop:0,
+        hero:"🖼️", tag:"🎨 Gehry · Koons · Serra",
+        acts:[ ["🖼️","The Guggenheim — Gehry's titanium ship, Koons's flower 'Puppy', Serra's steel spirals"],
+               ["🌉","Riverside walk along the Nervión; cross Calatrava's Zubizuri footbridge"],
+               ["🚠","Funicular up Artxanda for the view over the whole city bowl"],
+               ["🍢","Evening pintxos in Plaza Nueva — txakoli, a Gilda, Idiazabal cheese"] ] },
+      { d:3, date:"Mon · Sep 13", title:"Gaztelugatxe → San Sebastián", stop:1,
+        hero:"🐉", tag:"🥾 Coast hike + transfer east",
+        acts:[ ["🚌","Morning bus/tour to San Juan de Gaztelugatxe, on the coast NW of Bilbao"],
+               ["🥾","The 241-step stone causeway out to the islet hermitage (the 'Dragonstone' coast)"],
+               ["🚆","Onward east to San Sebastián (Donostia) in the afternoon; check in"],
+               ["🌅","Sunset over La Concha bay; first pintxos in the Parte Vieja"] ] },
+      { d:4, date:"Tue · Sep 14", title:"San Sebastián", stop:2,
+        hero:"🏖️", tag:"🍢 Pintxos capital of the world",
+        acts:[ ["🚡","Funicular up Monte Igueldo for the postcard view of the shell-shaped bay"],
+               ["🌬️","La Concha promenade to Chillida's 'Comb of the Wind' (Peine del Viento)"],
+               ["🏰","Climb Monte Urgull above the old town for the ramparts and views"],
+               ["🍢","The big one — a proper pintxos crawl through the Parte Vieja (and Gros across the river)"] ] },
+      { d:5, date:"Wed · Sep 15", title:"The Flysch coast", stop:3,
+        hero:"🪨", tag:"🥾 Geology + clifftop views",
+        acts:[ ["🚆","Out to Zumaia / Deba on the Basque coast (a UNESCO geopark)"],
+               ["🪨","Walk the Flysch — tens of millions of years of rock strata stacked in the cliffs"],
+               ["🌊","Clifftop coast path with huge Cantabrian-sea views"],
+               ["🍷","Back to San Sebastián for one last pintxos night"] ] },
+      { d:6, date:"Thu · Sep 16", title:"West into Asturias", stop:4,
+        hero:"🚂", tag:"🚂 Scenic coast leg (~4 hrs)",
+        acts:[ ["🚂","West along the coast to Oviedo — the scenic FEVE narrow-gauge or the faster ALSA bus"],
+               ["🏘️","Settle into Oviedo's handsome old town; the cathedral and arcaded squares"],
+               ["🍏","Sidrería dinner on Calle Gascona — Asturian cider poured from overhead"],
+               ["🚶","Evening stroll past the city's quirky street statues (yes, the Woody Allen one)"] ] },
+      { d:7, date:"Fri · Sep 17", title:"Pre-Romanesque & on to Cangas", stop:5,
+        hero:"⛪", tag:"🚌 Bus to the mountains",
+        acts:[ ["⛪","Monte Naranco — Santa María del Naranco & San Miguel de Lillo (9th-century, UNESCO)"],
+               ["🌄","Short climb up Naranco for valley views before the bus"],
+               ["🚌","ALSA bus east to Cangas de Onís, the gateway to the Picos"],
+               ["🌉","The Roman Bridge with its hanging Cross of Victory; mountain-town dinner"] ] },
+      { d:8, date:"Sat · Sep 18", title:"Covadonga & its lakes", stop:6,
+        hero:"🏞️", tag:"🚐 Shuttle up · alpine hike",
+        acts:[ ["⛪","Covadonga — the basilica and the Holy Cave (Santa Cueva) set in the cliff"],
+               ["🚐","Shuttle bus up to the lakes (private cars are restricted in season)"],
+               ["🥾","Hike the loop around Lakes Enol & Ercina, high in the Picos de Europa"],
+               ["🐄","Mountain pastures, jagged peaks, and often a sea of cloud below you"] ] },
+      { d:9, date:"Sun · Sep 19", title:"Ruta del Cares", stop:7,
+        hero:"🥾", tag:"🥾 Spain's great gorge hike",
+        acts:[ ["🚌","Down to Poncebos, the trailhead for the Cares Gorge"],
+               ["🥾","The 'Divine Gorge' — a path carved into sheer cliffs above the Cares river"],
+               ["🌉","Bridges, tunnels, and 300 m walls (go as far as you like — it's out-and-back)"],
+               ["🍲","Back to Cangas for fabada or cachopo — hearty Asturian mountain food"] ] },
+      { d:10, date:"Sun/Mon · Sep 20", title:"Fly home from Asturias", stop:4,
+        hero:"✈️", tag:"✈️ OVD → EUG",
+        acts:[ ["🚌","Transfer to Asturias Airport (OVD)"],
+               ["✈️","Two connections home to Eugene"],
+               ["🛋️","3 recovery days at home (Mon–Wed Sep 21–23) before returning to work"],
+               ["🎉","Trip complete!"] ] },
+    ],
+  },
+
 };
 
 /* ============================ gallery / card ============================ */
@@ -340,8 +433,7 @@ function loadItinerary(key){
   activeKey = key;
   const it = itineraries[key];
 
-  document.getElementById('btn-andalucia').classList.toggle('active', key==='andalucia');
-  document.getElementById('btn-castile').classList.toggle('active', key==='castile');
+  document.querySelectorAll('.switch button').forEach(b=>b.classList.toggle('active', b.dataset.key===key));
   document.getElementById('trip-title').textContent = it.title;
   document.getElementById('trip-sub').textContent = it.sub;
 
