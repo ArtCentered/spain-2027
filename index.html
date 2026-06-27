@@ -28,6 +28,7 @@
   .switch button[data-key="andalucia"]::before{background:#C1660F;}
   .switch button[data-key="castile"]::before{background:#7A5AA8;}
   .switch button[data-key="north"]::before{background:#1F8A70;}
+  .switch button[data-key="mallorca"]::before{background:#1565C0;}
   .switch button.ovbtn{background:rgba(255,255,255,.10);border-style:dashed;}
   .switch button.ovbtn::before{display:none;}
 
@@ -55,6 +56,8 @@
   .ov-allbtn{display:block;width:100%;margin-top:14px;padding:12px;border:none;border-radius:11px;
     color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;letter-spacing:.2px;}
   .ov-allbtn:hover{filter:brightness(1.08);}
+  .ov-nophotos{margin-top:14px;padding:11px;border-radius:11px;background:#f3eee4;color:var(--muted);
+    font-size:12.5px;font-weight:600;text-align:center;}
 
   .pin{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
     box-shadow:0 2px 6px rgba(0,0,0,.4);border:2px solid #fff;cursor:pointer;transition:transform .15s, opacity .25s;}
@@ -155,6 +158,7 @@
       <button class="active" data-key="andalucia" onclick="loadItinerary('andalucia')">🌅 Andalucía · South</button>
       <button data-key="castile" onclick="loadItinerary('castile')">🏰 Castile · Center</button>
       <button data-key="north" onclick="loadItinerary('north')">⛰️ Green Spain · North</button>
+      <button data-key="mallorca" onclick="loadItinerary('mallorca')">🏝️ Mallorca · Islands</button>
       <button class="ovbtn" onclick="openOverview()">ℹ️ Overview</button>
     </div>
   </header>
@@ -462,6 +466,93 @@ const itineraries = {
     ],
   },
 
+
+  mallorca: {
+    title: "🇪🇸 Spain 2027 — Mallorca · The Islands",
+    sub: "Option D for Mike · Sep 10–20 · Palma · Serra de Tramuntana · calas & coves · Cabrera · ~$8–10k for two (island prices) · tap a pin or use ‹ ›",
+    stops: [
+      { type:"city", label:"1", name:"Palma de Mallorca", ll:[39.5696,2.6502] },
+      { type:"hike", label:"🥾", name:"Valldemossa & Deià", ll:[39.7486,2.6486] },
+      { type:"city", label:"2", name:"Sóller / Port de Sóller", ll:[39.7958,2.6936] },
+      { type:"hike", label:"🏞️", name:"Sa Calobra · Torrent de Pareis", ll:[39.8517,2.8003] },
+      { type:"hike", label:"🏖️", name:"Cap de Formentor", ll:[39.9619,3.2106] },
+      { type:"city", label:"3", name:"Porto Cristo · Coves del Drac", ll:[39.5380,3.3320] },
+      { type:"hike", label:"🏝️", name:"Calas del Migjorn", ll:[39.3300,3.1900] },
+      { type:"hike", label:"🚤", name:"Cabrera National Park", ll:[39.1430,2.9340] },
+    ],
+    routes: [
+      { type:"train", pts:[[39.56955,2.65032],[39.57012,2.65744],[39.57751,2.65236],[39.60665,2.65513],[39.69759,2.6884],[39.74566,2.69759],[39.75918,2.71161],[39.77353,2.70544],[39.77206,2.70248],[39.77483,2.69854],[39.77394,2.6929],[39.77572,2.69127],[39.77235,2.67706],[39.77465,2.67625],[39.77337,2.66995],[39.7703,2.66791],[39.77097,2.66455],[39.76556,2.65589],[39.76103,2.65041],[39.7579,2.65033],[39.75779,2.64732],[39.74866,2.64854]] },
+      { type:"train", pts:[[39.74866,2.64854],[39.74988,2.64842],[39.75222,2.64663],[39.75473,2.64789],[39.75622,2.64677],[39.75779,2.64732],[39.7579,2.65033],[39.76103,2.65041],[39.76394,2.65454],[39.76556,2.65589],[39.76709,2.66066],[39.76853,2.66178],[39.76895,2.66322],[39.77097,2.66455],[39.77096,2.66639],[39.7703,2.66791],[39.77337,2.66995],[39.77445,2.6735],[39.77415,2.67593],[39.77465,2.67625],[39.77235,2.67706],[39.77435,2.68559],[39.77401,2.68598],[39.7746,2.68592],[39.77452,2.68355],[39.7755,2.68642],[39.77412,2.68766],[39.77453,2.68968],[39.77572,2.69127],[39.77394,2.6929],[39.77538,2.69518],[39.77466,2.69619],[39.77424,2.69858],[39.77504,2.69704],[39.77483,2.69854],[39.77207,2.70218],[39.77074,2.70553],[39.77095,2.70624],[39.7732,2.70552],[39.7769,2.7057],[39.77848,2.70444],[39.78075,2.70107],[39.78563,2.69834],[39.79675,2.70146],[39.79873,2.70109],[39.7964,2.69658],[39.79808,2.69495],[39.79808,2.69329],[39.7968,2.69209],[39.79587,2.69366]] },
+      { type:"train", pts:[[39.79587,2.69366],[39.79684,2.6921],[39.79806,2.69325],[39.79818,2.69468],[39.79732,2.69598],[39.79549,2.6969],[39.79343,2.69664],[39.79084,2.69467],[39.78725,2.69586],[39.78498,2.69828],[39.78063,2.70117],[39.77831,2.70436],[39.78128,2.70719],[39.7815,2.70893],[39.7808,2.71096],[39.78139,2.71182],[39.78251,2.71072],[39.78406,2.71086],[39.78271,2.71166],[39.78314,2.71356],[39.78251,2.71499],[39.78285,2.71632],[39.78052,2.71824],[39.77924,2.71797],[39.7787,2.71864],[39.77873,2.72],[39.77943,2.72071],[39.77878,2.72255],[39.78035,2.72382],[39.7804,2.725],[39.78132,2.72602],[39.78109,2.72868],[39.78153,2.73076],[39.78204,2.7311],[39.78366,2.73033],[39.78347,2.7317],[39.78513,2.73431],[39.7861,2.7374],[39.78789,2.73829],[39.78702,2.73721],[39.78676,2.73517],[39.7871,2.72895],[39.78571,2.72683],[39.78632,2.72609],[39.78986,2.72664],[39.79073,2.72525],[39.79075,2.72753],[39.78901,2.72813],[39.7888,2.73017],[39.79012,2.73268],[39.79129,2.73156],[39.79256,2.73212],[39.79198,2.73325],[39.79156,2.73834],[39.79266,2.74248],[39.79241,2.7447],[39.79516,2.74746],[39.794,2.75074],[39.79683,2.75832],[39.79529,2.76243],[39.79542,2.76761],[39.79645,2.76652],[39.79681,2.7668],[39.79613,2.76781],[39.79605,2.7708],[39.79504,2.77154],[39.79325,2.7703],[39.79281,2.77064],[39.79477,2.77296],[39.79502,2.77441],[39.79651,2.77453],[39.79783,2.77294],[39.79822,2.77339],[39.79745,2.77496],[39.79502,2.77724],[39.7931,2.77559],[39.79036,2.77446],[39.78822,2.77866],[39.79075,2.78375],[39.79505,2.79018],[39.79327,2.7902],[39.79166,2.79157],[39.79198,2.79659],[39.79095,2.79543],[39.7891,2.7947],[39.78838,2.79718],[39.7876,2.79678],[39.78689,2.79752],[39.78732,2.79916],[39.79073,2.80267],[39.79168,2.80289],[39.79281,2.80457],[39.79292,2.80694],[39.79647,2.81048],[39.79779,2.81078],[39.7991,2.81012],[39.8007,2.81142],[39.80653,2.81866],[39.81075,2.82264],[39.81286,2.82088],[39.81294,2.81892],[39.81334,2.8187],[39.81441,2.8222],[39.81609,2.82417],[39.81516,2.82244],[39.81739,2.82084],[39.81881,2.81518],[39.82009,2.8161],[39.82095,2.81517],[39.82186,2.81522],[39.82061,2.81428],[39.82222,2.81455],[39.82323,2.81585],[39.82494,2.8147],[39.82533,2.81663],[39.82732,2.81802],[39.83249,2.81607],[39.83035,2.81596],[39.8304,2.81516],[39.82949,2.81524],[39.82921,2.81456],[39.82992,2.8135],[39.8297,2.81466],[39.83035,2.81358],[39.83023,2.8142],[39.83143,2.81488],[39.83247,2.8144],[39.83354,2.81199],[39.83275,2.81349],[39.83168,2.8138],[39.83199,2.8124],[39.83228,2.81301],[39.83268,2.81261],[39.8321,2.81093],[39.83091,2.8101],[39.83049,2.80623],[39.831,2.80659],[39.82925,2.80298],[39.83076,2.80522],[39.83169,2.80409],[39.83401,2.80409],[39.83442,2.80284],[39.8355,2.80259],[39.83573,2.80347],[39.83461,2.80444],[39.83387,2.80619],[39.83469,2.80682],[39.84127,2.80536],[39.84342,2.80365],[39.84382,2.80435],[39.84507,2.80447],[39.84566,2.80212],[39.84496,2.80021],[39.84544,2.80009],[39.8452,2.79965],[39.84342,2.7988],[39.83897,2.79916],[39.83798,2.79854],[39.84028,2.7955],[39.84282,2.79585],[39.84412,2.79522],[39.84457,2.79404],[39.84552,2.79678],[39.85015,2.79991],[39.85098,2.79922]] },
+      { type:"train", pts:[[39.85098,2.79922],[39.84463,2.79405],[39.84028,2.7955],[39.83804,2.79886],[39.8452,2.79965],[39.84522,2.80435],[39.83469,2.80682],[39.8355,2.80259],[39.83081,2.80522],[39.82925,2.80298],[39.83168,2.8138],[39.83354,2.81199],[39.82921,2.81456],[39.83247,2.8161],[39.82732,2.81802],[39.82494,2.8147],[39.82061,2.81428],[39.82186,2.81522],[39.81881,2.81518],[39.81516,2.82244],[39.81628,2.8298],[39.82326,2.82753],[39.82775,2.83153],[39.82865,2.83731],[39.82585,2.83945],[39.82614,2.84742],[39.82249,2.85398],[39.82479,2.85914],[39.82064,2.8744],[39.81601,2.87851],[39.81598,2.8866],[39.81334,2.88947],[39.81581,2.89631],[39.8177,2.89249],[39.82074,2.8924],[39.82576,2.89996],[39.83149,2.8956],[39.8374,2.89736],[39.84595,2.89486],[39.85365,2.89779],[39.85615,2.90248],[39.85422,2.90751],[39.85848,2.91074],[39.85676,2.91356],[39.86412,2.91761],[39.86639,2.92427],[39.86938,2.92536],[39.86596,2.93072],[39.86973,2.94335],[39.86581,2.93891],[39.86941,2.9461],[39.86985,2.96239],[39.86761,2.97199],[39.86938,2.97969],[39.88289,3.00838],[39.88434,3.02251],[39.8922,3.0358],[39.90425,3.07543],[39.91299,3.08527],[39.91226,3.10212],[39.9149,3.10448],[39.91152,3.10427],[39.91629,3.10792],[39.91738,3.10563],[39.92888,3.11069],[39.93025,3.12468],[39.93154,3.12306],[39.93364,3.12559],[39.93311,3.13076],[39.93104,3.12946],[39.92914,3.13364],[39.93329,3.1358],[39.94761,3.16025],[39.94937,3.17793],[39.95411,3.1894],[39.9509,3.19642],[39.95351,3.20279],[39.95543,3.20103],[39.95378,3.20731],[39.95786,3.20803],[39.95533,3.21185],[39.96108,3.21132]] },
+      { type:"train", pts:[[39.96108,3.21132],[39.95533,3.21185],[39.95786,3.20803],[39.95381,3.20736],[39.95544,3.20108],[39.9509,3.19642],[39.95411,3.18946],[39.94761,3.16025],[39.92914,3.13364],[39.93364,3.12559],[39.93025,3.12468],[39.92888,3.11069],[39.91155,3.10433],[39.9149,3.10448],[39.9128,3.08415],[39.90459,3.07494],[39.88469,3.07496],[39.86543,3.09082],[39.85176,3.11504],[39.84452,3.09323],[39.83031,3.10527],[39.81852,3.10079],[39.81288,3.10455],[39.81502,3.11423],[39.79185,3.12252],[39.77159,3.14191],[39.71311,3.10884],[39.70641,3.099],[39.69436,3.1028],[39.65892,3.09687],[39.64308,3.1001],[39.62105,3.1107],[39.61617,3.12253],[39.5963,3.13094],[39.57351,3.17447],[39.57146,3.20303],[39.56612,3.20611],[39.56553,3.23014],[39.55976,3.24591],[39.56293,3.28743],[39.54797,3.32847],[39.53801,3.33196]] },
+      { type:"train", pts:[[39.53801,3.33196],[39.54052,3.3314],[39.53639,3.32916],[39.52956,3.31054],[39.52765,3.29267],[39.51499,3.28429],[39.51228,3.27774],[39.50451,3.26969],[39.4971,3.27002],[39.49098,3.26099],[39.49156,3.25697],[39.48757,3.25057],[39.48349,3.25235],[39.47348,3.24605],[39.45076,3.23916],[39.44571,3.23495],[39.43821,3.2358],[39.43067,3.22593],[39.40749,3.20917],[39.40387,3.2019],[39.4005,3.20395],[39.3979,3.19549],[39.38996,3.18573],[39.38715,3.1622],[39.35489,3.13019],[39.34156,3.14687],[39.33897,3.17162],[39.34329,3.17998],[39.33847,3.1819],[39.3367,3.18651]] },
+      { type:"hike",  pts:[[39.33,3.19],[39.143,2.934]] },
+    ],
+    days: [
+      { d:1, date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive Palma", stop:0,
+        hero:"✈️", tag:"✈️ EUG → PMI · 2 connections",
+        acts:[ ["✈️","Travel day from Eugene — two connections (West Coast hub → Europe → Palma de Mallorca, PMI)"],
+               ["🚕","Quick airport bus or taxi into Palma (~20 min)"],
+               ["⛪","First wander of the old town beneath La Seu, the seafront Gothic cathedral"],
+               ["🦐","Seafood and tapas in Santa Catalina; sunset over the bay"],
+               ["💶","Budget plan: ~$8–10k for two — the priciest of the four (island prices), but it fits"] ] },
+      { d:2, date:"Sun · Sep 12", title:"Palma & the bay", stop:0,
+        hero:"🛶", tag:"🛶 Old town + sea kayak",
+        acts:[ ["⛪","Inside La Seu cathedral (Gaudí had a hand in it) and the Almudaina palace"],
+               ["🏰","Up to Bellver Castle — a round hilltop fortress with bay views"],
+               ["🛶","Afternoon sea-kayak or paddleboard along the coast; swim at a cove"],
+               ["🍷","Tapas crawl back through Santa Catalina market"] ] },
+      { d:3, date:"Mon · Sep 13", title:"Tramuntana: Valldemossa & Deià", stop:1,
+        hero:"⛰️", tag:"🚗 Pick up the car · coastal hike",
+        acts:[ ["🚗","Pick up the rental car — Mallorca's outdoors needs wheels"],
+               ["🏘️","Valldemossa — Chopin's Carthusian monastery and stone-village lanes"],
+               ["🥾","Coastal hike above Deià down to Cala Deià for a swim"],
+               ["🌅","Sunset in Deià; dinner up in the hills"] ] },
+      { d:4, date:"Tue · Sep 14", title:"Sóller & the vintage train", stop:2,
+        hero:"🚋", tag:"🚋 1912 wooden train & tram",
+        acts:[ ["🚋","Ride the historic 1912 wooden train through the mountains to Sóller"],
+               ["🚊","Open-air tram down to Port de Sóller"],
+               ["🥾","Walk a stretch of the GR221 'Dry Stone Route' or the lighthouse path"],
+               ["🍊","Fresh Sóller orange juice; seafood on the harbour"] ] },
+      { d:5, date:"Wed · Sep 15", title:"Sa Calobra & Torrent de Pareis", stop:3,
+        hero:"🏞️", tag:"🚗 Serpentine road · sea gorge",
+        acts:[ ["🚗","The dizzying serpentine road down to Sa Calobra (the 'tie-knot' loop)"],
+               ["🏞️","Walk into the Torrent de Pareis — a soaring gorge that meets the sea"],
+               ["🏊","Swim in the cove between the cliffs"],
+               ["🌄","Drive the MA-10 ridge with Tramuntana viewpoints"] ] },
+      { d:6, date:"Thu · Sep 16", title:"Cap de Formentor & the north", stop:4,
+        hero:"🗼", tag:"🏖️ Cape, lighthouse & beach",
+        acts:[ ["🗼","Drive out to the Formentor lighthouse at the island's northern tip"],
+               ["👀","Mirador des Colomer — cliffs plunging straight into the sea"],
+               ["🏖️","Swim at Platja de Formentor, pine trees down to the sand"],
+               ["🏘️","Evening in Pollença — climb the 365 Calvari steps"] ] },
+      { d:7, date:"Fri · Sep 17", title:"Sea caves & the east coast", stop:5,
+        hero:"🕳️", tag:"🚗 Caves + clear-water calas",
+        acts:[ ["🕳️","Coves del Drac — vast caverns and an underground lake (with a live concert)"],
+               ["⛵","Lunch on the Porto Cristo harbour"],
+               ["🤿","Snorkel the clear calas nearby (Cala Varques, s'Estany d'en Mas)"],
+               ["🌇","Coastal sunset on the east shore"] ] },
+      { d:8, date:"Sat · Sep 18", title:"Calas del Migjorn", stop:6,
+        hero:"🏝️", tag:"🥾 Hike to hidden coves",
+        acts:[ ["🥾","Short cliff hike down to Caló des Moro — the island's postcard turquoise cove"],
+               ["🏞️","Cala Mondragó natural park — twin calas linked by an easy coastal trail"],
+               ["🤿","Snorkel, then laze on the long white sand of Es Trenc"],
+               ["🍤","Seaside dinner down south"] ] },
+      { d:9, date:"Sun · Sep 19", title:"Boat to Cabrera National Park", stop:7,
+        hero:"🚤", tag:"🚤 Roadless island reserve",
+        acts:[ ["🚤","Boat from Colònia de Sant Jordi to the Cabrera archipelago (a protected marine park)"],
+               ["🤿","Snorkel the Blue Cave (Sa Cova Blava) — glowing turquoise light"],
+               ["🐦","Walk up to the island castle; seabirds, lizards, untouched coves"],
+               ["🚗","Boat back, then drive toward Palma for the last night"] ] },
+      { d:10, date:"Sun/Mon · Sep 20", title:"Fly home from Palma", stop:0,
+        hero:"✈️", tag:"✈️ PMI → EUG",
+        acts:[ ["🚗","Drop the rental car; transfer to Palma airport (PMI)"],
+               ["✈️","Two connections home to Eugene"],
+               ["🛋️","3 recovery days at home (Mon–Wed Sep 21–23) before returning to work"],
+               ["🎉","Trip complete!"] ] },
+    ],
+  },
 };
 
 const PHOTOS = {
@@ -542,6 +633,19 @@ const OVERVIEW = {
       "Pintxos in San Sebastián — the world's tapas capital",
       "Gaztelugatxe — the island hermitage that played Dragonstone",
       "The Ruta del Cares, carved into sheer gorge cliffs",
+    ],
+  },
+  mallorca: {
+    blurb: "An outdoor-lover's loop around Mallorca — hiking the UNESCO Serra de Tramuntana, swimming in turquoise calas, riding the vintage Sóller train, sea-kayaking, and a boat day out to the roadless Cabrera archipelago. It's the priciest of the four (island prices), but the same budget still covers it.",
+    temp: "Warm and very swimmable — September highs 79–84°F (26–29°C), the sea still around 77°F (25°C), evenings 66–70°F (19–21°C).",
+    doSee: "Serra de Tramuntana hikes (the GR221), the calas of the east & south (Caló des Moro, Mondragó, Es Trenc), the Sa Calobra sea-gorge, Cap de Formentor, the Sóller vintage train & tram, Palma's cathedral, the Coves del Drac, sea-kayaking, snorkeling, and a boat to Cabrera National Park.",
+    travel: "This one needs a rental car — the calas and mountain trailheads aren't on transit. Plus the historic 1912 Palma–Sóller wooden train, the Sóller seaside tram, and two boat trips (Sa Calobra and Cabrera). Round-trip Palma.",
+    distance: "An island loop of roughly 300 mi (480 km) of driving — much of it slow, scenic mountain switchbacks — plus two boat legs.",
+    unique: [
+      "The Serra de Tramuntana — UNESCO dry-stone mountains dropping straight into the sea",
+      "Caló des Moro and the postcard turquoise calas",
+      "The 1912 wooden Sóller train and its open-air seaside tram",
+      "Cabrera — a roadless national-park archipelago reached only by boat (Blue Cave snorkel)",
     ],
   },
 };
@@ -678,8 +782,8 @@ L.control.layers({"🗺️ Map":mapTiles, "🛰️ Satellite":satellite},null,{p
 
 // All three trips live on the map at once, colour-coded. The active trip is
 // highlighted; the others stay faded but fully clickable.
-const TRIP_ORDER = ['andalucia','castile','north'];
-const TRIP_COLORS = { andalucia:'#C1660F', castile:'#7A5AA8', north:'#1F8A70' };
+const TRIP_ORDER = ['andalucia','castile','north','mallorca'];
+const TRIP_COLORS = { andalucia:'#C1660F', castile:'#7A5AA8', north:'#1F8A70', mallorca:'#1565C0' };
 const layers = {};
 let activeKey = null, current = 0, curImgs = [], lbIdx = 0;
 const card = document.getElementById('daycard');
@@ -792,7 +896,9 @@ function openOverview(){
     row('📏','Distances',o.distance)+
     `<div class="ov-special"><div class="ov-sp-h" style="color:${color}">✨ What makes it special</div>`+
     `<ul>${o.unique.map(u=>`<li>${u}</li>`).join('')}</ul></div>`+
-    `<button class="ov-allbtn" style="background:${color}" onclick="openAllPhotos()">📷 Browse all ${(TRIP_PHOTOS[activeKey]||[]).length} photos</button>`;
+    ((TRIP_PHOTOS[activeKey]||[]).length
+      ? `<button class="ov-allbtn" style="background:${color}" onclick="openAllPhotos()">📷 Browse all ${TRIP_PHOTOS[activeKey].length} photos</button>`
+      : `<div class="ov-nophotos">📷 Photos coming soon</div>`);
   document.getElementById('overlay').classList.add('show');
 }
 function closeOverview(){ document.getElementById('overlay').classList.remove('show'); }
