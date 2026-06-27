@@ -9,6 +9,7 @@
   :root{ --teal:#1F4E5F; --teal2:#2C7A8C; --terra:#C1660F; --sand:#FBF6EE;
     --ink:#243239; --muted:#6b7a80; --hike:#2E7D32; }
   *{box-sizing:border-box;}
+  button{-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);}
   #app{display:flex;flex-direction:column;height:100vh;}
   header{background:var(--teal);color:#fff;padding:13px 20px;flex:0 0 auto;}
@@ -40,7 +41,7 @@
   .card-scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
   .gal{position:relative;width:100%;height:235px;background:#13232a;}
-  .gal img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .35s;}
+  .gal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s;}
   .gal img.active{opacity:1;}
   /* Designed placeholder when a day has no photo yet */
   .gal.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -79,8 +80,13 @@
     font-size:12.5px;padding:7px 14px;border-radius:20px;box-shadow:0 3px 10px rgba(0,0,0,.2);transition:opacity .4s;}
   @media(max-width:720px){
     header{padding:10px 15px;} header h1{font-size:15.5px;} header p{font-size:11px;}
-    #daycard{left:8px;right:8px;bottom:8px;width:auto;max-width:none;max-height:70%;}
-    .gal{height:210px;}
+    .switch button{padding:6px 12px;font-size:12.5px;}
+    #daycard{left:8px;right:8px;bottom:8px;width:auto;max-width:none;max-height:80%;}
+    .gal{height:200px;}
+    .gnav{width:40px;height:40px;font-size:21px;}
+    .xbtn{width:38px;height:38px;font-size:18px;}
+    .navbtn{padding:12px 16px;font-size:13.5px;}
+    .gdot{width:7px;height:7px;}
     .hint{font-size:11.5px;top:9px;}
   }
 </style>
@@ -384,6 +390,45 @@ const itineraries = {
 
 };
 
+const PHOTOS = {
+  andalucia: {
+    1:["photos/1-and-d1-skyline.jpg","photos/2-and-d1-port.jpg","photos/3-and-d1-tapas.jpg"],
+    2:["photos/4-and-d2-alcazaba.jpg","photos/5-and-d2-roman-theatre.jpg","photos/6-and-d2-beach.jpg"],
+    3:["photos/7-and-d3-walkway.jpg","photos/8-and-d3-gorge.jpg","photos/9-and-d3-hiker.jpg"],
+    4:["photos/10-and-d4-albaicin.jpg","photos/11-and-d4-san-nicolas.jpg","photos/12-and-d4-tapas.jpg"],
+    5:["photos/13-and-d5-alhambra.jpg","photos/14-and-d5-nasrid.jpg","photos/15-and-d5-generalife.jpg"],
+    6:["photos/16-and-d6-suspension-bridge.jpg","photos/17-and-d6-gorge-trail.jpg","photos/18-and-d6-sierra-nevada.jpg"],
+    7:["photos/19-and-d7-mezquita.jpg","photos/20-and-d7-roman-bridge.jpg","photos/21-and-d7-train.jpg"],
+    8:["photos/22-and-d8-alcazar.jpg","photos/23-and-d8-giralda.jpg","photos/24-and-d8-triana.jpg"],
+    9:["photos/25-and-d9-plaza-espana.jpg","photos/26-and-d9-setas.jpg","photos/27-and-d9-santa-cruz.jpg"],
+    10:["photos/28-and-d10-sunset.jpg","photos/29-and-d10-airplane.jpg","photos/30-and-d10-airport.jpg"],
+  },
+  castile: {
+    1:["photos/31-cas-d1-plaza-mayor.jpg","photos/32-cas-d1-puerta-del-sol.jpg","photos/33-cas-d1-tapas.jpg"],
+    2:["photos/34-cas-d2-prado.jpg","photos/35-cas-d2-crystal-palace.jpg","photos/36-cas-d2-gran-via.jpg"],
+    3:["photos/37-cas-d3-guadarrama.jpg","photos/38-cas-d3-pine-trail.jpg","photos/39-cas-d3-ridge-view.jpg"],
+    4:["photos/40-cas-d4-aqueduct.jpg","photos/41-cas-d4-alcazar.jpg","photos/42-cas-d4-cochinillo.jpg"],
+    5:["photos/43-cas-d5-hanging-houses.jpg","photos/44-cas-d5-san-pablo-bridge.jpg","photos/45-cas-d5-old-town.jpg"],
+    6:["photos/46-cas-d6-ciudad-encantada.jpg","photos/47-cas-d6-jucar-gorge.jpg","photos/48-cas-d6-karst.jpg"],
+    7:["photos/49-cas-d7-skyline.jpg","photos/50-cas-d7-sunset.jpg","photos/51-cas-d7-train.jpg"],
+    8:["photos/52-cas-d8-cathedral.jpg","photos/53-cas-d8-alcazar.jpg","photos/54-cas-d8-synagogue.jpg"],
+    9:["photos/55-cas-d9-san-martin-bridge.jpg","photos/56-cas-d9-gorge.jpg","photos/57-cas-d9-san-miguel-market.jpg"],
+    10:["photos/58-cas-d10-skyline.jpg","photos/59-cas-d10-airport.jpg","photos/60-cas-d10-airplane.jpg"],
+  },
+  north: {
+    1:["photos/61-nor-d1-old-town.jpg","photos/62-nor-d1-pintxos.jpg","photos/63-nor-d1-river.jpg"],
+    2:["photos/64-nor-d2-guggenheim.jpg","photos/65-nor-d2-puppy.jpg","photos/66-nor-d2-artxanda.jpg"],
+    3:["photos/67-nor-d3-gaztelugatxe.jpg","photos/68-nor-d3-la-concha.jpg","photos/69-nor-d3-parte-vieja.jpg"],
+    4:["photos/70-nor-d4-igueldo.jpg","photos/71-nor-d4-peine-del-viento.jpg","photos/72-nor-d4-pintxos.jpg"],
+    5:["photos/73-nor-d5-flysch.jpg","photos/74-nor-d5-coast.jpg","photos/75-nor-d5-zumaia-beach.jpg"],
+    6:["photos/76-nor-d6-oviedo.jpg","photos/77-nor-d6-sidra.jpg","photos/78-nor-d6-cathedral.jpg"],
+    7:["photos/79-nor-d7-naranco.jpg","photos/80-nor-d7-roman-bridge.jpg","photos/81-nor-d7-cangas-town.jpg"],
+    8:["photos/82-nor-d8-basilica.jpg","photos/83-nor-d8-lakes.jpg","photos/84-nor-d8-cave.jpg"],
+    9:["photos/85-nor-d9-cares.jpg","photos/86-nor-d9-picos.jpg","photos/87-nor-d9-cares-bridge.jpg"],
+    10:["photos/88-nor-d10-peaks.jpg","photos/89-nor-d10-coast.jpg","photos/90-nor-d10-airplane.jpg"],
+  },
+};
+
 /* ============================ gallery / card ============================ */
 function galShift(btn, dir){
   const gal = btn.closest('.gal');
@@ -395,8 +440,7 @@ function galShift(btn, dir){
   imgs[i].classList.add('active'); if(dots[i]) dots[i].classList.add('active');
 }
 // Photo gallery when the day has imgs; otherwise a designed gradient hero card.
-function galleryHTML(day, stop){
-  const imgs = day.imgs || [];
+function galleryHTML(imgs, day, stop){
   if(!imgs.length){
     return `<div class="gal hero"><button class="xbtn" onclick="closeCard()">✕</button>
       <div class="hicon">${day.hero||'📍'}</div>
@@ -465,7 +509,8 @@ function openDay(i){
   const it = itineraries[activeKey];
   current = i;
   const day = it.days[i], s = it.stops[day.stop];
-  document.getElementById('cardGal').innerHTML = galleryHTML(day, s);
+  const imgs = (PHOTOS[activeKey] && PHOTOS[activeKey][day.d]) || day.imgs || [];
+  document.getElementById('cardGal').innerHTML = galleryHTML(imgs, day, s);
   document.getElementById('cardBody').innerHTML = `
     <div class="pd">Day ${day.d} · ${day.date}</div>
     <h2>${day.title}</h2><div class="loc">📍 ${s.name}</div>
