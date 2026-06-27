@@ -24,13 +24,19 @@
     border-radius:999px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;}
   .switch button:hover{background:rgba(255,255,255,.26);}
   .switch button.active{background:#fff;color:var(--teal);border-color:#fff;}
+  .switch button::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle;}
+  .switch button[data-key="andalucia"]::before{background:#C1660F;}
+  .switch button[data-key="castile"]::before{background:#7A5AA8;}
+  .switch button[data-key="north"]::before{background:#1F8A70;}
 
   .pin{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
-    box-shadow:0 2px 6px rgba(0,0,0,.4);border:2px solid #fff;cursor:pointer;transition:transform .15s;}
+    box-shadow:0 2px 6px rgba(0,0,0,.4);border:2px solid #fff;cursor:pointer;transition:transform .15s, opacity .25s;}
   .pin:hover{transform:scale(1.12);}
   .pin.city{width:34px;height:34px;border-radius:50%;background:var(--teal);font-size:14px;}
   .pin.hike{width:32px;height:32px;border-radius:9px;background:var(--hike);font-size:16px;}
-  .pin.sel{outline:3px solid var(--terra);outline-offset:1px;}
+  .pin.dim{opacity:.45;}
+  .pin.dim:hover{opacity:.92;}
+  .pin.sel{outline:3px solid #ffce3a;outline-offset:1px;box-shadow:0 2px 10px rgba(0,0,0,.55);}
 
   /* ===== Readable floating day card — shares the screen with the map ===== */
   #daycard{position:absolute;left:18px;bottom:18px;z-index:1000;width:350px;max-width:calc(100% - 36px);
@@ -104,7 +110,7 @@
   </header>
   <div id="main">
     <div id="map"></div>
-    <div class="hint" id="hint">👆 Tap a pin — or use ‹ › to walk through the days</div>
+    <div class="hint" id="hint">👆 All three trips are on the map — tap any pin to jump into that trip</div>
     <!-- Floating readable day card -->
     <div id="daycard">
       <div class="card-scroll">
@@ -141,7 +147,9 @@ const itineraries = {
       { type:"city", label:"4", name:"Seville", ll:[37.3886,-5.9823] },
     ],
     routes: [
-      { type:"train", pts:[[36.7213,-4.4214],[37.1773,-3.5986],[37.8790,-4.7794],[37.3886,-5.9823]] },
+      { type:"train", pts:[[36.72329,-4.4211],[36.73053,-4.42522],[36.77634,-4.4256],[36.78404,-4.43361],[36.81058,-4.43847],[36.81494,-4.44812],[36.82595,-4.44413],[36.83746,-4.45175],[36.84966,-4.45117],[36.86219,-4.43682],[36.87112,-4.43587],[36.88948,-4.42112],[36.89583,-4.42414],[36.89758,-4.43446],[36.90673,-4.44592],[36.93096,-4.44602],[36.93889,-4.43906],[36.96034,-4.4465],[36.97131,-4.43489],[36.98224,-4.40298],[37.01149,-4.38902],[37.03898,-4.38727],[37.07201,-4.3229],[37.10457,-4.31237],[37.13777,-4.2795],[37.14619,-4.25357],[37.14553,-4.23625],[37.15872,-4.21616],[37.15711,-4.2041],[37.16651,-4.17868],[37.15931,-4.14669],[37.16215,-4.10615],[37.16706,-4.08776],[37.18065,-4.0781],[37.1825,-4.0376],[37.19519,-4.01713],[37.19226,-3.97853],[37.17979,-3.94267],[37.17846,-3.90419],[37.19547,-3.86511],[37.19409,-3.84259],[37.18886,-3.83118],[37.19516,-3.81498],[37.19001,-3.73365],[37.19169,-3.65808],[37.19793,-3.63744],[37.19629,-3.63232],[37.18646,-3.632],[37.17607,-3.61435],[37.18409,-3.60455],[37.17732,-3.59862]] },
+      { type:"train", pts:[[37.17732,-3.59862],[37.20954,-3.67521],[37.20653,-3.70685],[37.2436,-3.75981],[37.25755,-3.7656],[37.265,-3.78798],[37.321,-3.83815],[37.37713,-3.82019],[37.38791,-3.85485],[37.41828,-3.86171],[37.45725,-3.94655],[37.50566,-3.97858],[37.53487,-3.98189],[37.54522,-4.03559],[37.57389,-4.06745],[37.5873,-4.13149],[37.56206,-4.19219],[37.56755,-4.24721],[37.59488,-4.30167],[37.62934,-4.30415],[37.62911,-4.3584],[37.66744,-4.38934],[37.68913,-4.49183],[37.68597,-4.53907],[37.6742,-4.55779],[37.68704,-4.59419],[37.72101,-4.63595],[37.75903,-4.65756],[37.79854,-4.72294],[37.8428,-4.74561],[37.87271,-4.78372],[37.87927,-4.77881]] },
+      { type:"train", pts:[[37.87927,-4.77881],[37.88076,-4.76846],[37.87193,-4.76248],[37.84506,-4.79113],[37.81353,-4.79698],[37.77367,-4.82376],[37.76867,-4.81831],[37.76194,-4.82305],[37.74717,-4.84715],[37.71681,-4.86555],[37.71608,-4.8953],[37.70764,-4.90996],[37.68306,-4.92607],[37.66851,-4.94684],[37.6506,-4.95589],[37.62173,-4.95866],[37.59159,-4.98001],[37.55356,-5.03842],[37.54371,-5.04636],[37.53305,-5.06769],[37.52162,-5.16342],[37.52608,-5.23203],[37.52211,-5.25332],[37.52778,-5.26631],[37.52879,-5.29705],[37.51112,-5.34388],[37.50598,-5.38053],[37.50992,-5.39985],[37.50789,-5.43147],[37.49037,-5.48699],[37.47965,-5.57789],[37.48146,-5.61331],[37.48844,-5.62982],[37.48862,-5.64202],[37.47334,-5.67826],[37.46864,-5.71401],[37.43116,-5.81898],[37.42997,-5.86663],[37.43431,-5.88386],[37.40301,-5.96468],[37.39771,-5.97591],[37.3885,-5.98213]] },
       { type:"hike",  pts:[[36.7213,-4.4214],[36.9075,-4.7561]] },
       { type:"hike",  pts:[[37.1773,-3.5986],[37.1265,-3.5101]] },
     ],
@@ -224,13 +232,12 @@ const itineraries = {
       { type:"city", label:"4", name:"Toledo",            ll:[39.8628,-4.0273] },
     ],
     routes: [
-      // radial high-speed hops out of the Madrid hub
-      { type:"train", pts:[[40.4168,-3.7038],[40.9429,-4.1088]] },   // Madrid–Segovia
-      { type:"train", pts:[[40.4168,-3.7038],[40.0704,-2.1374]] },   // Madrid–Cuenca
-      { type:"train", pts:[[40.4168,-3.7038],[39.8628,-4.0273]] },   // Madrid–Toledo
-      { type:"train", pts:[[40.4168,-3.7038],[40.7406,-4.0517]] },   // Madrid–Cercedilla (Cercanías)
-      { type:"hike",  pts:[[40.0704,-2.1374],[40.1858,-2.0286]] },   // Cuenca → Ciudad Encantada
-      { type:"hike",  pts:[[40.7406,-4.0517],[40.7820,-4.0150]] },   // up into Guadarrama
+      { type:"train", pts:[[40.4176,-3.70365],[40.4593,-3.74926],[40.46687,-3.81051],[40.48507,-3.86274],[40.51887,-3.88546],[40.53422,-3.88837],[40.56232,-3.90394],[40.57966,-3.94598],[40.58739,-3.95365],[40.59577,-3.95325],[40.59772,-3.96161],[40.63384,-4.00258],[40.6423,-4.02752],[40.64981,-4.07432],[40.65821,-4.0951],[40.67831,-4.11688],[40.68599,-4.11807],[40.70787,-4.13737],[40.71664,-4.15776],[40.7149,-4.1845],[40.73598,-4.20254],[40.74993,-4.20197],[40.76108,-4.2131],[40.7752,-4.20618],[40.79626,-4.21941],[40.81336,-4.1982],[40.82575,-4.16439],[40.83989,-4.15369],[40.85492,-4.12303],[40.88801,-4.11603],[40.90675,-4.10303],[40.93239,-4.10732],[40.94234,-4.11416],[40.94288,-4.10884]] },
+      { type:"train", pts:[[40.4176,-3.70365],[40.41904,-3.66136],[40.40653,-3.66358],[40.35692,-3.55476],[40.31847,-3.51344],[40.29378,-3.46295],[40.2728,-3.44859],[40.25919,-3.35711],[40.23142,-3.34578],[40.19254,-3.3012],[40.1695,-3.28978],[40.13912,-3.18699],[40.1208,-3.15227],[40.0304,-3.0392],[40.00315,-3.02605],[39.99488,-3.00915],[39.99318,-2.97931],[40.024,-2.95454],[40.03929,-2.92692],[40.04158,-2.89794],[40.06318,-2.87035],[40.04313,-2.73934],[40.02943,-2.7124],[40.02262,-2.63116],[40.03411,-2.59027],[40.0646,-2.53374],[40.05618,-2.50515],[40.06142,-2.44304],[40.05018,-2.3586],[40.07534,-2.31922],[40.07071,-2.27772],[40.0838,-2.20015],[40.0704,-2.1374]] },
+      { type:"train", pts:[[40.4176,-3.70365],[40.41913,-3.69376],[40.40906,-3.69227],[40.38424,-3.71798],[40.32892,-3.72548],[40.31046,-3.74058],[40.29536,-3.73788],[40.25471,-3.76425],[40.2472,-3.77818],[40.21121,-3.79148],[40.19815,-3.78947],[40.18886,-3.8051],[40.1099,-3.83965],[40.0776,-3.86497],[40.0712,-3.89094],[40.06224,-3.90545],[40.02661,-3.93189],[40.01242,-3.95681],[39.99297,-3.96006],[39.9378,-3.99895],[39.89563,-4.01703],[39.86966,-4.02111],[39.86277,-4.02734]] },
+      { type:"train", pts:[[40.4176,-3.70365],[40.42011,-3.70302],[40.42354,-3.71101],[40.43586,-3.71967],[40.44183,-3.72992],[40.4593,-3.74926],[40.46687,-3.81051],[40.48533,-3.86307],[40.51887,-3.88546],[40.53341,-3.88803],[40.56152,-3.90299],[40.57379,-3.92657],[40.57966,-3.94598],[40.58739,-3.95365],[40.59577,-3.95325],[40.59772,-3.96161],[40.60333,-3.9654],[40.63587,-4.00626],[40.64253,-4.00534],[40.66476,-4.01116],[40.67502,-4.01001],[40.68383,-4.01355],[40.69405,-4.01134],[40.70142,-4.0042],[40.71116,-4.006],[40.71346,-4.00837],[40.71406,-4.01466],[40.72017,-4.01686],[40.72305,-4.02359],[40.73439,-4.02019],[40.73161,-4.03189],[40.73608,-4.0364],[40.73445,-4.04073],[40.73841,-4.04449],[40.74061,-4.05174]] },
+      { type:"hike",  pts:[[40.0704,-2.1374],[40.1858,-2.0286]] },
+      { type:"hike",  pts:[[40.7406,-4.0517],[40.782,-4.015]] },
     ],
     days: [
       { d:1, date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive Madrid", stop:0,
@@ -315,13 +322,13 @@ const itineraries = {
       { type:"hike", label:"🥾", name:"Ruta del Cares",    ll:[43.2530,-4.8400] },
     ],
     routes: [
-      { type:"train", pts:[[43.2630,-2.9350],[43.3183,-1.9812]] },   // Bilbao–San Sebastián
-      { type:"train", pts:[[43.3183,-1.9812],[43.3614,-5.8493]] },   // long coast leg west to Oviedo
-      { type:"train", pts:[[43.3614,-5.8493],[43.3508,-5.1300]] },   // Oviedo–Cangas de Onís
-      { type:"hike",  pts:[[43.2630,-2.9350],[43.4470,-2.7855]] },   // Bilbao → Gaztelugatxe
-      { type:"hike",  pts:[[43.3183,-1.9812],[43.2990,-2.2560]] },   // San Sebastián → Flysch
-      { type:"hike",  pts:[[43.3508,-5.1300],[43.2720,-4.9970]] },   // Cangas → Covadonga lakes
-      { type:"hike",  pts:[[43.3508,-5.1300],[43.2530,-4.8400]] },   // Cangas → Cares gorge
+      { type:"train", pts:[[43.26265,-2.93519],[43.24696,-2.93627],[43.23305,-2.91458],[43.23116,-2.87161],[43.236,-2.84999],[43.22897,-2.83139],[43.2358,-2.80144],[43.2316,-2.78891],[43.23053,-2.75243],[43.22281,-2.72888],[43.21342,-2.72281],[43.20101,-2.69589],[43.18911,-2.68637],[43.17829,-2.62468],[43.16807,-2.60149],[43.16728,-2.55277],[43.17698,-2.52635],[43.17447,-2.50818],[43.18012,-2.47101],[43.18825,-2.45774],[43.19266,-2.4392],[43.21956,-2.40381],[43.23386,-2.40453],[43.25547,-2.38952],[43.26444,-2.37288],[43.28604,-2.3546],[43.28296,-2.32002],[43.25932,-2.28537],[43.2774,-2.25351],[43.28493,-2.23032],[43.28056,-2.209],[43.28214,-2.18118],[43.27829,-2.17061],[43.27914,-2.14972],[43.28343,-2.14115],[43.28115,-2.11308],[43.29505,-2.05971],[43.29244,-2.03968],[43.28572,-2.02697],[43.29875,-2.00773],[43.29562,-1.99773],[43.29927,-1.97961],[43.31814,-1.98164]] },
+      { type:"train", pts:[[43.31814,-1.98164],[43.29959,-1.97991],[43.28581,-2.027],[43.28504,-2.23019],[43.2594,-2.28539],[43.28609,-2.3548],[43.19269,-2.43941],[43.16733,-2.56],[43.18942,-2.68686],[43.22334,-2.72962],[43.23291,-2.79318],[43.2614,-2.81188],[43.28864,-2.89592],[43.30195,-2.9627],[43.28466,-2.99513],[43.33009,-3.0734],[43.36192,-3.18932],[43.35012,-3.21231],[43.39559,-3.23682],[43.4025,-3.29304],[43.38056,-3.37469],[43.40464,-3.41132],[43.39046,-3.47391],[43.41705,-3.55252],[43.38756,-3.66947],[43.3889,-3.74018],[43.3432,-3.78906],[43.31234,-3.88117],[43.31164,-3.94276],[43.35919,-4.04505],[43.34489,-4.13976],[43.32345,-4.173],[43.31678,-4.26127],[43.37087,-4.41005],[43.40458,-4.75708],[43.4442,-4.88714],[43.43534,-5.06454],[43.47083,-5.15868],[43.48199,-5.30219],[43.5067,-5.33756],[43.50167,-5.40963],[43.45511,-5.52342],[43.37853,-5.58986],[43.395,-5.80434],[43.35296,-5.83012],[43.34838,-5.85576],[43.36108,-5.84873]] },
+      { type:"train", pts:[[43.36108,-5.84873],[43.36398,-5.83927],[43.35934,-5.83856],[43.35494,-5.82848],[43.36709,-5.81431],[43.38561,-5.81069],[43.39398,-5.80034],[43.37868,-5.70813],[43.38667,-5.62847],[43.37658,-5.60253],[43.37618,-5.55448],[43.35298,-5.47558],[43.35355,-5.45776],[43.35817,-5.45072],[43.35366,-5.4383],[43.36154,-5.38976],[43.35264,-5.37777],[43.35271,-5.36634],[43.34523,-5.35581],[43.34973,-5.33047],[43.36741,-5.28769],[43.35927,-5.25019],[43.36419,-5.23316],[43.35749,-5.22995],[43.36605,-5.2062],[43.36176,-5.19668],[43.37005,-5.18371],[43.38952,-5.18038],[43.37456,-5.16008],[43.37405,-5.14845],[43.36487,-5.15286],[43.35081,-5.13]] },
+      { type:"hike",  pts:[[43.263,-2.935],[43.447,-2.7855]] },
+      { type:"hike",  pts:[[43.3183,-1.9812],[43.299,-2.256]] },
+      { type:"hike",  pts:[[43.3508,-5.13],[43.272,-4.997]] },
+      { type:"hike",  pts:[[43.3508,-5.13],[43.253,-4.84]] },
     ],
     days: [
       { d:1, date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive Bilbao", stop:0,
@@ -465,47 +472,73 @@ const satellite = L.layerGroup([sat, satLabels]);
 const map = L.map('map',{scrollWheelZoom:true, layers:[mapTiles]});
 L.control.layers({"🗺️ Map":mapTiles, "🛰️ Satellite":satellite},null,{position:'topright'}).addTo(map);
 
-const itineraryLayer = L.layerGroup().addTo(map);
-let markers = [];
-let activeKey = null;
-let current = 0;
+// All three trips live on the map at once, colour-coded. The active trip is
+// highlighted; the others stay faded but fully clickable.
+const TRIP_ORDER = ['andalucia','castile','north'];
+const TRIP_COLORS = { andalucia:'#C1660F', castile:'#7A5AA8', north:'#1F8A70' };
+const layers = {};
+let activeKey = null, current = 0;
 const card = document.getElementById('daycard');
 const hint = document.getElementById('hint');
 
-function loadItinerary(key){
-  if(key === activeKey) return;
+function renderAll(){
+  TRIP_ORDER.forEach(key=>{
+    const it = itineraries[key], color = TRIP_COLORS[key];
+    const polys = [], mks = [];
+    it.routes.forEach(r=>{
+      const style = r.type==='train'
+        ? {color, weight:4, opacity:.9}
+        : {color, weight:3, opacity:.9, dashArray:'5,8'};
+      const pl = L.polyline(r.pts, style).addTo(map);
+      pl._kind = r.type;
+      pl.on('click', ()=> loadItinerary(key));
+      polys.push(pl);
+    });
+    it.stops.forEach((s, si)=>{
+      const icon = L.divIcon({className:'', html:`<div class="pin ${s.type}" data-key="${key}" data-si="${si}" style="background:${color}">${s.label}</div>`,
+        iconSize:s.type==='city'?[34,34]:[32,32], iconAnchor:s.type==='city'?[17,17]:[16,16]});
+      const m = L.marker(s.ll,{icon}).addTo(map);
+      const firstDay = it.days.findIndex(d=>d.stop===si);
+      m.on('click', ()=>{ if(activeKey!==key) setActive(key, false); openDay(firstDay>=0?firstDay:0); });
+      mks.push(m);
+    });
+    layers[key] = {polys, markers:mks};
+  });
+}
+
+// Highlight one trip, fade the rest. fit=true reframes the map to that trip.
+function setActive(key, fit){
   activeKey = key;
   const it = itineraries[key];
-
   document.querySelectorAll('.switch button').forEach(b=>b.classList.toggle('active', b.dataset.key===key));
   document.getElementById('trip-title').textContent = it.title;
   document.getElementById('trip-sub').textContent = it.sub;
-
-  itineraryLayer.clearLayers();
-  markers = [];
-
-  it.routes.forEach(r=>{
-    if(r.type==='train') L.polyline(r.pts,{color:'#C1660F',weight:4,opacity:.9}).addTo(itineraryLayer);
-    else L.polyline(r.pts,{color:'#2E7D32',weight:3,dashArray:'7,8',opacity:.9}).addTo(itineraryLayer);
+  TRIP_ORDER.forEach(k=>{
+    const on = (k===key);
+    layers[k].polys.forEach(pl=>{
+      const train = pl._kind==='train';
+      pl.setStyle({ opacity: on?0.95:0.25, weight: train?(on?4:2.5):(on?3:2) });
+      if(on && pl._path && pl._path.parentNode) pl.bringToFront();
+    });
+    layers[k].markers.forEach(m=>{
+      const el = m.getElement(); if(el){ const pin = el.querySelector('.pin'); if(pin) pin.classList.toggle('dim', !on); }
+      m.setZIndexOffset(on?1000:0);
+    });
   });
-
-  it.stops.forEach((s, si)=>{
-    const icon = L.divIcon({className:'',html:`<div class="pin ${s.type}" data-si="${si}">${s.label}</div>`,
-      iconSize:s.type==='city'?[34,34]:[32,32], iconAnchor:s.type==='city'?[17,17]:[16,16]});
-    const m = L.marker(s.ll,{icon}).addTo(itineraryLayer);
-    const firstDay = it.days.findIndex(d=>d.stop===si);
-    m.on('click', ()=>openDay(firstDay>=0?firstDay:0));
-    markers.push(m);
-  });
-
-  map.fitBounds(L.latLngBounds(it.stops.map(s=>s.ll)).pad(0.20));
-  openDay(0);
+  if(fit) map.fitBounds(L.latLngBounds(it.stops.map(s=>s.ll)).pad(0.18));
 }
 
-function markSelected(stopIdx){
-  document.querySelectorAll('.pin').forEach(p=>p.classList.toggle('sel', +p.dataset.si===stopIdx));
+// Header buttons: focus a trip and jump to its start.
+function loadItinerary(key){
+  setActive(key, true);
+  openDay(0, false);
 }
-function openDay(i){
+
+function markSelected(si){
+  document.querySelectorAll('.pin').forEach(p=>p.classList.toggle('sel', p.dataset.key===activeKey && +p.dataset.si===si));
+}
+function openDay(i, fly){
+  if(fly===undefined) fly = true;
   const it = itineraries[activeKey];
   current = i;
   const day = it.days[i], s = it.stops[day.stop];
@@ -523,7 +556,7 @@ function openDay(i){
   card.classList.add('show');
   if(hint) hint.style.opacity = 0;
   markSelected(day.stop);
-  map.flyTo(s.ll, s.type==='city'?11:12, {duration:.7});
+  if(fly) map.flyTo(s.ll, s.type==='city'?11:12, {duration:.7});
 }
 function step(dir){ const it=itineraries[activeKey]; const n=current+dir; if(n>=0 && n<it.days.length) openDay(n); }
 function closeCard(){ card.classList.remove('show'); markSelected(-1); }
@@ -534,8 +567,15 @@ document.addEventListener('keydown', e=>{
   else if(e.key==='Escape') closeCard();
 });
 
-// Start on the Andalucía proposal; the readable card shows immediately.
-loadItinerary('andalucia');
+// Draw all three trips, then open with an overview of the whole of Spain and
+// the Andalucía proposal active. Buttons/pins take it from there.
+function frameAll(){ const p = TRIP_ORDER.flatMap(k=>itineraries[k].stops.map(s=>s.ll)); map.fitBounds(L.latLngBounds(p).pad(0.08)); }
+renderAll();
+setActive('andalucia', false);
+openDay(0, false);
+frameAll();
+// Layout/preview safety: once the map truly has its size, re-apply highlight + reframe.
+setTimeout(()=>{ map.invalidateSize(); setActive(activeKey, false); openDay(current, false); frameAll(); }, 240);
 setTimeout(()=>{ if(hint) hint.style.display='none'; }, 6000);
 </script>
 </body>
