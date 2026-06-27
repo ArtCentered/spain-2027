@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Spain 2027 — Day-by-Day Map · A Proposal for Mike</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  :root{ --teal:#1F4E5F; --teal2:#2C7A8C; --terra:#C1660F; --sand:#FBF6EE;
+    --ink:#243239; --muted:#6b7a80; --hike:#2E7D32; }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);}
+  #app{display:flex;flex-direction:column;height:100vh;}
+  header{background:var(--teal);color:#fff;padding:13px 20px;flex:0 0 auto;}
+  header h1{margin:0;font-size:18px;letter-spacing:.2px;}
+  header p{margin:3px 0 0;font-size:12.5px;opacity:.85;}
+  #main{flex:1 1 auto;min-height:0;position:relative;}
+  #map{position:absolute;inset:0;}
+
+  .pin{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
+    box-shadow:0 2px 6px rgba(0,0,0,.4);border:2px solid #fff;cursor:pointer;transition:transform .15s;}
+  .pin:hover{transform:scale(1.12);}
+  .pin.city{width:34px;height:34px;border-radius:50%;background:var(--teal);font-size:14px;}
+  .pin.hike{width:32px;height:32px;border-radius:9px;background:var(--hike);font-size:16px;}
+  .pin.sel{outline:3px solid var(--terra);outline-offset:1px;}
+
+  /* ===== Readable floating day card — shares the screen with the map ===== */
+  #daycard{position:absolute;left:18px;bottom:18px;z-index:1000;width:350px;max-width:calc(100% - 36px);
+    max-height:calc(100% - 36px);background:#fff;border-radius:14px;overflow:hidden;
+    box-shadow:0 16px 44px rgba(0,0,0,.34);display:flex;flex-direction:column;
+    opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .3s ease, transform .3s ease;}
+  #daycard.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+  .card-scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+
+  .gal{position:relative;width:100%;height:235px;background:#13232a;}
+  .gal img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .35s;}
+  .gal img.active{opacity:1;}
+  .gnav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.42);color:#fff;border:none;
+    width:30px;height:30px;border-radius:50%;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .gnav.prev{left:8px;} .gnav.next{right:8px;}
+  .gnav:hover{background:rgba(0,0,0,.65);}
+  .gdots{position:absolute;bottom:8px;left:0;right:0;display:flex;gap:5px;justify-content:center;}
+  .gdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.6);box-shadow:0 0 2px rgba(0,0,0,.4);}
+  .gdot.active{background:#fff;}
+  .xbtn{position:absolute;top:9px;right:9px;z-index:3;background:rgba(0,0,0,.5);color:#fff;border:none;
+    width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;line-height:1;}
+  .xbtn:hover{background:rgba(0,0,0,.75);}
+
+  .card-body{padding:14px 18px 8px;}
+  .card-body .pd{font-size:11px;color:var(--terra);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+  .card-body h2{margin:3px 0 1px;font-size:19px;color:var(--teal);line-height:1.15;}
+  .card-body .loc{font-size:12.5px;color:var(--muted);margin-bottom:8px;}
+  .acts{list-style:none;margin:8px 0 0;padding:0;}
+  .acts li{position:relative;padding:7px 0 7px 25px;font-size:13px;line-height:1.45;border-top:1px solid #f0e9dc;color:var(--ink);}
+  .acts li:first-child{border-top:none;}
+  .acts li .ic{position:absolute;left:0;top:6px;font-size:13.5px;}
+  .tag{display:inline-block;background:#eef3f4;color:var(--teal);font-size:11px;font-weight:600;border-radius:5px;padding:3px 9px;margin:10px 0 4px;}
+  .card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;
+    border-top:1px solid #ece2d2;background:#fbf8f2;flex:0 0 auto;}
+  .navbtn{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:9px 13px;font-size:12.5px;font-weight:600;cursor:pointer;}
+  .navbtn:hover{background:#163b48;}
+  .navbtn:disabled{background:#cdd6d9;cursor:default;}
+  .foot-count{font-size:12.5px;color:var(--muted);font-weight:700;}
+
+  .hint{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:900;background:rgba(31,78,95,.92);color:#fff;
+    font-size:12.5px;padding:7px 14px;border-radius:20px;box-shadow:0 3px 10px rgba(0,0,0,.2);transition:opacity .4s;}
+  @media(max-width:720px){
+    header{padding:10px 15px;} header h1{font-size:15.5px;} header p{font-size:11px;}
+    #daycard{left:8px;right:8px;bottom:8px;width:auto;max-width:none;max-height:70%;}
+    .gal{height:210px;}
+    .hint{font-size:11.5px;top:9px;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>🇪🇸 Spain 2027 — Day by Day</h1>
+    <p>A proposal for Mike · Sept 10–20 · tap a numbered pin for that day · ‹ › through the trip · Map / Satellite top-right</p>
+  </header>
+  <div id="main">
+    <div id="map"></div>
+    <div class="hint" id="hint">👆 Tap a pin — or use ‹ › to walk through the days</div>
+    <!-- Floating readable day card -->
+    <div id="daycard">
+      <div class="card-scroll">
+        <div id="cardGal"></div>
+        <div class="card-body" id="cardBody"></div>
+      </div>
+      <div class="card-foot">
+        <button class="navbtn" id="prevBtn" onclick="step(-1)">‹ Prev</button>
+        <span class="foot-count" id="footCount"></span>
+        <button class="navbtn" id="nextBtn" onclick="step(1)">Next ›</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const stops = [
+  { type:"city", label:"1", name:"Málaga", ll:[36.7213,-4.4214] },
+  { type:"hike", label:"🥾", name:"Caminito del Rey", ll:[36.9075,-4.7561] },
+  { type:"city", label:"2", name:"Granada", ll:[37.1773,-3.5986] },
+  { type:"hike", label:"🥾", name:"Los Cahorros de Monachil", ll:[37.1265,-3.5101] },
+  { type:"city", label:"3", name:"Córdoba", ll:[37.8790,-4.7794] },
+  { type:"city", label:"4", name:"Seville", ll:[37.3886,-5.9823] },
+];
+
+const days = [
+  { d:1, date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive Málaga", stop:0,
+    imgs:["photos/malaga-1.jpg","photos/day1-tapas.jpg"], tag:"✈️ EUG → AGP · 2 connections",
+    acts:[ ["✈️","Travel day from Eugene — two connections (West Coast hub → Madrid/Europe → Málaga)"],
+           ["🚕","Taxi or Cercanías train from AGP into the center (~15 min)"],
+           ["🚶","Easy evening stroll — no schedule, just shake off the jet lag"],
+           ["🦐","First tapas near Mercado de Atarazanas; sunset at the port (Muelle Uno)"] ] },
+  { d:2, date:"Sun · Sep 12", title:"Málaga old town & sea", stop:0,
+    imgs:["photos/malaga-2.jpg","photos/day2-roman.jpg","photos/day2-beach.jpg"], tag:"🌡️ Hike-free, coastal ~26°C",
+    acts:[ ["🏰","Morning (cooler): the Alcazaba, Málaga's Moorish hilltop fortress"],
+           ["🏛️","The Roman Theatre right below it — Roman under Moorish"],
+           ["⛪","Málaga Cathedral ('La Manquita'); optional Picasso Museum"],
+           ["🏖️","Afternoon at La Malagueta beach — espetos (grilled sardines) at a chiringuito"] ] },
+  { d:3, date:"Mon · Sep 13", title:"Caminito del Rey", stop:1,
+    imgs:["photos/caminito-1.jpg","photos/day3-walkway.jpg"], tag:"⚠️ Book early — sells out",
+    acts:[ ["🚆","Cercanías C-2 train Málaga → El Chorro (~45 min)"],
+           ["🚌","Shuttle bus to the north entrance (bundle it with your ticket)"],
+           ["🥾","7.7 km boardwalk pinned to the gorge wall, ~100 m up (~2 hrs); helmet provided"],
+           ["🍷","Train back to Málaga — reward tapas"] ] },
+  { d:4, date:"Tue · Sep 14", title:"Train to Granada", stop:2,
+    imgs:["photos/day4-sannicolas.jpg","photos/day4-albaicin.jpg"], tag:"🚆 Direct train ~1h20",
+    acts:[ ["🚆","Direct Renfe Avant Málaga → Granada (~1h20)"],
+           ["🏘️","Check in; wander the Albaicín, the old Moorish quarter (UNESCO)"],
+           ["🌅","Sunset at Mirador de San Nicolás — the Alhambra against the Sierra Nevada"],
+           ["🍤","First free-tapas crawl — Calle Navas & Calle Elvira (a tapa with every drink)"] ] },
+  { d:5, date:"Wed · Sep 15", title:"The Alhambra", stop:2,
+    imgs:["photos/granada-3.jpg","photos/day5-generalife.jpg","photos/granada-2.jpg"], tag:"⚠️ Timed entry · bring passports",
+    acts:[ ["🏰","Nasrid Palaces — enter in your printed half-hour slot (arrive 15 min early)"],
+           ["🛡️","Alcazaba ramparts for the city views"],
+           ["🌿","Generalife gardens & summer palace — plan 3–4 hrs total"],
+           ["🍤","Afternoon recovery tapas in the Realejo quarter"] ] },
+  { d:6, date:"Thu · Sep 16", title:"Los Cahorros de Monachil", stop:3,
+    imgs:["photos/cahorros-1.jpg","photos/day6-bridge.jpg"], tag:"🚌 No car required",
+    acts:[ ["🚌","Short bus/taxi from Granada to Monachil village"],
+           ["🥾","Gorge loop ~6–8 km, 3–4 hrs, moderate"],
+           ["🌉","Hanging suspension bridges + low rock tunnels (bring a headlamp)"],
+           ["🍷","Back in Granada by afternoon for more free tapas"] ] },
+  { d:7, date:"Fri · Sep 17", title:"Córdoba → Seville", stop:4,
+    imgs:["photos/cordoba-1.jpg","photos/cordoba-2.jpg","photos/day7-train.jpg"], tag:"🚆 2 train legs",
+    acts:[ ["🚆","Morning Granada → Córdoba (~1h25); store bags at the station"],
+           ["🕌","The Mezquita — the great mosque-cathedral, a forest of red-and-white arches"],
+           ["🌉","Roman Bridge + old Jewish quarter; lunch in town"],
+           ["🚄","Afternoon AVE Córdoba → Seville (~45 min); check in"] ] },
+  { d:8, date:"Sat · Sep 18", title:"Seville monuments", stop:5,
+    imgs:["photos/seville-1.jpg","photos/day8-giralda.jpg"], tag:"🌡️ Hot ~33°C — go early",
+    acts:[ ["🏰","Early: the Real Alcázar — Mudéjar palace & gardens (book ahead)"],
+           ["⛪","Cathedral + Giralda climb (the bell-tower ramp)"],
+           ["😴","Siesta through peak afternoon heat"],
+           ["💃","Evening: Triana across the river — tapas + optional flamenco"] ] },
+  { d:9, date:"Sun · Sep 19", title:"Seville at your pace", stop:5,
+    imgs:["photos/seville-2.jpg","photos/day9-setas.jpg","photos/seville-3.jpg"], tag:"🧭 Free / flexible",
+    acts:[ ["🌳","Plaza de España (go early or late) — Seville's showstopper"],
+           ["🛤️","Las Setas ('Metropol Parasol') rooftop walkway"],
+           ["🏘️","Santa Cruz lanes; any last museums you want"],
+           ["🍤","Final long tapas evening — Alameda de Hércules or back to Triana"] ] },
+  { d:10, date:"Sun/Mon · Sep 20", title:"Fly home from Seville", stop:5,
+    imgs:["photos/day10-flight.jpg","photos/seville-2.jpg"], tag:"✈️ SVQ → EUG",
+    acts:[ ["✈️","Depart Seville (SVQ) — two connections back to Eugene"],
+           ["🛋️","3 recovery days at home (Mon–Wed Sep 21–23) before returning to work"],
+           ["🎉","Trip complete!"] ] },
+];
+
+function galShift(btn, dir){
+  const gal = btn.closest('.gal');
+  const imgs = [...gal.querySelectorAll('img')];
+  const dots = [...gal.querySelectorAll('.gdot')];
+  let i = imgs.findIndex(x=>x.classList.contains('active'));
+  imgs[i].classList.remove('active'); if(dots[i]) dots[i].classList.remove('active');
+  i = (i + dir + imgs.length) % imgs.length;
+  imgs[i].classList.add('active'); if(dots[i]) dots[i].classList.add('active');
+}
+// NOTE: returns a proper .gal wrapper so images stay inside the gallery (not over the text)
+function galleryHTML(imgs){
+  const multi = imgs.length>1;
+  const imgEls = imgs.map((src,j)=>`<img class="${j===0?'active':''}" src="${src}" alt="" onerror="this.remove()">`).join('');
+  const dots = multi ? `<div class="gdots">${imgs.map((_,j)=>`<span class="gdot ${j===0?'active':''}"></span>`).join('')}</div>` : '';
+  const nav = multi ? `<button class="gnav prev" onclick="galShift(this,-1)">‹</button><button class="gnav next" onclick="galShift(this,1)">›</button>` : '';
+  return `<div class="gal"><button class="xbtn" onclick="closeCard()">✕</button>${imgEls}${nav}${dots}</div>`;
+}
+
+// Map
+const mapTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+  attribution:'&copy; OpenStreetMap &copy; CARTO', maxZoom:18 });
+const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+  attribution:'Imagery &copy; Esri', maxZoom:18 });
+const satLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{ maxZoom:18 });
+const satellite = L.layerGroup([sat, satLabels]);
+
+const map = L.map('map',{scrollWheelZoom:true, layers:[mapTiles]});
+L.control.layers({"🗺️ Map":mapTiles, "🛰️ Satellite":satellite},null,{position:'topright'}).addTo(map);
+
+const trainRoute = [[36.7213,-4.4214],[37.1773,-3.5986],[37.8790,-4.7794],[37.3886,-5.9823]];
+L.polyline(trainRoute,{color:'#C1660F',weight:4,opacity:.9}).addTo(map);
+L.polyline([[36.7213,-4.4214],[36.9075,-4.7561]],{color:'#2E7D32',weight:3,dashArray:'7,8',opacity:.9}).addTo(map);
+L.polyline([[37.1773,-3.5986],[37.1265,-3.5101]],{color:'#2E7D32',weight:3,dashArray:'7,8',opacity:.9}).addTo(map);
+
+const markers = [];
+stops.forEach((s, si)=>{
+  const icon = L.divIcon({className:'',html:`<div class="pin ${s.type}" data-si="${si}">${s.label}</div>`,
+    iconSize:s.type==='city'?[34,34]:[32,32], iconAnchor:s.type==='city'?[17,17]:[16,16]});
+  const m = L.marker(s.ll,{icon}).addTo(map);
+  const firstDay = days.findIndex(d=>d.stop===si);
+  m.on('click', ()=>openDay(firstDay));
+  markers.push(m);
+});
+map.fitBounds(L.latLngBounds(stops.map(s=>s.ll)).pad(0.20));
+
+// Card control
+let current = 0;
+const card = document.getElementById('daycard');
+const hint = document.getElementById('hint');
+function markSelected(stopIdx){
+  document.querySelectorAll('.pin').forEach(p=>p.classList.toggle('sel', +p.dataset.si===stopIdx));
+}
+function openDay(i){
+  current = i;
+  const day = days[i], s = stops[day.stop];
+  document.getElementById('cardGal').innerHTML = galleryHTML(day.imgs);
+  document.getElementById('cardBody').innerHTML = `
+    <div class="pd">Day ${day.d} · ${day.date}</div>
+    <h2>${day.title}</h2><div class="loc">📍 ${s.name}</div>
+    <ul class="acts">${day.acts.map(a=>`<li><span class="ic">${a[0]}</span>${a[1]}</li>`).join('')}</ul>
+    <span class="tag">${day.tag}</span>`;
+  document.getElementById('footCount').textContent = `Day ${day.d} of ${days.length}`;
+  document.getElementById('prevBtn').disabled = (i===0);
+  document.getElementById('nextBtn').disabled = (i===days.length-1);
+  document.querySelector('.card-scroll').scrollTop = 0;
+  card.classList.add('show');
+  if(hint) hint.style.opacity = 0;
+  markSelected(day.stop);
+  map.flyTo(s.ll, s.type==='city'?11:12, {duration:.7});
+}
+function step(dir){ const n=current+dir; if(n>=0 && n<days.length) openDay(n); }
+function closeCard(){ card.classList.remove('show'); markSelected(-1); }
+document.addEventListener('keydown', e=>{
+  if(!card.classList.contains('show')) return;
+  if(e.key==='ArrowRight') step(1);
+  else if(e.key==='ArrowLeft') step(-1);
+  else if(e.key==='Escape') closeCard();
+});
+
+// Open on Day 1 so the readable card shows immediately
+openDay(0);
+setTimeout(()=>{ if(hint) hint.style.display='none'; }, 6000);
+</script>
+</body>
+</html>
