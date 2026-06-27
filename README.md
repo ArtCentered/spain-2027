@@ -13,7 +13,7 @@ An interactive day-by-day map and itinerary for our September 2027 trip:
 
 ## Deploy to GitHub Pages (free hosting → one link to share)
 1. Create a new GitHub repo (e.g. `spain-2027`) and push this folder to it.
-2. In the repo: **Settings → Pages → Build and deployment → Source: "Deploy from a branch"**, pick branch `main` and folder `/ (root)`, Save.
+2. In the repo: **Settings → Pages → Build and deployment → Source: "Deploy from a branch"**, pick your default branch (`main` or `master`) and folder `/ (root)`, Save.
 3. Wait ~1 minute; your link appears at the top of the Pages settings. Share that with Mike.
 
 ## Iterating on the itinerary
