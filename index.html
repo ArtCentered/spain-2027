@@ -27,6 +27,11 @@
   header .opts{font-size:11.5px;color:#cfe0e4;text-decoration:none;white-space:nowrap;}
   header .opts:hover{color:#fff;}
   header p{margin:3px 0 0;font-size:12px;opacity:.85;}
+  .legend{margin-top:6px;font-size:11px;color:#cfe0e4;display:flex;align-items:center;flex-wrap:wrap;}
+  .legend .lg{display:inline-block;width:20px;height:0;vertical-align:middle;margin-right:5px;}
+  .legend .lg.car{border-top:3px solid #3Fa23f;}
+  .legend .lg.bike{border-top:3px dotted #E08A3C;}
+  .legend .lg.boat{border-top:3px dashed #4Fb0c2;}
   /* day pills */
   .pills{display:flex;gap:6px;margin-top:9px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;scrollbar-width:none;}
   .pills::-webkit-scrollbar{display:none;}
@@ -133,6 +138,7 @@
       <a class="opts" href="options.html">Pre-planning options →</a>
     </div>
     <p>Mallorca · 11 days · Sep 11–22, 2027 · based in Port de Pollença</p>
+    <div class="legend"><span class="lg car"></span>car&nbsp;&nbsp;<span class="lg bike"></span>e-bike&nbsp;&nbsp;<span class="lg boat"></span>boat</div>
     <div class="pills" id="pills"></div>
   </header>
   <div id="main">
@@ -216,8 +222,9 @@ const DAYS = [
     plan:[["🥾","Vall de Bóquer walk (~5 km, easy) — a birdlife valley between the hills"],["🏊","Swim at Cala Bóquer at the far end"],
           ["🚲","Reserve e-bikes for the Formentor ride (book 3+ days ahead)"],["📞","Confirm the sail, kayak & coasteering for the week"]],
     stay:"Port de Pollença",
-    book:[["E-bikes","CCT Bike Rental or 2GoCycling — ~€48/day e-MTB. Reserve now"],["Activities","Sail+snorkel, sea-kayak, coasteering — book this week"]],
-    maps:[["Vall de Bóquer trailhead","Vall de Boquer Pollensa"],["Cala Sant Vicenç","Cala Sant Vicenc Mallorca"]] },
+    book:[["E-bikes","CCT Bike Rental or 2GoCycling — ~€48/day (~$52) e-MTB. Reserve now"],["Activities","Sail+snorkel, sea-kayak, coasteering — book this week"]],
+    maps:[["Vall de Bóquer trailhead","Vall de Boquer Pollensa"],["Cala Sant Vicenç","Cala Sant Vicenc Mallorca"]],
+    note:"💡 Plan: rent e-bikes for ~4–5 days — they commute you to all the nearby spots (Formentor, Cala Sant Vicenç, the Alcúdia kayak launch, Bonaire coasteering). The car is just for the far Tramuntana hikes (Sa Calobra, Massanella) and the airport. On the map: green = car, dotted orange = e-bike." },
 
   { n:3, date:"Tue · Sep 14", title:"E-bike Cap de Formentor", place:"Formentor peninsula", ll:[39.9619,3.2106], type:"bike",
     summary:"Cars are banned on the Formentor road in September, so e-bike is the way — the island's most famous ride out to the lighthouse, with cliff miradors and a swim at the end.",
@@ -225,7 +232,7 @@ const DAYS = [
     plan:[["🚴","E-bike from Port de Pollença out along the Formentor peninsula"],["👀","Mirador des Colomer — cliffs straight into the sea"],
           ["🗼","Walk up to the Talaia d'Albercutx watchtower"],["🏖️","On to the lighthouse; swim at Platja de Formentor"]],
     stay:"Port de Pollença",
-    book:[["E-bikes","Pick up in Port de Pollença. ~€48/day e-MTB"]],
+    book:[["E-bikes","Pick up in Port de Pollença. ~€48/day (~$52) e-MTB"]],
     maps:[["Mirador des Colomer","Mirador es Colomer Formentor"],["Formentor lighthouse","Far de Formentor"],["Platja de Formentor","Playa de Formentor"]],
     note:"⚠️ Formentor road is closed to cars 10am–10pm (Jun–Oct). E-bike, shuttle bus 334, or boat — or drive before 10am. Re-check the 2027 hours nearer the trip." },
 
@@ -235,7 +242,7 @@ const DAYS = [
     plan:[["⛵","Skippered sail from Port de Pollença (half day)"],["🤿","Snorkel the coves toward Formentor / Cala Sant Vicenç"],
           ["🏄","SUP + swim stops; snacks & drinks aboard"],["🏖️","Lazy afternoon back in town"]],
     stay:"Port de Pollença",
-    book:[["Sail + snorkel","NoFrills Excursions — Pollença bay, ~€89pp high season (gear + snacks). Book ahead"]],
+    book:[["Sail + snorkel","NoFrills Excursions — Pollença bay, ~€89pp (~$96) high season (gear + snacks). Book ahead"]],
     maps:[["Port de Pollença marina","Port de Pollensa marina"]] },
 
   { n:5, date:"Thu · Sep 16", title:"Sa Calobra & Torrent de Pareis", place:"Sa Calobra", ll:[39.8517,2.8003], type:"hike",
@@ -244,7 +251,7 @@ const DAYS = [
     plan:[["🚗","Early start — drive the MA-2141 serpentine (the 'Nus de sa Corbata')"],["🏞️","Walk into the Torrent de Pareis gorge mouth (full scramble optional)"],
           ["🏊","Swim in the cove between the cliffs"],["🌄","Cala Tuent + MA-10 ridge views + Lluc monastery on the way home"]],
     stay:"Port de Pollença",
-    book:[["No booking needed","Self-drive ~1h15. Go EARLY to beat the coaches. Or take the boat from Port de Sóller (Barcos Azules, ~€30 round trip)"]],
+    book:[["No booking needed","Self-drive ~1h15. Go EARLY to beat the coaches. Or take the boat from Port de Sóller (Barcos Azules, ~€30 (~$33) round trip)"]],
     maps:[["Sa Calobra car park","Sa Calobra parking"],["Lluc Monastery","Santuari de Lluc"]],
     note:"⚠️ Check the weather — the Torrent de Pareis is a flash-flood canyon (people have died); never enter if rain is about. Strong boots; it's a boulder scramble." },
 
@@ -263,7 +270,7 @@ const DAYS = [
     plan:[["🛶","Guided sea-kayak from La Victòria / Alcúdia (~2 hr) — cliffs & sea caves"],["🤿","Snorkel stop in a hidden cove"],
           ["🏛️","Alcúdia old town & Roman walls"],["🏖️","Optional: hike down to Coll Baix beach (~45 min each way)"]],
     stay:"Port de Pollença",
-    book:[["Sea-kayak tour","~€65pp, ~2 hr, from La Victòria. Beginner-friendly. Book ahead"]],
+    book:[["Sea-kayak tour","~€65pp (~$70), ~2 hr, from La Victòria. Beginner-friendly. Book ahead"]],
     maps:[["La Victòria (kayak launch)","Ermita de la Victoria Alcudia"],["Alcúdia old town","Alcudia old town"]] },
 
   { n:8, date:"Sun · Sep 19", title:"Puig de Massanella", place:"Tramuntana (near Lluc)", ll:[39.8180,2.8570], type:"hike",
@@ -282,7 +289,7 @@ const DAYS = [
     plan:[["🪨","Guided coasteering (~3.5 hr) — cliff scrambles, caves, supervised jumps"],["🦺","Wetsuit, helmet, harness & guide all provided"],
           ["🏖️","Or swap for a relaxed SUP + beach day"],["🍤","Seaside dinner"]],
     stay:"Port de Pollença",
-    book:[["Coasteering","Mon d'Aventura (Pollença) — ~€65pp, full safety gear & certified guide. Book ahead"]],
+    book:[["Coasteering","Mon d'Aventura (Pollença) — ~€65pp (~$70), full safety gear & certified guide. Book ahead"]],
     maps:[["Coasteering meet (Bonaire)","Mon d'Aventura Pollensa"]],
     note:"Only as a guided trip — never DIY the cliffs." },
 
@@ -305,6 +312,33 @@ const DAYS = [
     maps:[["Palma Airport (PMI)","Palma de Mallorca Airport"]] },
 ];
 
+const ROUTES = {
+  1:{mode:"car", pts:[[39.55196,2.73935],[39.5488,2.74165],[39.55744,2.75992],[39.55566,2.76529],[39.53898,2.73074],[39.53978,2.72506],[39.53486,2.73575],[39.54744,2.70386],[39.597,2.71672],[39.60974,2.71306],[39.61664,2.70271],[39.62912,2.72045],[39.6386,2.77623],[39.67203,2.82974],[39.71476,2.92312],[39.76411,2.96689],[39.79386,3.02175],[39.85231,3.0344],[39.86832,3.01341],[39.87568,3.02169],[39.88436,3.02256],[39.90798,3.08184]]},
+  2:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.90974,3.08519],[39.91039,3.08613],[39.91056,3.08596],[39.91078,3.08618],[39.91248,3.08462],[39.91273,3.08452],[39.91281,3.08431],[39.91278,3.08408],[39.91322,3.0837],[39.91333,3.08373],[39.91356,3.08441],[39.91363,3.08441],[39.91376,3.08423],[39.91379,3.08467],[39.91408,3.08557],[39.91415,3.08612],[39.91434,3.09]]},
+  3:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.91039,3.08613],[39.91263,3.08457],[39.91343,3.0871],[39.91378,3.09516],[39.91226,3.10212],[39.9149,3.10448],[39.91155,3.10433],[39.91376,3.10513],[39.91629,3.10792],[39.91724,3.10695],[39.91738,3.10563],[39.91963,3.10697],[39.92444,3.10751],[39.92592,3.10934],[39.92851,3.11005],[39.92888,3.11069],[39.92952,3.11447],[39.9304,3.11546],[39.93065,3.11689],[39.93036,3.1196],[39.93111,3.12203],[39.9303,3.12288],[39.93025,3.12468],[39.93067,3.12316],[39.93154,3.12306],[39.93222,3.12504],[39.93364,3.12559],[39.93215,3.12873],[39.93311,3.13076],[39.93104,3.12946],[39.92989,3.13041],[39.92914,3.13364],[39.93329,3.1358],[39.93351,3.1375],[39.9352,3.14075],[39.93858,3.14425],[39.94761,3.16025],[39.94753,3.1622],[39.94836,3.16322],[39.9493,3.16864],[39.94912,3.17115],[39.94816,3.1717],[39.94894,3.17238],[39.94969,3.17632],[39.94937,3.17793],[39.95077,3.18312],[39.95276,3.18637],[39.95304,3.18876],[39.95411,3.1894],[39.95273,3.1915],[39.95286,3.19237],[39.95109,3.19358],[39.95143,3.19452],[39.95077,3.19517],[39.9509,3.19642],[39.95154,3.19817],[39.953,3.19866],[39.95275,3.2],[39.95351,3.20279],[39.95387,3.20194],[39.95543,3.20103],[39.95546,3.20268],[39.95363,3.20598],[39.95378,3.20731],[39.95516,3.20825],[39.957,3.20831],[39.95741,3.2073],[39.95786,3.20803],[39.95533,3.21185],[39.95883,3.21116],[39.96,3.2099],[39.96063,3.21118],[39.96037,3.21212],[39.96108,3.21132]]},
+  4:{mode:"boat", pts:[[39.9075,3.082],[39.899,3.095]]},
+  5:{mode:"car", pts:[[39.90798,3.08184],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.9093,3.07865],[39.90426,3.07458],[39.8922,3.0358],[39.88746,3.02917],[39.88493,3.02337],[39.88289,3.00838],[39.87498,2.9935],[39.8693,2.97942],[39.86761,2.97199],[39.86985,2.96239],[39.86833,2.9533],[39.86941,2.9461],[39.86581,2.93891],[39.86973,2.94335],[39.86928,2.94105],[39.86731,2.93933],[39.8666,2.93555],[39.86732,2.93262],[39.86596,2.93072],[39.86732,2.9276],[39.86837,2.92854],[39.86938,2.92536],[39.86639,2.92427],[39.866,2.92095],[39.86412,2.91761],[39.85676,2.91356],[39.85848,2.91074],[39.85422,2.90751],[39.85615,2.90248],[39.85365,2.89779],[39.84595,2.89486],[39.8374,2.89736],[39.83149,2.8956],[39.82576,2.89996],[39.82073,2.89451],[39.82074,2.8924],[39.8177,2.89249],[39.81581,2.89631],[39.81334,2.88947],[39.81598,2.8866],[39.81532,2.88488],[39.81601,2.87851],[39.81977,2.87629],[39.82064,2.8744],[39.82205,2.86467],[39.82479,2.85914],[39.82243,2.85583],[39.82249,2.85398],[39.82614,2.84742],[39.82585,2.83945],[39.82865,2.83731],[39.82775,2.83153],[39.82326,2.82753],[39.82172,2.82768],[39.82032,2.83001],[39.81791,2.82873],[39.81628,2.8298],[39.81487,2.82596],[39.81622,2.82397],[39.81515,2.82247],[39.81739,2.82084],[39.81881,2.81518],[39.82009,2.8161],[39.82186,2.81522],[39.82061,2.81428],[39.82323,2.81585],[39.82494,2.8147],[39.82533,2.81663],[39.82732,2.81802],[39.83247,2.8161],[39.82921,2.81456],[39.82992,2.8135],[39.8297,2.81466],[39.83035,2.81358],[39.83247,2.8144],[39.83354,2.81199],[39.83168,2.8138],[39.83268,2.81261],[39.83091,2.8101],[39.831,2.80659],[39.82925,2.80298],[39.83076,2.80522],[39.8355,2.80259],[39.83387,2.80619],[39.83469,2.80682],[39.84127,2.80536],[39.84342,2.80365],[39.84522,2.80435],[39.8452,2.79965],[39.83804,2.79886],[39.84028,2.7955],[39.84282,2.79585],[39.8446,2.79404],[39.84552,2.79678],[39.85015,2.79991],[39.85098,2.79922]]},
+  6:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.9093,3.07865],[39.90855,3.07846],[39.90492,3.07558],[39.90426,3.07458],[39.8963,3.04801],[39.89274,3.03754],[39.89278,3.03696],[39.89624,3.03392],[39.89697,3.03374],[39.89963,3.03466],[39.90137,3.03672],[39.90341,3.03683],[39.90493,3.03783],[39.90617,3.03758],[39.91196,3.04076],[39.9137,3.04376],[39.91534,3.0458],[39.91573,3.04719],[39.91741,3.0507],[39.92074,3.05413],[39.92045,3.05524],[39.92057,3.05498],[39.92132,3.05542]]},
+  7:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.90928,3.07861],[39.90455,3.07493],[39.89977,3.07348],[39.89604,3.07342],[39.89032,3.07346],[39.8849,3.07481],[39.88379,3.07633],[39.88307,3.08008],[39.87291,3.08498],[39.86543,3.09082],[39.86133,3.09706],[39.85892,3.09921],[39.85773,3.10371],[39.85462,3.11092],[39.85155,3.11515],[39.85305,3.11844],[39.8511,3.12068],[39.85186,3.12522],[39.85352,3.13022],[39.86167,3.13995],[39.86322,3.14307],[39.86469,3.14391],[39.86729,3.14932],[39.8705,3.15288],[39.87132,3.15304],[39.87058,3.15724],[39.87333,3.16359],[39.87301,3.16489],[39.87441,3.16534],[39.87517,3.16959]]},
+  8:{mode:"car", pts:[[39.90798,3.08184],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.9093,3.07865],[39.90426,3.07458],[39.8922,3.0358],[39.88746,3.02917],[39.88493,3.02337],[39.88289,3.00838],[39.87498,2.9935],[39.8693,2.97942],[39.86761,2.97199],[39.86985,2.96239],[39.86833,2.9533],[39.86941,2.9461],[39.86581,2.93891],[39.86973,2.94335],[39.86928,2.94105],[39.86731,2.93933],[39.8666,2.93555],[39.86732,2.93262],[39.86596,2.93072],[39.86732,2.9276],[39.86837,2.92854],[39.86938,2.92536],[39.86639,2.92427],[39.866,2.92095],[39.86412,2.91761],[39.85676,2.91356],[39.85848,2.91074],[39.85422,2.90751],[39.85613,2.9022],[39.85327,2.89758],[39.84595,2.89486],[39.8374,2.89736],[39.83149,2.8956],[39.82576,2.89996],[39.82073,2.89451],[39.82026,2.89229],[39.8177,2.89249],[39.81572,2.89621],[39.81334,2.88947],[39.81598,2.8866],[39.81532,2.88488],[39.81601,2.87851],[39.81977,2.87629],[39.82064,2.8744],[39.82271,2.86358],[39.82259,2.85817],[39.81966,2.86015],[39.81882,2.85878]]},
+  9:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.90928,3.07861],[39.90455,3.07493],[39.89977,3.07348],[39.89032,3.07346],[39.88544,3.07456],[39.88387,3.07609],[39.88316,3.08001],[39.87783,3.08223],[39.87013,3.08671],[39.86543,3.09082],[39.86133,3.09706],[39.85892,3.09921],[39.85773,3.10371],[39.85462,3.11092],[39.85155,3.11515],[39.85305,3.11844],[39.8511,3.12068],[39.85186,3.12522],[39.85357,3.13032],[39.86167,3.13995],[39.86322,3.14307],[39.86469,3.14391],[39.86595,3.14604],[39.86629,3.14519]]},
+  10:{mode:"car", pts:[[39.90798,3.08184],[39.90847,3.08389],[39.9093,3.07865],[39.90426,3.07458],[39.89158,3.03439],[39.8847,3.02225],[39.87818,3.0229],[39.87005,3.0135],[39.8654,3.01493],[39.85253,3.0344],[39.84046,3.02931],[39.82427,3.02856],[39.80974,3.02566],[39.80135,3.02045],[39.79374,3.02031],[39.76419,2.96666],[39.75177,2.95947],[39.73208,2.93614],[39.71347,2.92081],[39.69004,2.86512],[39.68301,2.8553],[39.67252,2.83022],[39.65996,2.80794],[39.6417,2.78265],[39.6371,2.771],[39.63733,2.75472],[39.6306,2.74092],[39.63214,2.73506],[39.64616,2.72254],[39.66647,2.71371],[39.66764,2.70529],[39.66566,2.69206],[39.66842,2.6768],[39.69759,2.6884],[39.74583,2.69765],[39.75791,2.71109],[39.76673,2.708],[39.76817,2.71137],[39.76649,2.71473]]},
+  11:{mode:"car", pts:[[39.55196,2.73935],[39.5488,2.74165],[39.55744,2.75992],[39.55566,2.76529],[39.53898,2.73074],[39.53978,2.72506],[39.53486,2.73575],[39.54744,2.70386],[39.597,2.71672],[39.60974,2.71306],[39.61664,2.70271],[39.62912,2.72045],[39.6386,2.77623],[39.67203,2.82974],[39.71476,2.92312],[39.76411,2.96689],[39.79386,3.02175],[39.85231,3.0344],[39.86832,3.01341],[39.87568,3.02169],[39.88436,3.02256],[39.90798,3.08184]]},
+};
+const COMMUTE = {
+  1:"🚗 Drive from Palma airport, ~1 hr north to Port de Pollença.",
+  2:"🚲 From town — walk or e-bike; the Bóquer trail starts at the edge of Port de Pollença.",
+  3:"🚲 E-bike the peninsula from town (~20 km round trip). Cars are banned 10am–10pm.",
+  4:"⛵ The boat leaves from the Port de Pollença marina — just walk down from town.",
+  5:"🚗 Rental car, ~1h15 (the serpentine MA-2141). Too far to e-bike.",
+  6:"🚲 E-bike from town, ~6 km · or ~10 min by car.",
+  7:"🚲 E-bike the flat bay path to Alcúdia / La Victòria, ~13 km · or ~15 min by car.",
+  8:"🚗 Rental car, ~1 hr to the Lluc trailhead. Too far to e-bike.",
+  9:"🚲 E-bike to Bonaire / Alcúdia, ~12 km · or ~15 min by car.",
+  10:"🚗 Rental car, ~1 hr to Sóller (scenic MA-10) · or stay local for an easy e-bike day.",
+  11:"🚗 Drive to Palma airport, ~1 hr (allow buffer).",
+};
+
 /* ---------- helpers ---------- */
 function mapUrl(q){ return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q); }
 
@@ -326,6 +360,21 @@ DAYS.forEach((d,i)=>{
   const m=L.marker(d.ll,{icon:L.divIcon({className:'',html:`<div class="pin" data-i="${i}" style="background:${col}">${d.n}</div>`,iconSize:[30,30],iconAnchor:[15,15]})}).addTo(map);
   m.on('click',()=>openDay(i));
   markers[i]=m;
+});
+
+// Travel lines from base to each day: green solid = car, dotted = e-bike, dashed = boat.
+const LINE_STYLE = {
+  car:  {color:'#2E7D32', weight:4,   opacity:.85},
+  bike: {color:'#C1660F', weight:3.5, opacity:.9, dashArray:'1,8', lineCap:'round'},
+  boat: {color:'#2C7A8C', weight:3,   opacity:.85, dashArray:'8,8'}
+};
+const dayLines = {};
+DAYS.forEach((d,i)=>{
+  const r = ROUTES[d.n]; if(!r) return;
+  const pl = L.polyline(r.pts, LINE_STYLE[r.mode]).addTo(map);
+  pl._mode = r.mode;
+  pl.on('click', ()=>openDay(i));
+  dayLines[i] = pl;
 });
 
 /* ---------- day card ---------- */
@@ -352,9 +401,10 @@ function galShift(btn,dir){
 function detailsHTML(d){
   const stay = d.stay && d.stay!=='—' ? `<div class="det-row"><span class="di">🛏️</span><div><b>Stay:</b> ${d.stay}</div></div>` : '';
   const book = (d.book||[]).map(b=>`<div class="det-row"><span class="di">📋</span><div><b>${b[0]}:</b> <span class="${/add |confirmation|booking/i.test(b[1])?'todo':''}">${b[1]}</span></div></div>`).join('');
-  const maps = (d.maps&&d.maps.length)?`<div class="det-row"><span class="di">📍</span><div><b>Get there:</b><div class="maplinks">${d.maps.map(m=>`<a href="${mapUrl(m[1])}" target="_blank" rel="noopener">📍 ${m[0]}</a>`).join('')}</div></div></div>`:'';
+  const commute = COMMUTE[d.n] ? `<div class="det-row"><span class="di">🧭</span><div><b>Getting there:</b> ${COMMUTE[d.n]}</div></div>` : '';
+  const maps = (d.maps&&d.maps.length)?`<div class="det-row"><span class="di">📍</span><div><b>On the map:</b><div class="maplinks">${d.maps.map(m=>`<a href="${mapUrl(m[1])}" target="_blank" rel="noopener">📍 ${m[0]}</a>`).join('')}</div></div></div>`:'';
   const note = d.note?`<div class="note">${d.note}</div>`:'';
-  return `<details class="det" open><summary>Details & bookings <span class="chev">▾</span></summary>${stay}${book}${maps}</details>${note}`;
+  return `<details class="det" open><summary>Details & bookings <span class="chev">▾</span></summary>${commute}${stay}${book}${maps}</details>${note}`;
 }
 function openDay(i){
   current=i; const d=DAYS[i]; curImgs=d.photos||[];
@@ -371,6 +421,11 @@ function openDay(i){
   document.querySelector('.card-scroll').scrollTop=0;
   document.querySelectorAll('#pills button').forEach(b=>b.classList.toggle('active',+b.dataset.i===i));
   document.querySelectorAll('.pin[data-i]').forEach(p=>p.classList.toggle('sel',+p.dataset.i===i));
+  Object.entries(dayLines).forEach(([idx,pl])=>{
+    const on=(+idx===i), base=pl._mode==='car'?4:pl._mode==='bike'?3.5:3;
+    pl.setStyle({opacity:on?0.95:0.22, weight:on?base+1.5:base});
+    if(on && pl._path && pl._path.parentNode) pl.bringToFront();
+  });
   map.flyTo(d.ll, d.type==='travel'?10:12, {duration:.7});
 }
 function step(dir){ const n=current+dir; if(n>=0&&n<DAYS.length) openDay(n); }
