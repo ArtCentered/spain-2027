@@ -3,169 +3,144 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Spain 2027 — Day-by-Day Map · Two Itineraries for Mike</title>
+<title>Mar i Muntanya — Mallorca 2027</title>
+<meta name="description" content="Our Mallorca trip companion — day-by-day plans, hikes, rides, water days, addresses & bookings." />
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#1F4E5F" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Mar i Muntanya" />
+<link rel="apple-touch-icon" href="icons/icon-180.png" />
+<link rel="icon" href="icons/icon-192.png" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-  :root{ --teal:#1F4E5F; --teal2:#2C7A8C; --terra:#C1660F; --sand:#FBF6EE;
-    --ink:#243239; --muted:#6b7a80; --hike:#2E7D32; }
+  :root{ --teal:#1F4E5F; --teal2:#2C7A8C; --terra:#C1660F; --sea:#2C7A8C; --gold:#C8902F;
+    --sand:#FBF6EE; --ink:#243239; --muted:#6b7a80; --hike:#2E7D32; }
   *{box-sizing:border-box;}
   button{-webkit-tap-highlight-color:transparent;}
   html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);}
-  #app{display:flex;flex-direction:column;height:100vh;}
-  header{background:var(--teal);color:#fff;padding:13px 20px;flex:0 0 auto;}
-  header h1{margin:0;font-size:18px;letter-spacing:.2px;}
-  header p{margin:3px 0 0;font-size:12.5px;opacity:.85;}
+  #app{display:flex;flex-direction:column;height:100vh;height:100dvh;}
+  header{background:var(--teal);color:#fff;padding:11px 18px calc(9px + env(safe-area-inset-top,0)) 18px;flex:0 0 auto;}
+  header .titlerow{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
+  header h1{margin:0;font-size:17px;letter-spacing:.3px;display:flex;align-items:center;gap:7px;}
+  header h1 .em{font-size:16px;}
+  header .opts{font-size:11.5px;color:#cfe0e4;text-decoration:none;white-space:nowrap;}
+  header .opts:hover{color:#fff;}
+  header p{margin:3px 0 0;font-size:12px;opacity:.85;}
+  /* day pills */
+  .pills{display:flex;gap:6px;margin-top:9px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;scrollbar-width:none;}
+  .pills::-webkit-scrollbar{display:none;}
+  .pills button{flex:0 0 auto;background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.28);
+    border-radius:999px;padding:4px 11px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;}
+  .pills button:hover{background:rgba(255,255,255,.24);}
+  .pills button.active{background:#fff;color:var(--teal);border-color:#fff;}
+
   #main{flex:1 1 auto;min-height:0;position:relative;}
   #map{position:absolute;inset:0;}
 
-  /* ===== Itinerary switcher ===== */
-  .switch{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px;}
-  .switch button{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.32);
-    border-radius:999px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;}
-  .switch button:hover{background:rgba(255,255,255,.26);}
-  .switch button.active{background:#fff;color:var(--teal);border-color:#fff;}
-  .switch button::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle;}
-  .switch button[data-key="andalucia"]::before{background:#C1660F;}
-  .switch button[data-key="castile"]::before{background:#7A5AA8;}
-  .switch button[data-key="north"]::before{background:#1F8A70;}
-  .switch button[data-key="mallorca"]::before{background:#1565C0;}
-  .switch button.ovbtn{background:rgba(255,255,255,.10);border-style:dashed;}
-  .switch button.ovbtn::before{display:none;}
+  .pin{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;
+    width:30px;height:30px;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.4);border:2px solid #fff;
+    cursor:pointer;transition:transform .15s, opacity .25s;}
+  .pin:hover{transform:scale(1.14);}
+  .pin.sel{outline:3px solid #ffce3a;outline-offset:1px;box-shadow:0 2px 10px rgba(0,0,0,.5);}
+  .pin.base{width:34px;height:34px;background:var(--teal)!important;font-size:17px;}
 
-  /* ===== Trip overview panel (opens over the map) ===== */
-  .overlay{position:fixed;inset:0;z-index:1200;background:rgba(18,35,42,.55);
-    display:flex;align-items:center;justify-content:center;padding:20px;
-    opacity:0;pointer-events:none;transition:opacity .25s;}
-  .overlay.show{opacity:1;pointer-events:auto;}
-  .ovcard{position:relative;width:460px;max-width:100%;max-height:88%;overflow-y:auto;background:#fff;
-    border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.45);padding:0 22px 20px;-webkit-overflow-scrolling:touch;}
-  .ov-accent{height:7px;margin:0 -22px 16px;border-radius:16px 16px 0 0;}
-  .ovx{position:absolute;top:13px;right:13px;width:32px;height:32px;border-radius:50%;border:none;
-    background:rgba(0,0,0,.08);color:#333;font-size:16px;cursor:pointer;line-height:1;}
-  .ovx:hover{background:rgba(0,0,0,.16);}
-  .ov-title{margin:2px 38px 7px 0;font-size:21px;color:var(--teal);line-height:1.2;}
-  .ov-blurb{font-size:13.5px;line-height:1.55;color:var(--ink);margin:0 0 6px;}
-  .ov-row{display:flex;gap:11px;padding:11px 0;border-top:1px solid #f0e9dc;}
-  .ov-row .ov-ic{font-size:19px;flex:0 0 auto;line-height:1.3;}
-  .ov-row .ov-tx{font-size:13px;line-height:1.5;color:var(--ink);}
-  .ov-row .ov-tx b{display:block;color:var(--teal);font-size:11px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px;}
-  .ov-special{margin-top:14px;background:#fbf8f2;border:1px solid #ece2d2;border-radius:12px;padding:11px 14px;}
-  .ov-sp-h{font-weight:700;font-size:13px;margin-bottom:6px;}
-  .ov-special ul{margin:0;padding-left:18px;}
-  .ov-special li{font-size:13px;line-height:1.5;margin-bottom:4px;color:var(--ink);}
-  .ov-allbtn{display:block;width:100%;margin-top:14px;padding:12px;border:none;border-radius:11px;
-    color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;letter-spacing:.2px;}
-  .ov-allbtn:hover{filter:brightness(1.08);}
-  .ov-nophotos{margin-top:14px;padding:11px;border-radius:11px;background:#f3eee4;color:var(--muted);
-    font-size:12.5px;font-weight:600;text-align:center;}
-
-  .pin{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
-    box-shadow:0 2px 6px rgba(0,0,0,.4);border:2px solid #fff;cursor:pointer;transition:transform .15s, opacity .25s;}
-  .pin:hover{transform:scale(1.12);}
-  .pin.city{width:34px;height:34px;border-radius:50%;background:var(--teal);font-size:14px;}
-  .pin.hike{width:32px;height:32px;border-radius:9px;background:var(--hike);font-size:16px;}
-  .pin.dim{opacity:.45;}
-  .pin.dim:hover{opacity:.92;}
-  .pin.sel{outline:3px solid #ffce3a;outline-offset:1px;box-shadow:0 2px 10px rgba(0,0,0,.55);}
-
-  /* ===== Readable floating day card — shares the screen with the map ===== */
-  #daycard{position:absolute;left:18px;bottom:18px;z-index:1000;width:350px;max-width:calc(100% - 36px);
-    max-height:calc(100% - 36px);background:#fff;border-radius:14px;overflow:hidden;
-    box-shadow:0 16px 44px rgba(0,0,0,.34);display:flex;flex-direction:column;
-    opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .3s ease, transform .3s ease;}
-  #daycard.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+  /* day card */
+  #daycard{position:absolute;left:16px;bottom:16px;z-index:1000;width:360px;max-width:calc(100% - 32px);
+    max-height:calc(100% - 28px);background:#fff;border-radius:15px;overflow:hidden;
+    box-shadow:0 16px 44px rgba(0,0,0,.34);display:flex;flex-direction:column;}
   .card-scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
-  .gal{position:relative;width:100%;height:235px;background:#13232a;}
+  .gal{position:relative;width:100%;height:220px;background:#13232a;}
   .gal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s;pointer-events:none;}
   .gal img.active{opacity:1;pointer-events:auto;cursor:zoom-in;}
-  .gexpand{position:absolute;bottom:8px;right:8px;z-index:3;background:rgba(0,0,0,.5);color:#fff;
-    border-radius:7px;font-size:12.5px;padding:4px 8px;cursor:zoom-in;display:flex;align-items:center;gap:4px;}
-  .gexpand:hover{background:rgba(0,0,0,.72);}
-
-  /* ===== Fullscreen photo lightbox ===== */
-  .lightbox{position:fixed;inset:0;z-index:1400;background:rgba(8,12,15,.93);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    opacity:0;pointer-events:none;transition:opacity .2s;}
-  .lightbox.show{opacity:1;pointer-events:auto;}
-  .lb-img{max-width:92vw;max-height:80vh;object-fit:contain;border-radius:8px;box-shadow:0 12px 50px rgba(0,0,0,.6);}
-  .lb-cap{color:#fff;margin-top:15px;font-size:15.5px;text-align:center;max-width:90vw;padding:0 14px;line-height:1.35;}
-  .lb-cap .lb-count{display:block;font-size:12px;color:rgba(255,255,255,.55);margin-top:5px;letter-spacing:.5px;}
-  .lb-x{position:absolute;top:16px;right:18px;width:44px;height:44px;border-radius:50%;border:none;
-    background:rgba(255,255,255,.15);color:#fff;font-size:20px;cursor:pointer;}
-  .lb-x:hover{background:rgba(255,255,255,.28);}
-  .lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;border:none;
-    background:rgba(255,255,255,.15);color:#fff;font-size:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-  .lb-nav:hover{background:rgba(255,255,255,.3);}
-  .lb-nav.prev{left:16px;} .lb-nav.next{right:16px;}
-  /* Designed placeholder when a day has no photo yet */
-  .gal.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,var(--teal) 0%,var(--teal2) 70%,var(--terra) 140%);color:#fff;text-align:center;padding:18px;}
-  .gal.hero .hicon{font-size:56px;line-height:1;margin-bottom:10px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.3));}
-  .gal.hero .hname{font-size:21px;font-weight:700;letter-spacing:.3px;}
-  .gal.hero .hsub{font-size:12.5px;opacity:.85;margin-top:5px;max-width:280px;}
+  .gtype{position:absolute;top:10px;left:10px;z-index:3;background:rgba(0,0,0,.5);color:#fff;font-size:11px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.5px;border-radius:6px;padding:3px 9px;}
   .gnav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.42);color:#fff;border:none;
-    width:30px;height:30px;border-radius:50%;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
   .gnav.prev{left:8px;} .gnav.next{right:8px;}
-  .gnav:hover{background:rgba(0,0,0,.65);}
-  .gdots{position:absolute;bottom:8px;left:0;right:0;display:flex;gap:5px;justify-content:center;}
-  .gdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.6);box-shadow:0 0 2px rgba(0,0,0,.4);}
+  .gexpand{position:absolute;bottom:8px;right:8px;z-index:3;background:rgba(0,0,0,.5);color:#fff;border-radius:7px;
+    font-size:12px;padding:4px 8px;cursor:zoom-in;}
+  .gdots{position:absolute;bottom:8px;left:0;right:0;display:flex;gap:5px;justify-content:center;pointer-events:none;}
+  .gdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.6);}
   .gdot.active{background:#fff;}
-  .xbtn{position:absolute;top:9px;right:9px;z-index:3;background:rgba(0,0,0,.5);color:#fff;border:none;
-    width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;line-height:1;}
-  .xbtn:hover{background:rgba(0,0,0,.75);}
 
-  .card-body{padding:14px 18px 8px;}
-  .card-body .pd{font-size:11px;color:var(--terra);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
-  .card-body h2{margin:3px 0 1px;font-size:19px;color:var(--teal);line-height:1.15;}
-  .card-body .loc{font-size:12.5px;color:var(--muted);margin-bottom:8px;}
-  .acts{list-style:none;margin:8px 0 0;padding:0;}
-  .acts li{position:relative;padding:7px 0 7px 25px;font-size:13px;line-height:1.45;border-top:1px solid #f0e9dc;color:var(--ink);}
+  .card-body{padding:14px 17px 6px;}
+  .pd{font-size:11px;color:var(--terra);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+  .card-body h2{margin:3px 0 2px;font-size:20px;color:var(--teal);line-height:1.15;}
+  .loc{font-size:12.5px;color:var(--muted);margin-bottom:9px;}
+  .summary{font-size:13px;line-height:1.5;color:var(--ink);margin:0 0 4px;}
+  .acts{list-style:none;margin:8px 0 2px;padding:0;}
+  .acts li{position:relative;padding:7px 0 7px 25px;font-size:13px;line-height:1.45;border-top:1px solid #f0e9dc;}
   .acts li:first-child{border-top:none;}
   .acts li .ic{position:absolute;left:0;top:6px;font-size:13.5px;}
-  .tag{display:inline-block;background:#eef3f4;color:var(--teal);font-size:11px;font-weight:600;border-radius:5px;padding:3px 9px;margin:10px 0 4px;}
-  .card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;
+
+  details.det{margin:10px 0 2px;border-top:1px solid #ece2d2;}
+  details.det>summary{list-style:none;cursor:pointer;padding:10px 0 4px;font-size:12px;font-weight:700;
+    color:var(--teal);text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:6px;}
+  details.det>summary::-webkit-details-marker{display:none;}
+  details.det>summary .chev{margin-left:auto;transition:transform .2s;font-size:11px;color:var(--muted);}
+  details.det[open]>summary .chev{transform:rotate(180deg);}
+  .det-row{display:flex;gap:9px;padding:7px 0;font-size:12.5px;line-height:1.45;border-top:1px solid #f4eee2;}
+  .det-row:first-of-type{border-top:none;}
+  .det-row .di{flex:0 0 auto;font-size:15px;}
+  .det-row b{color:var(--teal);}
+  .det-row .todo{color:var(--terra);font-weight:600;}
+  .maplinks{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px;}
+  .maplinks a{display:inline-flex;align-items:center;gap:4px;background:#eef3f4;color:var(--teal);text-decoration:none;
+    font-size:12px;font-weight:600;border-radius:7px;padding:5px 10px;}
+  .maplinks a:hover{background:#e2ebec;}
+  .note{background:#fff7ed;border:1px solid #f3dcc0;color:#7a4a12;border-radius:9px;padding:8px 11px;font-size:12px;line-height:1.45;margin-top:8px;}
+
+  .card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 13px calc(10px + env(safe-area-inset-bottom,0));
     border-top:1px solid #ece2d2;background:#fbf8f2;flex:0 0 auto;}
-  .navbtn{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:9px 13px;font-size:12.5px;font-weight:600;cursor:pointer;}
+  .navbtn{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:10px 14px;font-size:12.5px;font-weight:600;cursor:pointer;}
   .navbtn:hover{background:#163b48;}
   .navbtn:disabled{background:#cdd6d9;cursor:default;}
   .foot-count{font-size:12.5px;color:var(--muted);font-weight:700;}
 
-  .hint{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:900;background:rgba(31,78,95,.92);color:#fff;
-    font-size:12.5px;padding:7px 14px;border-radius:20px;box-shadow:0 3px 10px rgba(0,0,0,.2);transition:opacity .4s;}
+  /* install hint */
+  .a2hs{position:absolute;left:12px;right:12px;top:8px;z-index:1100;background:rgba(31,78,95,.96);color:#fff;
+    border-radius:11px;padding:9px 12px;font-size:12.5px;line-height:1.4;display:flex;align-items:center;gap:9px;
+    box-shadow:0 6px 20px rgba(0,0,0,.28);}
+  .a2hs button{margin-left:auto;background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:7px;padding:5px 9px;font-size:12px;cursor:pointer;}
+
+  /* lightbox */
+  .lightbox{position:fixed;inset:0;z-index:1400;background:rgba(8,12,15,.93);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .lightbox.show{opacity:1;pointer-events:auto;}
+  .lb-img{max-width:92vw;max-height:80vh;object-fit:contain;border-radius:8px;box-shadow:0 12px 50px rgba(0,0,0,.6);}
+  .lb-cap{color:#fff;margin-top:15px;font-size:15.5px;text-align:center;max-width:90vw;padding:0 14px;line-height:1.35;}
+  .lb-cap .lb-count{display:block;font-size:12px;color:rgba(255,255,255,.55);margin-top:5px;letter-spacing:.5px;}
+  .lb-x{position:absolute;top:16px;right:18px;width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:20px;cursor:pointer;}
+  .lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;border:none;
+    background:rgba(255,255,255,.15);color:#fff;font-size:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .lb-nav.prev{left:16px;} .lb-nav.next{right:16px;}
+
   @media(max-width:720px){
-    header{padding:10px 15px;} header h1{font-size:15.5px;} header p{font-size:11px;}
-    .switch button{padding:6px 12px;font-size:12.5px;}
-    #daycard{left:8px;right:8px;bottom:8px;width:auto;max-width:none;max-height:80%;}
+    header h1{font-size:16px;}
+    #daycard{left:8px;right:8px;bottom:8px;width:auto;max-width:none;max-height:82%;}
     .gal{height:200px;}
-    .gnav{width:40px;height:40px;font-size:21px;}
-    .xbtn{width:38px;height:38px;font-size:18px;}
-    .navbtn{padding:12px 16px;font-size:13.5px;}
-    .gdot{width:7px;height:7px;}
-    .hint{font-size:11.5px;top:9px;}
-    .overlay{padding:12px;} .ovcard{max-height:92%;}
     .lb-img{max-height:72vh;} .lb-nav{width:46px;height:46px;font-size:25px;} .lb-nav.prev{left:8px;} .lb-nav.next{right:8px;}
-    .lb-cap{font-size:14px;}
   }
 </style>
 </head>
 <body>
 <div id="app">
   <header>
-    <h1 id="trip-title">🇪🇸 Spain 2027 — Day by Day</h1>
-    <p id="trip-sub"></p>
-    <div class="switch">
-      <button class="active" data-key="andalucia" onclick="loadItinerary('andalucia')">🌅 Andalucía · South</button>
-      <button data-key="castile" onclick="loadItinerary('castile')">🏰 Castile · Center</button>
-      <button data-key="north" onclick="loadItinerary('north')">⛰️ Green Spain · North</button>
-      <button data-key="mallorca" onclick="loadItinerary('mallorca')">🏝️ Mallorca · Islands</button>
-      <button class="ovbtn" onclick="openOverview()">ℹ️ Overview</button>
+    <div class="titlerow">
+      <h1><span class="em">🏔️🌊</span> Mar i Muntanya</h1>
+      <a class="opts" href="options.html">Pre-planning options →</a>
     </div>
+    <p>Mallorca · 11 days · Sep 11–22, 2027 · based in Port de Pollença</p>
+    <div class="pills" id="pills"></div>
   </header>
   <div id="main">
     <div id="map"></div>
-    <div class="hint" id="hint">👆 All three trips are on the map — tap any pin to jump into that trip</div>
-    <!-- Floating readable day card -->
+    <div class="a2hs" id="a2hs" style="display:none">
+      📲 Add to Home Screen (Share ⬆️ → “Add to Home Screen”) to use this offline during the trip.
+      <button onclick="dismissA2HS()">Got it</button>
+    </div>
     <div id="daycard">
       <div class="card-scroll">
         <div id="cardGal"></div>
@@ -180,7 +155,6 @@
   </div>
 </div>
 
-<!-- Fullscreen photo lightbox -->
 <div id="lightbox" class="lightbox" onclick="lbBackdrop(event)">
   <button class="lb-x" onclick="closeLightbox()">✕</button>
   <button class="lb-nav prev" onclick="lbStep(-1)">‹</button>
@@ -189,822 +163,248 @@
   <div class="lb-cap" id="lbCap"></div>
 </div>
 
-<!-- Trip overview panel (opens over the map) -->
-<div id="overlay" class="overlay" onclick="closeOverview(event)">
-  <div class="ovcard" onclick="event.stopPropagation()">
-    <button class="ovx" onclick="closeOverview()">✕</button>
-    <div id="ovContent"></div>
-  </div>
-</div>
-
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-/* =========================================================================
-   TWO ITINERARIES — switch with the buttons in the header.
-   Each has: title, sub, stops (map pins), routes (lines), days (cards).
-   ========================================================================= */
-const itineraries = {
-
-  /* ---------------- OPTION A — ANDALUCÍA (THE SOUTH) ---------------- */
-  andalucia: {
-    title: "🇪🇸 Spain 2027 — Andalucía · The South",
-    sub: "Option A for Mike · Sep 10–20 · Málaga → Granada → Córdoba → Seville · tap a pin or use ‹ ›",
-    stops: [
-      { type:"city", label:"1", name:"Málaga", ll:[36.7213,-4.4214] },
-      { type:"hike", label:"🥾", name:"Caminito del Rey", ll:[36.9075,-4.7561] },
-      { type:"city", label:"2", name:"Granada", ll:[37.1773,-3.5986] },
-      { type:"hike", label:"🥾", name:"Los Cahorros de Monachil", ll:[37.1265,-3.5101] },
-      { type:"city", label:"3", name:"Córdoba", ll:[37.8790,-4.7794] },
-      { type:"city", label:"4", name:"Seville", ll:[37.3886,-5.9823] },
-    ],
-    routes: [
-      { type:"train", pts:[[36.72329,-4.4211],[36.73053,-4.42522],[36.77634,-4.4256],[36.78404,-4.43361],[36.81058,-4.43847],[36.81494,-4.44812],[36.82595,-4.44413],[36.83746,-4.45175],[36.84966,-4.45117],[36.86219,-4.43682],[36.87112,-4.43587],[36.88948,-4.42112],[36.89583,-4.42414],[36.89758,-4.43446],[36.90673,-4.44592],[36.93096,-4.44602],[36.93889,-4.43906],[36.96034,-4.4465],[36.97131,-4.43489],[36.98224,-4.40298],[37.01149,-4.38902],[37.03898,-4.38727],[37.07201,-4.3229],[37.10457,-4.31237],[37.13777,-4.2795],[37.14619,-4.25357],[37.14553,-4.23625],[37.15872,-4.21616],[37.15711,-4.2041],[37.16651,-4.17868],[37.15931,-4.14669],[37.16215,-4.10615],[37.16706,-4.08776],[37.18065,-4.0781],[37.1825,-4.0376],[37.19519,-4.01713],[37.19226,-3.97853],[37.17979,-3.94267],[37.17846,-3.90419],[37.19547,-3.86511],[37.19409,-3.84259],[37.18886,-3.83118],[37.19516,-3.81498],[37.19001,-3.73365],[37.19169,-3.65808],[37.19793,-3.63744],[37.19629,-3.63232],[37.18646,-3.632],[37.17607,-3.61435],[37.18409,-3.60455],[37.17732,-3.59862]] },
-      { type:"train", pts:[[37.17732,-3.59862],[37.20954,-3.67521],[37.20653,-3.70685],[37.2436,-3.75981],[37.25755,-3.7656],[37.265,-3.78798],[37.321,-3.83815],[37.37713,-3.82019],[37.38791,-3.85485],[37.41828,-3.86171],[37.45725,-3.94655],[37.50566,-3.97858],[37.53487,-3.98189],[37.54522,-4.03559],[37.57389,-4.06745],[37.5873,-4.13149],[37.56206,-4.19219],[37.56755,-4.24721],[37.59488,-4.30167],[37.62934,-4.30415],[37.62911,-4.3584],[37.66744,-4.38934],[37.68913,-4.49183],[37.68597,-4.53907],[37.6742,-4.55779],[37.68704,-4.59419],[37.72101,-4.63595],[37.75903,-4.65756],[37.79854,-4.72294],[37.8428,-4.74561],[37.87271,-4.78372],[37.87927,-4.77881]] },
-      { type:"train", pts:[[37.87927,-4.77881],[37.88076,-4.76846],[37.87193,-4.76248],[37.84506,-4.79113],[37.81353,-4.79698],[37.77367,-4.82376],[37.76867,-4.81831],[37.76194,-4.82305],[37.74717,-4.84715],[37.71681,-4.86555],[37.71608,-4.8953],[37.70764,-4.90996],[37.68306,-4.92607],[37.66851,-4.94684],[37.6506,-4.95589],[37.62173,-4.95866],[37.59159,-4.98001],[37.55356,-5.03842],[37.54371,-5.04636],[37.53305,-5.06769],[37.52162,-5.16342],[37.52608,-5.23203],[37.52211,-5.25332],[37.52778,-5.26631],[37.52879,-5.29705],[37.51112,-5.34388],[37.50598,-5.38053],[37.50992,-5.39985],[37.50789,-5.43147],[37.49037,-5.48699],[37.47965,-5.57789],[37.48146,-5.61331],[37.48844,-5.62982],[37.48862,-5.64202],[37.47334,-5.67826],[37.46864,-5.71401],[37.43116,-5.81898],[37.42997,-5.86663],[37.43431,-5.88386],[37.40301,-5.96468],[37.39771,-5.97591],[37.3885,-5.98213]] },
-      { type:"hike",  pts:[[36.7213,-4.4214],[36.9075,-4.7561]] },
-      { type:"hike",  pts:[[37.1773,-3.5986],[37.1265,-3.5101]] },
-    ],
-    days: [
-      { d:1, date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive Málaga", stop:0,
-        imgs:["photos/malaga-1.jpg","photos/day1-tapas.jpg"], tag:"✈️ EUG → AGP · 2 connections",
-        acts:[ ["✈️","Travel day from Eugene — two connections (West Coast hub → Madrid/Europe → Málaga)"],
-               ["🚕","Taxi or Cercanías train from AGP into the center (~15 min)"],
-               ["🚶","Easy evening stroll — no schedule, just shake off the jet lag"],
-               ["🦐","First tapas near Mercado de Atarazanas; sunset at the port (Muelle Uno)"] ] },
-      { d:2, date:"Sun · Sep 12", title:"Málaga old town & sea", stop:0,
-        imgs:["photos/malaga-2.jpg","photos/day2-roman.jpg","photos/day2-beach.jpg"], tag:"🌡️ Hike-free, coastal ~26°C",
-        acts:[ ["🏰","Morning (cooler): the Alcazaba, Málaga's Moorish hilltop fortress"],
-               ["🏛️","The Roman Theatre right below it — Roman under Moorish"],
-               ["⛪","Málaga Cathedral ('La Manquita'); optional Picasso Museum"],
-               ["🏖️","Afternoon at La Malagueta beach — espetos (grilled sardines) at a chiringuito"] ] },
-      { d:3, date:"Mon · Sep 13", title:"Caminito del Rey", stop:1,
-        imgs:["photos/caminito-1.jpg","photos/day3-walkway.jpg"], tag:"⚠️ Book early — sells out",
-        acts:[ ["🚆","Cercanías C-2 train Málaga → El Chorro (~45 min)"],
-               ["🚌","Shuttle bus to the north entrance (bundle it with your ticket)"],
-               ["🥾","7.7 km boardwalk pinned to the gorge wall, ~100 m up (~2 hrs); helmet provided"],
-               ["🍷","Train back to Málaga — reward tapas"] ] },
-      { d:4, date:"Tue · Sep 14", title:"Train to Granada", stop:2,
-        imgs:["photos/day4-sannicolas.jpg","photos/day4-albaicin.jpg"], tag:"🚆 Direct train ~1h20",
-        acts:[ ["🚆","Direct Renfe Avant Málaga → Granada (~1h20)"],
-               ["🏘️","Check in; wander the Albaicín, the old Moorish quarter (UNESCO)"],
-               ["🌅","Sunset at Mirador de San Nicolás — the Alhambra against the Sierra Nevada"],
-               ["🍤","First free-tapas crawl — Calle Navas & Calle Elvira (a tapa with every drink)"] ] },
-      { d:5, date:"Wed · Sep 15", title:"The Alhambra", stop:2,
-        imgs:["photos/granada-3.jpg","photos/day5-generalife.jpg","photos/granada-2.jpg"], tag:"⚠️ Timed entry · bring passports",
-        acts:[ ["🏰","Nasrid Palaces — enter in your printed half-hour slot (arrive 15 min early)"],
-               ["🛡️","Alcazaba ramparts for the city views"],
-               ["🌿","Generalife gardens & summer palace — plan 3–4 hrs total"],
-               ["🍤","Afternoon recovery tapas in the Realejo quarter"] ] },
-      { d:6, date:"Thu · Sep 16", title:"Los Cahorros de Monachil", stop:3,
-        imgs:["photos/cahorros-1.jpg","photos/day6-bridge.jpg"], tag:"🚌 No car required",
-        acts:[ ["🚌","Short bus/taxi from Granada to Monachil village"],
-               ["🥾","Gorge loop ~6–8 km, 3–4 hrs, moderate"],
-               ["🌉","Hanging suspension bridges + low rock tunnels (bring a headlamp)"],
-               ["🍷","Back in Granada by afternoon for more free tapas"] ] },
-      { d:7, date:"Fri · Sep 17", title:"Córdoba → Seville", stop:4,
-        imgs:["photos/cordoba-1.jpg","photos/cordoba-2.jpg","photos/day7-train.jpg"], tag:"🚆 2 train legs",
-        acts:[ ["🚆","Morning Granada → Córdoba (~1h25); store bags at the station"],
-               ["🕌","The Mezquita — the great mosque-cathedral, a forest of red-and-white arches"],
-               ["🌉","Roman Bridge + old Jewish quarter; lunch in town"],
-               ["🚄","Afternoon AVE Córdoba → Seville (~45 min); check in"] ] },
-      { d:8, date:"Sat · Sep 18", title:"Seville monuments", stop:5,
-        imgs:["photos/seville-1.jpg","photos/day8-giralda.jpg"], tag:"🌡️ Hot ~33°C — go early",
-        acts:[ ["🏰","Early: the Real Alcázar — Mudéjar palace & gardens (book ahead)"],
-               ["⛪","Cathedral + Giralda climb (the bell-tower ramp)"],
-               ["😴","Siesta through peak afternoon heat"],
-               ["💃","Evening: Triana across the river — tapas + optional flamenco"] ] },
-      { d:9, date:"Sun · Sep 19", title:"Seville at your pace", stop:5,
-        imgs:["photos/seville-2.jpg","photos/day9-setas.jpg","photos/seville-3.jpg"], tag:"🧭 Free / flexible",
-        acts:[ ["🌳","Plaza de España (go early or late) — Seville's showstopper"],
-               ["🛤️","Las Setas ('Metropol Parasol') rooftop walkway"],
-               ["🏘️","Santa Cruz lanes; any last museums you want"],
-               ["🍤","Final long tapas evening — Alameda de Hércules or back to Triana"] ] },
-      { d:10, date:"Sun/Mon · Sep 20", title:"Fly home from Seville", stop:5,
-        imgs:["photos/day10-flight.jpg","photos/seville-2.jpg"], tag:"✈️ SVQ → EUG",
-        acts:[ ["✈️","Depart Seville (SVQ) — two connections back to Eugene"],
-               ["🛋️","3 recovery days at home (Mon–Wed Sep 21–23) before returning to work"],
-               ["🎉","Trip complete!"] ] },
-    ],
-  },
-
-  /* ---------------- OPTION B — CASTILE (TOLEDO & THE CENTER) ----------------
-     Mike's Toledo idea, built out into a full rail-based trip out of Madrid.
-     Round-trip Madrid keeps flights down; everything below is by train except
-     two short bus/taxi hops to the rock-formation hikes (noted on those days). */
-  castile: {
-    title: "🇪🇸 Spain 2027 — Castile · Toledo & the Center",
-    sub: "Option B for Mike · Sep 10–20 · Madrid · Segovia · Cuenca · Toledo · ~$8–10k for two, all by rail · tap a pin or use ‹ ›",
-    stops: [
-      { type:"city", label:"1", name:"Madrid",            ll:[40.4168,-3.7038] },
-      { type:"hike", label:"🥾", name:"Sierra de Guadarrama", ll:[40.7406,-4.0517] },
-      { type:"city", label:"2", name:"Segovia",           ll:[40.9429,-4.1088] },
-      { type:"city", label:"3", name:"Cuenca",            ll:[40.0704,-2.1374] },
-      { type:"hike", label:"🥾", name:"Ciudad Encantada",  ll:[40.1858,-2.0286] },
-      { type:"city", label:"4", name:"Toledo",            ll:[39.8628,-4.0273] },
-    ],
-    routes: [
-      { type:"train", pts:[[40.4176,-3.70365],[40.4593,-3.74926],[40.46687,-3.81051],[40.48507,-3.86274],[40.51887,-3.88546],[40.53422,-3.88837],[40.56232,-3.90394],[40.57966,-3.94598],[40.58739,-3.95365],[40.59577,-3.95325],[40.59772,-3.96161],[40.63384,-4.00258],[40.6423,-4.02752],[40.64981,-4.07432],[40.65821,-4.0951],[40.67831,-4.11688],[40.68599,-4.11807],[40.70787,-4.13737],[40.71664,-4.15776],[40.7149,-4.1845],[40.73598,-4.20254],[40.74993,-4.20197],[40.76108,-4.2131],[40.7752,-4.20618],[40.79626,-4.21941],[40.81336,-4.1982],[40.82575,-4.16439],[40.83989,-4.15369],[40.85492,-4.12303],[40.88801,-4.11603],[40.90675,-4.10303],[40.93239,-4.10732],[40.94234,-4.11416],[40.94288,-4.10884]] },
-      { type:"train", pts:[[40.4176,-3.70365],[40.41904,-3.66136],[40.40653,-3.66358],[40.35692,-3.55476],[40.31847,-3.51344],[40.29378,-3.46295],[40.2728,-3.44859],[40.25919,-3.35711],[40.23142,-3.34578],[40.19254,-3.3012],[40.1695,-3.28978],[40.13912,-3.18699],[40.1208,-3.15227],[40.0304,-3.0392],[40.00315,-3.02605],[39.99488,-3.00915],[39.99318,-2.97931],[40.024,-2.95454],[40.03929,-2.92692],[40.04158,-2.89794],[40.06318,-2.87035],[40.04313,-2.73934],[40.02943,-2.7124],[40.02262,-2.63116],[40.03411,-2.59027],[40.0646,-2.53374],[40.05618,-2.50515],[40.06142,-2.44304],[40.05018,-2.3586],[40.07534,-2.31922],[40.07071,-2.27772],[40.0838,-2.20015],[40.0704,-2.1374]] },
-      { type:"train", pts:[[40.4176,-3.70365],[40.41913,-3.69376],[40.40906,-3.69227],[40.38424,-3.71798],[40.32892,-3.72548],[40.31046,-3.74058],[40.29536,-3.73788],[40.25471,-3.76425],[40.2472,-3.77818],[40.21121,-3.79148],[40.19815,-3.78947],[40.18886,-3.8051],[40.1099,-3.83965],[40.0776,-3.86497],[40.0712,-3.89094],[40.06224,-3.90545],[40.02661,-3.93189],[40.01242,-3.95681],[39.99297,-3.96006],[39.9378,-3.99895],[39.89563,-4.01703],[39.86966,-4.02111],[39.86277,-4.02734]] },
-      { type:"train", pts:[[40.4176,-3.70365],[40.42011,-3.70302],[40.42354,-3.71101],[40.43586,-3.71967],[40.44183,-3.72992],[40.4593,-3.74926],[40.46687,-3.81051],[40.48533,-3.86307],[40.51887,-3.88546],[40.53341,-3.88803],[40.56152,-3.90299],[40.57379,-3.92657],[40.57966,-3.94598],[40.58739,-3.95365],[40.59577,-3.95325],[40.59772,-3.96161],[40.60333,-3.9654],[40.63587,-4.00626],[40.64253,-4.00534],[40.66476,-4.01116],[40.67502,-4.01001],[40.68383,-4.01355],[40.69405,-4.01134],[40.70142,-4.0042],[40.71116,-4.006],[40.71346,-4.00837],[40.71406,-4.01466],[40.72017,-4.01686],[40.72305,-4.02359],[40.73439,-4.02019],[40.73161,-4.03189],[40.73608,-4.0364],[40.73445,-4.04073],[40.73841,-4.04449],[40.74061,-4.05174]] },
-      { type:"hike",  pts:[[40.0704,-2.1374],[40.1858,-2.0286]] },
-      { type:"hike",  pts:[[40.7406,-4.0517],[40.782,-4.015]] },
-    ],
-    days: [
-      { d:1, date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive Madrid", stop:0,
-        hero:"✈️", tag:"✈️ EUG → MAD · 2 connections",
-        acts:[ ["✈️","Travel day from Eugene — two connections (West Coast hub → Europe → Madrid-Barajas)"],
-               ["🚇","Metro or Cercanías straight from MAD into the center (~25 min) — no taxi needed"],
-               ["🚶","Easy evening stroll: Plaza Mayor & Puerta del Sol to shake off the jet lag"],
-               ["🦐","First tapas crawl on Cava Baja in La Latina — Spain's great tapas street"],
-               ["💶","Budget plan: ~$8–10k for two — round-trip Madrid keeps the flights down"] ] },
-      { d:2, date:"Sun · Sep 12", title:"Madrid's golden mile of art", stop:0,
-        hero:"🖼️", tag:"🎨 Prado · Reina Sofía · Thyssen",
-        acts:[ ["🖼️","The Prado — Velázquez's Las Meninas, Goya's black paintings, Bosch's Garden of Earthly Delights"],
-               ["🕊️","Reina Sofía — stand in front of Picasso's Guernica"],
-               ["🌳","Reset in the Retiro park — the Crystal Palace and the boating lake"],
-               ["🌇","Sunset drinks on the Círculo de Bellas Artes rooftop over the whole city"] ] },
-      { d:3, date:"Mon · Sep 13", title:"Guadarrama by Cercanías", stop:1,
-        hero:"⛰️", tag:"🚆 Train straight to the trailhead",
-        acts:[ ["🚆","Cercanías C-9 train Madrid → Cercedilla (~1h20) — right into the mountains, no car"],
-               ["🥾","Climb the Roman road (Calzada Romana) toward the Siete Picos ridge"],
-               ["⛰️","Pine-forest switchbacks and big views over the Guadarrama range (10–14 km, your pace)"],
-               ["🍷","Train back to Madrid — earned tapas in Malasaña"] ] },
-      { d:4, date:"Tue · Sep 14", title:"Segovia: aqueduct & castle", stop:2,
-        hero:"🏰", tag:"🚄 AVE ~30 min each way",
-        acts:[ ["🚄","High-speed Avant Madrid → Segovia-Guiomar (~30 min)"],
-               ["🏛️","The Roman Aqueduct — 2,000 years old, 28 m high, not a drop of mortar"],
-               ["🏰","The Alcázar of Segovia — the prow-shaped castle said to have inspired Disney"],
-               ["🐷","Cochinillo (roast suckling pig) lunch; Gothic cathedral; train back to Madrid"] ] },
-      { d:5, date:"Wed · Sep 15", title:"Madrid → Cuenca, the hanging city", stop:3,
-        hero:"🏚️", tag:"🚄 AVE ~55 min · overnight Cuenca",
-        acts:[ ["🚄","AVE Madrid → Cuenca-Fernando Zóbel (~55 min); drop the bags"],
-               ["🏚️","The Casas Colgadas — medieval 'hanging houses' on the very lip of the gorge"],
-               ["🌉","Cross the Puente de San Pablo footbridge for the classic view back at them"],
-               ["🎨","Museo de Arte Abstracto Español inside the hanging houses (Tàpies, Chillida, Saura)"] ] },
-      { d:6, date:"Thu · Sep 16", title:"Ciudad Encantada & the Júcar gorge", stop:4,
-        hero:"🪨", tag:"🚌 Short hop · big hike day",
-        acts:[ ["🚌","Bus or taxi from Cuenca up to the Ciudad Encantada (~30 min)"],
-               ["🪨","Hike the 'Enchanted City' — wind- and water-carved karst rock formations"],
-               ["🏞️","Afternoon: the Hoz del Júcar gorge walk back below the old town"],
-               ["🍤","Second night of Cuenca tapas — quieter and local once the day-trippers leave"] ] },
-      { d:7, date:"Fri · Sep 17", title:"Down to Toledo", stop:5,
-        hero:"🌅", tag:"🚄 via Madrid · overnight Toledo",
-        acts:[ ["🚄","Cuenca → Madrid → Toledo by high-speed train (~2.5 hrs total with the change)"],
-               ["🏘️","Check in inside the walls; first wander of the steep medieval lanes"],
-               ["🌅","Up to the Mirador del Valle for sunset over the whole city across the Tajo gorge"],
-               ["🍷","Dinner in town once the day-trippers have gone — Toledo is yours at night"] ] },
-      { d:8, date:"Sat · Sep 18", title:"Toledo: city of three cultures", stop:5,
-        hero:"⛪", tag:"🏰 Cathedral · El Greco · synagogues",
-        acts:[ ["⛪","The Primate Cathedral — one of Spain's greatest Gothic interiors"],
-               ["🛡️","The Alcázar fortress crowning the high point (now the Army Museum)"],
-               ["🕍","Santa María la Blanca & El Tránsito synagogues + the Cristo de la Luz mosque"],
-               ["🖼️","El Greco's 'Burial of the Count of Orgaz' in Santo Tomé; marzipan to finish"] ] },
-      { d:9, date:"Sun · Sep 19", title:"Tajo gorge walk → back to Madrid", stop:5,
-        hero:"🌉", tag:"🥾 Riverside hike + 🚄 33 min",
-        acts:[ ["🥾","The Senda Ecológica along the Tajo — the postcard panorama of the walled city"],
-               ["🌉","Cross the medieval San Martín and Alcántara bridges over the gorge"],
-               ["🚄","Afternoon Avant Toledo → Madrid (~33 min); last night in the capital"],
-               ["🍤","Farewell feast — Mercado de San Miguel, then a final La Latina tapas crawl"] ] },
-      { d:10, date:"Sun/Mon · Sep 20", title:"Fly home from Madrid", stop:0,
-        hero:"✈️", tag:"✈️ MAD → EUG",
-        acts:[ ["✈️","Depart Madrid-Barajas (MAD) — two connections back to Eugene"],
-               ["🛋️","3 recovery days at home (Mon–Wed Sep 21–23) before returning to work"],
-               ["🎉","Trip complete!"] ] },
-    ],
-  },
-
-  /* ---------------- OPTION C — GREEN SPAIN (THE NORTH) ----------------
-     Basque Country + Asturias: Bilbao, San Sebastián, Oviedo, Cangas de Onís
-     and the Picos de Europa. Open-jaw — fly into Bilbao, home from Asturias —
-     to skip the backtrack. Coast legs are by train/bus; the Picos hikes need a
-     bus or the Covadonga shuttle (noted on those days), like the other plans. */
-  north: {
-    title: "🇪🇸 Spain 2027 — Green Spain · The North",
-    sub: "Option C for Mike · Sep 10–20 · Bilbao · San Sebastián · Oviedo · Picos de Europa · ~$8–10k for two · tap a pin or use ‹ ›",
-    stops: [
-      { type:"city", label:"1", name:"Bilbao",            ll:[43.2630,-2.9350] },
-      { type:"hike", label:"🥾", name:"San Juan de Gaztelugatxe", ll:[43.4470,-2.7855] },
-      { type:"city", label:"2", name:"San Sebastián",     ll:[43.3183,-1.9812] },
-      { type:"hike", label:"🥾", name:"Flysch Coast (Zumaia)", ll:[43.2990,-2.2560] },
-      { type:"city", label:"3", name:"Oviedo",            ll:[43.3614,-5.8493] },
-      { type:"city", label:"4", name:"Cangas de Onís",    ll:[43.3508,-5.1300] },
-      { type:"hike", label:"🥾", name:"Lagos de Covadonga", ll:[43.2720,-4.9970] },
-      { type:"hike", label:"🥾", name:"Ruta del Cares",    ll:[43.2530,-4.8400] },
-    ],
-    routes: [
-      { type:"train", pts:[[43.26265,-2.93519],[43.24696,-2.93627],[43.23305,-2.91458],[43.23116,-2.87161],[43.236,-2.84999],[43.22897,-2.83139],[43.2358,-2.80144],[43.2316,-2.78891],[43.23053,-2.75243],[43.22281,-2.72888],[43.21342,-2.72281],[43.20101,-2.69589],[43.18911,-2.68637],[43.17829,-2.62468],[43.16807,-2.60149],[43.16728,-2.55277],[43.17698,-2.52635],[43.17447,-2.50818],[43.18012,-2.47101],[43.18825,-2.45774],[43.19266,-2.4392],[43.21956,-2.40381],[43.23386,-2.40453],[43.25547,-2.38952],[43.26444,-2.37288],[43.28604,-2.3546],[43.28296,-2.32002],[43.25932,-2.28537],[43.2774,-2.25351],[43.28493,-2.23032],[43.28056,-2.209],[43.28214,-2.18118],[43.27829,-2.17061],[43.27914,-2.14972],[43.28343,-2.14115],[43.28115,-2.11308],[43.29505,-2.05971],[43.29244,-2.03968],[43.28572,-2.02697],[43.29875,-2.00773],[43.29562,-1.99773],[43.29927,-1.97961],[43.31814,-1.98164]] },
-      { type:"train", pts:[[43.31814,-1.98164],[43.29959,-1.97991],[43.28581,-2.027],[43.28504,-2.23019],[43.2594,-2.28539],[43.28609,-2.3548],[43.19269,-2.43941],[43.16733,-2.56],[43.18942,-2.68686],[43.22334,-2.72962],[43.23291,-2.79318],[43.2614,-2.81188],[43.28864,-2.89592],[43.30195,-2.9627],[43.28466,-2.99513],[43.33009,-3.0734],[43.36192,-3.18932],[43.35012,-3.21231],[43.39559,-3.23682],[43.4025,-3.29304],[43.38056,-3.37469],[43.40464,-3.41132],[43.39046,-3.47391],[43.41705,-3.55252],[43.38756,-3.66947],[43.3889,-3.74018],[43.3432,-3.78906],[43.31234,-3.88117],[43.31164,-3.94276],[43.35919,-4.04505],[43.34489,-4.13976],[43.32345,-4.173],[43.31678,-4.26127],[43.37087,-4.41005],[43.40458,-4.75708],[43.4442,-4.88714],[43.43534,-5.06454],[43.47083,-5.15868],[43.48199,-5.30219],[43.5067,-5.33756],[43.50167,-5.40963],[43.45511,-5.52342],[43.37853,-5.58986],[43.395,-5.80434],[43.35296,-5.83012],[43.34838,-5.85576],[43.36108,-5.84873]] },
-      { type:"train", pts:[[43.36108,-5.84873],[43.36398,-5.83927],[43.35934,-5.83856],[43.35494,-5.82848],[43.36709,-5.81431],[43.38561,-5.81069],[43.39398,-5.80034],[43.37868,-5.70813],[43.38667,-5.62847],[43.37658,-5.60253],[43.37618,-5.55448],[43.35298,-5.47558],[43.35355,-5.45776],[43.35817,-5.45072],[43.35366,-5.4383],[43.36154,-5.38976],[43.35264,-5.37777],[43.35271,-5.36634],[43.34523,-5.35581],[43.34973,-5.33047],[43.36741,-5.28769],[43.35927,-5.25019],[43.36419,-5.23316],[43.35749,-5.22995],[43.36605,-5.2062],[43.36176,-5.19668],[43.37005,-5.18371],[43.38952,-5.18038],[43.37456,-5.16008],[43.37405,-5.14845],[43.36487,-5.15286],[43.35081,-5.13]] },
-      { type:"hike",  pts:[[43.263,-2.935],[43.447,-2.7855]] },
-      { type:"hike",  pts:[[43.3183,-1.9812],[43.299,-2.256]] },
-      { type:"hike",  pts:[[43.3508,-5.13],[43.272,-4.997]] },
-      { type:"hike",  pts:[[43.3508,-5.13],[43.253,-4.84]] },
-    ],
-    days: [
-      { d:1, date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive Bilbao", stop:0,
-        hero:"✈️", tag:"✈️ EUG → BIO · 2 connections",
-        acts:[ ["✈️","Travel day from Eugene — two connections (West Coast hub → Europe → Bilbao, BIO)"],
-               ["🚇","Easy transfer into town — Bilbao is compact and walkable"],
-               ["🚶","First wander of the Casco Viejo (old town) and its Seven Streets"],
-               ["🍢","First pintxos crawl; the Mercado de la Ribera on the river"],
-               ["💶","Budget plan: ~$8–10k for two — open-jaw (in to Bilbao, home from Asturias) skips the backtrack"] ] },
-      { d:2, date:"Sun · Sep 12", title:"Bilbao & the Guggenheim", stop:0,
-        hero:"🖼️", tag:"🎨 Gehry · Koons · Serra",
-        acts:[ ["🖼️","The Guggenheim — Gehry's titanium ship, Koons's flower 'Puppy', Serra's steel spirals"],
-               ["🌉","Riverside walk along the Nervión; cross Calatrava's Zubizuri footbridge"],
-               ["🚠","Funicular up Artxanda for the view over the whole city bowl"],
-               ["🍢","Evening pintxos in Plaza Nueva — txakoli, a Gilda, Idiazabal cheese"] ] },
-      { d:3, date:"Mon · Sep 13", title:"Gaztelugatxe → San Sebastián", stop:1,
-        hero:"🐉", tag:"🥾 Coast hike + transfer east",
-        acts:[ ["🚌","Morning bus/tour to San Juan de Gaztelugatxe, on the coast NW of Bilbao"],
-               ["🥾","The 241-step stone causeway out to the islet hermitage (the 'Dragonstone' coast)"],
-               ["🚆","Onward east to San Sebastián (Donostia) in the afternoon; check in"],
-               ["🌅","Sunset over La Concha bay; first pintxos in the Parte Vieja"] ] },
-      { d:4, date:"Tue · Sep 14", title:"San Sebastián", stop:2,
-        hero:"🏖️", tag:"🍢 Pintxos capital of the world",
-        acts:[ ["🚡","Funicular up Monte Igueldo for the postcard view of the shell-shaped bay"],
-               ["🌬️","La Concha promenade to Chillida's 'Comb of the Wind' (Peine del Viento)"],
-               ["🏰","Climb Monte Urgull above the old town for the ramparts and views"],
-               ["🍢","The big one — a proper pintxos crawl through the Parte Vieja (and Gros across the river)"] ] },
-      { d:5, date:"Wed · Sep 15", title:"The Flysch coast", stop:3,
-        hero:"🪨", tag:"🥾 Geology + clifftop views",
-        acts:[ ["🚆","Out to Zumaia / Deba on the Basque coast (a UNESCO geopark)"],
-               ["🪨","Walk the Flysch — tens of millions of years of rock strata stacked in the cliffs"],
-               ["🌊","Clifftop coast path with huge Cantabrian-sea views"],
-               ["🍷","Back to San Sebastián for one last pintxos night"] ] },
-      { d:6, date:"Thu · Sep 16", title:"West into Asturias", stop:4,
-        hero:"🚂", tag:"🚂 Scenic coast leg (~4 hrs)",
-        acts:[ ["🚂","West along the coast to Oviedo — the scenic FEVE narrow-gauge or the faster ALSA bus"],
-               ["🏘️","Settle into Oviedo's handsome old town; the cathedral and arcaded squares"],
-               ["🍏","Sidrería dinner on Calle Gascona — Asturian cider poured from overhead"],
-               ["🚶","Evening stroll past the city's quirky street statues (yes, the Woody Allen one)"] ] },
-      { d:7, date:"Fri · Sep 17", title:"Pre-Romanesque & on to Cangas", stop:5,
-        hero:"⛪", tag:"🚌 Bus to the mountains",
-        acts:[ ["⛪","Monte Naranco — Santa María del Naranco & San Miguel de Lillo (9th-century, UNESCO)"],
-               ["🌄","Short climb up Naranco for valley views before the bus"],
-               ["🚌","ALSA bus east to Cangas de Onís, the gateway to the Picos"],
-               ["🌉","The Roman Bridge with its hanging Cross of Victory; mountain-town dinner"] ] },
-      { d:8, date:"Sat · Sep 18", title:"Covadonga & its lakes", stop:6,
-        hero:"🏞️", tag:"🚐 Shuttle up · alpine hike",
-        acts:[ ["⛪","Covadonga — the basilica and the Holy Cave (Santa Cueva) set in the cliff"],
-               ["🚐","Shuttle bus up to the lakes (private cars are restricted in season)"],
-               ["🥾","Hike the loop around Lakes Enol & Ercina, high in the Picos de Europa"],
-               ["🐄","Mountain pastures, jagged peaks, and often a sea of cloud below you"] ] },
-      { d:9, date:"Sun · Sep 19", title:"Ruta del Cares", stop:7,
-        hero:"🥾", tag:"🥾 Spain's great gorge hike",
-        acts:[ ["🚌","Down to Poncebos, the trailhead for the Cares Gorge"],
-               ["🥾","The 'Divine Gorge' — a path carved into sheer cliffs above the Cares river"],
-               ["🌉","Bridges, tunnels, and 300 m walls (go as far as you like — it's out-and-back)"],
-               ["🍲","Back to Cangas for fabada or cachopo — hearty Asturian mountain food"] ] },
-      { d:10, date:"Sun/Mon · Sep 20", title:"Fly home from Asturias", stop:4,
-        hero:"✈️", tag:"✈️ OVD → EUG",
-        acts:[ ["🚌","Transfer to Asturias Airport (OVD)"],
-               ["✈️","Two connections home to Eugene"],
-               ["🛋️","3 recovery days at home (Mon–Wed Sep 21–23) before returning to work"],
-               ["🎉","Trip complete!"] ] },
-    ],
-  },
-
-
-  mallorca: {
-    title: "🇪🇸 Spain 2027 — Mallorca · The Islands",
-    sub: "Option D for Mike · Sep 10–20 · Palma · Serra de Tramuntana · calas & coves · Cabrera · ~$8–10k for two (island prices) · tap a pin or use ‹ ›",
-    stops: [
-      { type:"city", label:"1", name:"Palma de Mallorca", ll:[39.5696,2.6502] },
-      { type:"hike", label:"🥾", name:"Valldemossa & Deià", ll:[39.7486,2.6486] },
-      { type:"city", label:"2", name:"Sóller / Port de Sóller", ll:[39.7958,2.6936] },
-      { type:"hike", label:"🏞️", name:"Sa Calobra · Torrent de Pareis", ll:[39.8517,2.8003] },
-      { type:"hike", label:"🏖️", name:"Cap de Formentor", ll:[39.9619,3.2106] },
-      { type:"city", label:"3", name:"Porto Cristo · Coves del Drac", ll:[39.5380,3.3320] },
-      { type:"hike", label:"🏝️", name:"Calas del Migjorn", ll:[39.3300,3.1900] },
-      { type:"hike", label:"🚤", name:"Cabrera National Park", ll:[39.1430,2.9340] },
-    ],
-    routes: [
-      { type:"train", pts:[[39.56955,2.65032],[39.57012,2.65744],[39.57751,2.65236],[39.60665,2.65513],[39.69759,2.6884],[39.74566,2.69759],[39.75918,2.71161],[39.77353,2.70544],[39.77206,2.70248],[39.77483,2.69854],[39.77394,2.6929],[39.77572,2.69127],[39.77235,2.67706],[39.77465,2.67625],[39.77337,2.66995],[39.7703,2.66791],[39.77097,2.66455],[39.76556,2.65589],[39.76103,2.65041],[39.7579,2.65033],[39.75779,2.64732],[39.74866,2.64854]] },
-      { type:"train", pts:[[39.74866,2.64854],[39.74988,2.64842],[39.75222,2.64663],[39.75473,2.64789],[39.75622,2.64677],[39.75779,2.64732],[39.7579,2.65033],[39.76103,2.65041],[39.76394,2.65454],[39.76556,2.65589],[39.76709,2.66066],[39.76853,2.66178],[39.76895,2.66322],[39.77097,2.66455],[39.77096,2.66639],[39.7703,2.66791],[39.77337,2.66995],[39.77445,2.6735],[39.77415,2.67593],[39.77465,2.67625],[39.77235,2.67706],[39.77435,2.68559],[39.77401,2.68598],[39.7746,2.68592],[39.77452,2.68355],[39.7755,2.68642],[39.77412,2.68766],[39.77453,2.68968],[39.77572,2.69127],[39.77394,2.6929],[39.77538,2.69518],[39.77466,2.69619],[39.77424,2.69858],[39.77504,2.69704],[39.77483,2.69854],[39.77207,2.70218],[39.77074,2.70553],[39.77095,2.70624],[39.7732,2.70552],[39.7769,2.7057],[39.77848,2.70444],[39.78075,2.70107],[39.78563,2.69834],[39.79675,2.70146],[39.79873,2.70109],[39.7964,2.69658],[39.79808,2.69495],[39.79808,2.69329],[39.7968,2.69209],[39.79587,2.69366]] },
-      { type:"train", pts:[[39.79587,2.69366],[39.79684,2.6921],[39.79806,2.69325],[39.79818,2.69468],[39.79732,2.69598],[39.79549,2.6969],[39.79343,2.69664],[39.79084,2.69467],[39.78725,2.69586],[39.78498,2.69828],[39.78063,2.70117],[39.77831,2.70436],[39.78128,2.70719],[39.7815,2.70893],[39.7808,2.71096],[39.78139,2.71182],[39.78251,2.71072],[39.78406,2.71086],[39.78271,2.71166],[39.78314,2.71356],[39.78251,2.71499],[39.78285,2.71632],[39.78052,2.71824],[39.77924,2.71797],[39.7787,2.71864],[39.77873,2.72],[39.77943,2.72071],[39.77878,2.72255],[39.78035,2.72382],[39.7804,2.725],[39.78132,2.72602],[39.78109,2.72868],[39.78153,2.73076],[39.78204,2.7311],[39.78366,2.73033],[39.78347,2.7317],[39.78513,2.73431],[39.7861,2.7374],[39.78789,2.73829],[39.78702,2.73721],[39.78676,2.73517],[39.7871,2.72895],[39.78571,2.72683],[39.78632,2.72609],[39.78986,2.72664],[39.79073,2.72525],[39.79075,2.72753],[39.78901,2.72813],[39.7888,2.73017],[39.79012,2.73268],[39.79129,2.73156],[39.79256,2.73212],[39.79198,2.73325],[39.79156,2.73834],[39.79266,2.74248],[39.79241,2.7447],[39.79516,2.74746],[39.794,2.75074],[39.79683,2.75832],[39.79529,2.76243],[39.79542,2.76761],[39.79645,2.76652],[39.79681,2.7668],[39.79613,2.76781],[39.79605,2.7708],[39.79504,2.77154],[39.79325,2.7703],[39.79281,2.77064],[39.79477,2.77296],[39.79502,2.77441],[39.79651,2.77453],[39.79783,2.77294],[39.79822,2.77339],[39.79745,2.77496],[39.79502,2.77724],[39.7931,2.77559],[39.79036,2.77446],[39.78822,2.77866],[39.79075,2.78375],[39.79505,2.79018],[39.79327,2.7902],[39.79166,2.79157],[39.79198,2.79659],[39.79095,2.79543],[39.7891,2.7947],[39.78838,2.79718],[39.7876,2.79678],[39.78689,2.79752],[39.78732,2.79916],[39.79073,2.80267],[39.79168,2.80289],[39.79281,2.80457],[39.79292,2.80694],[39.79647,2.81048],[39.79779,2.81078],[39.7991,2.81012],[39.8007,2.81142],[39.80653,2.81866],[39.81075,2.82264],[39.81286,2.82088],[39.81294,2.81892],[39.81334,2.8187],[39.81441,2.8222],[39.81609,2.82417],[39.81516,2.82244],[39.81739,2.82084],[39.81881,2.81518],[39.82009,2.8161],[39.82095,2.81517],[39.82186,2.81522],[39.82061,2.81428],[39.82222,2.81455],[39.82323,2.81585],[39.82494,2.8147],[39.82533,2.81663],[39.82732,2.81802],[39.83249,2.81607],[39.83035,2.81596],[39.8304,2.81516],[39.82949,2.81524],[39.82921,2.81456],[39.82992,2.8135],[39.8297,2.81466],[39.83035,2.81358],[39.83023,2.8142],[39.83143,2.81488],[39.83247,2.8144],[39.83354,2.81199],[39.83275,2.81349],[39.83168,2.8138],[39.83199,2.8124],[39.83228,2.81301],[39.83268,2.81261],[39.8321,2.81093],[39.83091,2.8101],[39.83049,2.80623],[39.831,2.80659],[39.82925,2.80298],[39.83076,2.80522],[39.83169,2.80409],[39.83401,2.80409],[39.83442,2.80284],[39.8355,2.80259],[39.83573,2.80347],[39.83461,2.80444],[39.83387,2.80619],[39.83469,2.80682],[39.84127,2.80536],[39.84342,2.80365],[39.84382,2.80435],[39.84507,2.80447],[39.84566,2.80212],[39.84496,2.80021],[39.84544,2.80009],[39.8452,2.79965],[39.84342,2.7988],[39.83897,2.79916],[39.83798,2.79854],[39.84028,2.7955],[39.84282,2.79585],[39.84412,2.79522],[39.84457,2.79404],[39.84552,2.79678],[39.85015,2.79991],[39.85098,2.79922]] },
-      { type:"train", pts:[[39.85098,2.79922],[39.84463,2.79405],[39.84028,2.7955],[39.83804,2.79886],[39.8452,2.79965],[39.84522,2.80435],[39.83469,2.80682],[39.8355,2.80259],[39.83081,2.80522],[39.82925,2.80298],[39.83168,2.8138],[39.83354,2.81199],[39.82921,2.81456],[39.83247,2.8161],[39.82732,2.81802],[39.82494,2.8147],[39.82061,2.81428],[39.82186,2.81522],[39.81881,2.81518],[39.81516,2.82244],[39.81628,2.8298],[39.82326,2.82753],[39.82775,2.83153],[39.82865,2.83731],[39.82585,2.83945],[39.82614,2.84742],[39.82249,2.85398],[39.82479,2.85914],[39.82064,2.8744],[39.81601,2.87851],[39.81598,2.8866],[39.81334,2.88947],[39.81581,2.89631],[39.8177,2.89249],[39.82074,2.8924],[39.82576,2.89996],[39.83149,2.8956],[39.8374,2.89736],[39.84595,2.89486],[39.85365,2.89779],[39.85615,2.90248],[39.85422,2.90751],[39.85848,2.91074],[39.85676,2.91356],[39.86412,2.91761],[39.86639,2.92427],[39.86938,2.92536],[39.86596,2.93072],[39.86973,2.94335],[39.86581,2.93891],[39.86941,2.9461],[39.86985,2.96239],[39.86761,2.97199],[39.86938,2.97969],[39.88289,3.00838],[39.88434,3.02251],[39.8922,3.0358],[39.90425,3.07543],[39.91299,3.08527],[39.91226,3.10212],[39.9149,3.10448],[39.91152,3.10427],[39.91629,3.10792],[39.91738,3.10563],[39.92888,3.11069],[39.93025,3.12468],[39.93154,3.12306],[39.93364,3.12559],[39.93311,3.13076],[39.93104,3.12946],[39.92914,3.13364],[39.93329,3.1358],[39.94761,3.16025],[39.94937,3.17793],[39.95411,3.1894],[39.9509,3.19642],[39.95351,3.20279],[39.95543,3.20103],[39.95378,3.20731],[39.95786,3.20803],[39.95533,3.21185],[39.96108,3.21132]] },
-      { type:"train", pts:[[39.96108,3.21132],[39.95533,3.21185],[39.95786,3.20803],[39.95381,3.20736],[39.95544,3.20108],[39.9509,3.19642],[39.95411,3.18946],[39.94761,3.16025],[39.92914,3.13364],[39.93364,3.12559],[39.93025,3.12468],[39.92888,3.11069],[39.91155,3.10433],[39.9149,3.10448],[39.9128,3.08415],[39.90459,3.07494],[39.88469,3.07496],[39.86543,3.09082],[39.85176,3.11504],[39.84452,3.09323],[39.83031,3.10527],[39.81852,3.10079],[39.81288,3.10455],[39.81502,3.11423],[39.79185,3.12252],[39.77159,3.14191],[39.71311,3.10884],[39.70641,3.099],[39.69436,3.1028],[39.65892,3.09687],[39.64308,3.1001],[39.62105,3.1107],[39.61617,3.12253],[39.5963,3.13094],[39.57351,3.17447],[39.57146,3.20303],[39.56612,3.20611],[39.56553,3.23014],[39.55976,3.24591],[39.56293,3.28743],[39.54797,3.32847],[39.53801,3.33196]] },
-      { type:"train", pts:[[39.53801,3.33196],[39.54052,3.3314],[39.53639,3.32916],[39.52956,3.31054],[39.52765,3.29267],[39.51499,3.28429],[39.51228,3.27774],[39.50451,3.26969],[39.4971,3.27002],[39.49098,3.26099],[39.49156,3.25697],[39.48757,3.25057],[39.48349,3.25235],[39.47348,3.24605],[39.45076,3.23916],[39.44571,3.23495],[39.43821,3.2358],[39.43067,3.22593],[39.40749,3.20917],[39.40387,3.2019],[39.4005,3.20395],[39.3979,3.19549],[39.38996,3.18573],[39.38715,3.1622],[39.35489,3.13019],[39.34156,3.14687],[39.33897,3.17162],[39.34329,3.17998],[39.33847,3.1819],[39.3367,3.18651]] },
-      { type:"hike",  pts:[[39.33,3.19],[39.143,2.934]] },
-    ],
-    days: [
-      { d:1, date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive Palma", stop:0,
-        hero:"✈️", tag:"✈️ EUG → PMI · 2 connections",
-        acts:[ ["✈️","Travel day from Eugene — two connections (West Coast hub → Europe → Palma de Mallorca, PMI)"],
-               ["🚕","Quick airport bus or taxi into Palma (~20 min)"],
-               ["⛪","First wander of the old town beneath La Seu, the seafront Gothic cathedral"],
-               ["🦐","Seafood and tapas in Santa Catalina; sunset over the bay"],
-               ["💶","Budget plan: ~$8–10k for two — the priciest of the four (island prices), but it fits"] ] },
-      { d:2, date:"Sun · Sep 12", title:"Palma & the bay", stop:0,
-        hero:"🛶", tag:"🛶 Old town + sea kayak",
-        acts:[ ["⛪","Inside La Seu cathedral (Gaudí had a hand in it) and the Almudaina palace"],
-               ["🏰","Up to Bellver Castle — a round hilltop fortress with bay views"],
-               ["🛶","Afternoon sea-kayak or paddleboard along the coast; swim at a cove"],
-               ["🍷","Tapas crawl back through Santa Catalina market"] ] },
-      { d:3, date:"Mon · Sep 13", title:"Tramuntana: Valldemossa & Deià", stop:1,
-        hero:"⛰️", tag:"🚗 Pick up the car · coastal hike",
-        acts:[ ["🚗","Pick up the rental car — Mallorca's outdoors needs wheels"],
-               ["🏘️","Valldemossa — Chopin's Carthusian monastery and stone-village lanes"],
-               ["🥾","Coastal hike above Deià down to Cala Deià for a swim"],
-               ["🌅","Sunset in Deià; dinner up in the hills"] ] },
-      { d:4, date:"Tue · Sep 14", title:"Sóller & the vintage train", stop:2,
-        hero:"🚋", tag:"🚋 1912 wooden train & tram",
-        acts:[ ["🚋","Ride the historic 1912 wooden train through the mountains to Sóller"],
-               ["🚊","Open-air tram down to Port de Sóller"],
-               ["🥾","Walk a stretch of the GR221 'Dry Stone Route' or the lighthouse path"],
-               ["🍊","Fresh Sóller orange juice; seafood on the harbour"] ] },
-      { d:5, date:"Wed · Sep 15", title:"Sa Calobra & Torrent de Pareis", stop:3,
-        hero:"🏞️", tag:"🚗 Serpentine road · sea gorge",
-        acts:[ ["🚗","The dizzying serpentine road down to Sa Calobra (the 'tie-knot' loop)"],
-               ["🏞️","Walk into the Torrent de Pareis — a soaring gorge that meets the sea"],
-               ["🏊","Swim in the cove between the cliffs"],
-               ["🌄","Drive the MA-10 ridge with Tramuntana viewpoints"] ] },
-      { d:6, date:"Thu · Sep 16", title:"Cap de Formentor & the north", stop:4,
-        hero:"🗼", tag:"🏖️ Cape, lighthouse & beach",
-        acts:[ ["🗼","Drive out to the Formentor lighthouse at the island's northern tip"],
-               ["👀","Mirador des Colomer — cliffs plunging straight into the sea"],
-               ["🏖️","Swim at Platja de Formentor, pine trees down to the sand"],
-               ["🏘️","Evening in Pollença — climb the 365 Calvari steps"] ] },
-      { d:7, date:"Fri · Sep 17", title:"Sea caves & the east coast", stop:5,
-        hero:"🕳️", tag:"🚗 Caves + clear-water calas",
-        acts:[ ["🕳️","Coves del Drac — vast caverns and an underground lake (with a live concert)"],
-               ["⛵","Lunch on the Porto Cristo harbour"],
-               ["🤿","Snorkel the clear calas nearby (Cala Varques, s'Estany d'en Mas)"],
-               ["🌇","Coastal sunset on the east shore"] ] },
-      { d:8, date:"Sat · Sep 18", title:"Calas del Migjorn", stop:6,
-        hero:"🏝️", tag:"🥾 Hike to hidden coves",
-        acts:[ ["🥾","Short cliff hike down to Caló des Moro — the island's postcard turquoise cove"],
-               ["🏞️","Cala Mondragó natural park — twin calas linked by an easy coastal trail"],
-               ["🤿","Snorkel, then laze on the long white sand of Es Trenc"],
-               ["🍤","Seaside dinner down south"] ] },
-      { d:9, date:"Sun · Sep 19", title:"Boat to Cabrera National Park", stop:7,
-        hero:"🚤", tag:"🚤 Roadless island reserve",
-        acts:[ ["🚤","Boat from Colònia de Sant Jordi to the Cabrera archipelago (a protected marine park)"],
-               ["🤿","Snorkel the Blue Cave (Sa Cova Blava) — glowing turquoise light"],
-               ["🐦","Walk up to the island castle; seabirds, lizards, untouched coves"],
-               ["🚗","Boat back, then drive toward Palma for the last night"] ] },
-      { d:10, date:"Sun/Mon · Sep 20", title:"Fly home from Palma", stop:0,
-        hero:"✈️", tag:"✈️ PMI → EUG",
-        acts:[ ["🚗","Drop the rental car; transfer to Palma airport (PMI)"],
-               ["✈️","Two connections home to Eugene"],
-               ["🛋️","3 recovery days at home (Mon–Wed Sep 21–23) before returning to work"],
-               ["🎉","Trip complete!"] ] },
-    ],
-  },
-};
-
-const PHOTOS = {
-  andalucia: {
-    1:["photos/1-and-d1-skyline.jpg","photos/2-and-d1-port.jpg","photos/3-and-d1-tapas.jpg"],
-    2:["photos/4-and-d2-alcazaba.jpg","photos/5-and-d2-roman-theatre.jpg","photos/6-and-d2-beach.jpg"],
-    3:["photos/7-and-d3-walkway.jpg","photos/8-and-d3-gorge.jpg","photos/9-and-d3-hiker.jpg"],
-    4:["photos/10-and-d4-albaicin.jpg","photos/11-and-d4-san-nicolas.jpg","photos/12-and-d4-tapas.jpg"],
-    5:["photos/13-and-d5-alhambra.jpg","photos/14-and-d5-nasrid.jpg","photos/15-and-d5-generalife.jpg"],
-    6:["photos/16-and-d6-suspension-bridge.jpg","photos/17-and-d6-gorge-trail.jpg","photos/18-and-d6-sierra-nevada.jpg"],
-    7:["photos/19-and-d7-mezquita.jpg","photos/20-and-d7-roman-bridge.jpg","photos/21-and-d7-train.jpg"],
-    8:["photos/22-and-d8-alcazar.jpg","photos/23-and-d8-giralda.jpg","photos/24-and-d8-triana.jpg"],
-    9:["photos/25-and-d9-plaza-espana.jpg","photos/26-and-d9-setas.jpg","photos/27-and-d9-santa-cruz.jpg"],
-    10:["photos/28-and-d10-sunset.jpg","photos/29-and-d10-airplane.jpg","photos/30-and-d10-airport.jpg"],
-  },
-  castile: {
-    1:["photos/31-cas-d1-plaza-mayor.jpg","photos/32-cas-d1-puerta-del-sol.jpg","photos/33-cas-d1-tapas.jpg"],
-    2:["photos/34-cas-d2-prado.jpg","photos/35-cas-d2-crystal-palace.jpg","photos/36-cas-d2-gran-via.jpg"],
-    3:["photos/37-cas-d3-guadarrama.jpg","photos/38-cas-d3-pine-trail.jpg","photos/39-cas-d3-ridge-view.jpg"],
-    4:["photos/40-cas-d4-aqueduct.jpg","photos/41-cas-d4-alcazar.jpg","photos/42-cas-d4-cochinillo.jpg"],
-    5:["photos/43-cas-d5-hanging-houses.jpg","photos/44-cas-d5-san-pablo-bridge.jpg","photos/45-cas-d5-old-town.jpg"],
-    6:["photos/46-cas-d6-ciudad-encantada.jpg","photos/47-cas-d6-jucar-gorge.jpg","photos/48-cas-d6-karst.jpg"],
-    7:["photos/49-cas-d7-skyline.jpg","photos/50-cas-d7-sunset.jpg","photos/51-cas-d7-train.jpg"],
-    8:["photos/52-cas-d8-cathedral.jpg","photos/53-cas-d8-alcazar.jpg","photos/54-cas-d8-synagogue.jpg"],
-    9:["photos/55-cas-d9-san-martin-bridge.jpg","photos/56-cas-d9-gorge.jpg","photos/57-cas-d9-san-miguel-market.jpg"],
-    10:["photos/58-cas-d10-skyline.jpg","photos/59-cas-d10-airport.jpg","photos/60-cas-d10-airplane.jpg"],
-  },
-  north: {
-    1:["photos/61-nor-d1-old-town.jpg","photos/62-nor-d1-pintxos.jpg","photos/63-nor-d1-river.jpg"],
-    2:["photos/64-nor-d2-guggenheim.jpg","photos/65-nor-d2-puppy.jpg","photos/66-nor-d2-artxanda.jpg"],
-    3:["photos/67-nor-d3-gaztelugatxe.jpg","photos/68-nor-d3-la-concha.jpg","photos/69-nor-d3-parte-vieja.jpg"],
-    4:["photos/70-nor-d4-igueldo.jpg","photos/71-nor-d4-peine-del-viento.jpg","photos/72-nor-d4-pintxos.jpg"],
-    5:["photos/73-nor-d5-flysch.jpg","photos/74-nor-d5-coast.jpg","photos/75-nor-d5-zumaia-beach.jpg"],
-    6:["photos/76-nor-d6-oviedo.jpg","photos/77-nor-d6-sidra.jpg","photos/78-nor-d6-cathedral.jpg"],
-    7:["photos/79-nor-d7-naranco.jpg","photos/80-nor-d7-roman-bridge.jpg","photos/81-nor-d7-cangas-town.jpg"],
-    8:["photos/82-nor-d8-basilica.jpg","photos/83-nor-d8-lakes.jpg","photos/84-nor-d8-cave.jpg"],
-    9:["photos/85-nor-d9-cares.jpg","photos/86-nor-d9-picos.jpg","photos/87-nor-d9-cares-bridge.jpg"],
-    10:["photos/88-nor-d10-peaks.jpg","photos/89-nor-d10-coast.jpg","photos/90-nor-d10-airplane.jpg"],
-  },
-  mallorca: {
-    1:["photos/91-mal-d1-cathedral.jpg","photos/92-mal-d1-old-town.jpg","photos/93-mal-d1-seafood.jpg"],
-    2:["photos/94-mal-d2-bellver.jpg","photos/95-mal-d2-kayak.jpg","photos/96-mal-d2-marina.jpg"],
-    3:["photos/97-mal-d3-valldemossa.jpg","photos/98-mal-d3-deia.jpg","photos/99-mal-d3-cala-deia.jpg"],
-    4:["photos/100-mal-d4-train.jpg","photos/101-mal-d4-port-soller.jpg","photos/102-mal-d4-tramuntana.jpg"],
-    5:["photos/103-mal-d5-sa-calobra.jpg","photos/104-mal-d5-torrent-pareis.jpg","photos/105-mal-d5-serpentine.jpg"],
-    6:["photos/106-mal-d6-formentor-lighthouse.jpg","photos/107-mal-d6-es-colomer.jpg","photos/108-mal-d6-formentor-beach.jpg"],
-    7:["photos/109-mal-d7-drach-caves.jpg","photos/110-mal-d7-porto-cristo.jpg","photos/111-mal-d7-snorkel.jpg"],
-    8:["photos/112-mal-d8-calo-des-moro.jpg","photos/113-mal-d8-mondrago.jpg","photos/114-mal-d8-es-trenc.jpg"],
-    9:["photos/115-mal-d9-cabrera.jpg","photos/116-mal-d9-blue-cave.jpg","photos/117-mal-d9-boat.jpg"],
-    10:["photos/118-mal-d10-coast.jpg","photos/119-mal-d10-skyline.jpg","photos/120-mal-d10-airplane.jpg"],
-  },
-};
-
-/* ===== Per-trip overview shown in the ℹ️ panel ===== */
-const OVERVIEW = {
-  andalucia: {
-    blurb: "A sun-soaked loop through Moorish Andalucía — the Alhambra, Córdoba's Mezquita, and flamenco Seville — laced together by fast trains and broken up with two dramatic gorge hikes. Expect warm-to-hot days, a free tapa with nearly every drink, and some of the finest Islamic architecture in Europe.",
-    temp: "September highs 82–93°F (28–34°C); evenings ease to 63–70°F (17–21°C). Inland Córdoba & Seville run hottest — sightsee early, siesta the afternoon.",
-    doSee: "Moorish palaces & fortresses (Alhambra, Alcazaba, Real Alcázar), the great Mezquita, Málaga's beaches, nightly tapas crawls and flamenco — plus the Caminito del Rey and Los Cahorros gorge hikes.",
-    travel: "Almost entirely by high-speed train (Renfe AVE/Avant) between cities, then on foot. Just two short shuttle-bus/taxi hops to the trailheads. No rental car needed.",
-    distance: "A compact rail corridor — about 265 mi (425 km) total, Málaga → Granada → Córdoba → Seville, with no single leg over ~100 mi (160 km).",
-    unique: [
-      "The Alhambra — timed-entry Nasrid palaces, the high point of Moorish Spain",
-      "Granada's free-tapa-with-every-drink tradition",
-      "Caminito del Rey — a boardwalk pinned to a gorge wall 300 ft (100 m) up",
-      "Flamenco in Seville's Triana quarter",
-    ],
-  },
-  castile: {
-    blurb: "A central-plateau trip built around Toledo and Madrid's world-class art, with quick high-speed hops to Segovia's Roman aqueduct and Cuenca's gorge-clinging hanging houses. Big-museum days, floodlit medieval cities, and a mountain hike straight off a commuter train.",
-    temp: "September highs 77–86°F (25–30°C), but the meseta cools sharply at night to 52–59°F (11–15°C) — bring a layer for evenings and the mountains.",
-    doSee: "Madrid's golden-triangle museums (Prado, Reina Sofía, Thyssen), Toledo's three-cultures old town & El Greco, Segovia's aqueduct & fairy-tale Alcázar, Cuenca's hanging houses, plus Guadarrama hiking and the Ciudad Encantada rock maze.",
-    travel: "All by train — radial high-speed AVE/Avant hops from a Madrid base (30–55 min each), a Cercanías commuter train to the mountains, and two short bus/taxi hops to the rock-formation hikes. No car.",
-    distance: "Short hops, nothing over ~125 mi (200 km) — Madrid ↔ Toledo is just 47 mi (75 km) in 33 minutes. Round-trip Madrid keeps the flights cheapest.",
-    unique: [
-      "Standing in front of Picasso's Guernica at the Reina Sofía",
-      "Segovia's 2,000-year-old aqueduct — 90 ft tall, not a drop of mortar",
-      "Cuenca's medieval houses hanging over the gorge",
-      "Toledo after dark, once the day-trippers have gone",
-    ],
-  },
-  north: {
-    blurb: "A cool, green counterpoint to the south: Basque pintxos and the Guggenheim, then west into Asturias and the Picos de Europa for Covadonga's mountain lakes and the cliff-carved Ruta del Cares. Dramatic coastline, serious mountain hikes, and arguably Spain's best food.",
-    temp: "The mildest of the three — September highs 68–75°F (20–24°C), lows 57–61°F (14–16°C). It's 'Green Spain' for a reason: pack a light rain layer.",
-    doSee: "The Guggenheim and Bilbao's old town, San Sebastián's beach & pintxos bars, Gaztelugatxe and the Flysch coast, Oviedo's pre-Romanesque churches & cider houses — then big Picos hikes at Covadonga and the Ruta del Cares.",
-    travel: "Mostly coastal train and bus (Euskotren, the scenic FEVE, ALSA), but the Picos trailheads need buses plus the Covadonga shuttle — a rental car for the Asturias mountain days is worth considering. Flown open-jaw: into Bilbao, home from Asturias.",
-    distance: "The longest of the three — roughly 340 mi (550 km) west across the north, with the San Sebastián → Oviedo leg (~240 mi / 385 km) the main haul.",
-    unique: [
-      "Gehry's titanium Guggenheim",
-      "Pintxos in San Sebastián — the world's tapas capital",
-      "Gaztelugatxe — the island hermitage that played Dragonstone",
-      "The Ruta del Cares, carved into sheer gorge cliffs",
-    ],
-  },
-  mallorca: {
-    blurb: "An outdoor-lover's loop around Mallorca — hiking the UNESCO Serra de Tramuntana, swimming in turquoise calas, riding the vintage Sóller train, sea-kayaking, and a boat day out to the roadless Cabrera archipelago. It's the priciest of the four (island prices), but the same budget still covers it.",
-    temp: "Warm and very swimmable — September highs 79–84°F (26–29°C), the sea still around 77°F (25°C), evenings 66–70°F (19–21°C).",
-    doSee: "Serra de Tramuntana hikes (the GR221), the calas of the east & south (Caló des Moro, Mondragó, Es Trenc), the Sa Calobra sea-gorge, Cap de Formentor, the Sóller vintage train & tram, Palma's cathedral, the Coves del Drac, sea-kayaking, snorkeling, and a boat to Cabrera National Park.",
-    travel: "This one needs a rental car — the calas and mountain trailheads aren't on transit. Plus the historic 1912 Palma–Sóller wooden train, the Sóller seaside tram, and two boat trips (Sa Calobra and Cabrera). Round-trip Palma.",
-    distance: "An island loop of roughly 300 mi (480 km) of driving — much of it slow, scenic mountain switchbacks — plus two boat legs.",
-    unique: [
-      "The Serra de Tramuntana — UNESCO dry-stone mountains dropping straight into the sea",
-      "Caló des Moro and the postcard turquoise calas",
-      "The 1912 wooden Sóller train and its open-air seaside tram",
-      "Cabrera — a roadless national-park archipelago reached only by boat (Blue Cave snorkel)",
-    ],
-  },
+const BASE = [39.9075, 3.0820]; // Port de Pollença
+const TYPE = {
+  travel:{c:'#6b7a80', label:'Travel'}, hike:{c:'#2E7D32', label:'Hike'},
+  bike:{c:'#C1660F', label:'E-bike'}, water:{c:'#2C7A8C', label:'Water'},
+  chill:{c:'#1F4E5F', label:'Easy day'}, flex:{c:'#C8902F', label:'Flex'}
 };
 
 const CAPTIONS = {
-  "photos/1-and-d1-skyline.jpg":"The Málaga skyline",
-  "photos/2-and-d1-port.jpg":"Málaga port Muelle Uno sunset",
-  "photos/3-and-d1-tapas.jpg":"An Andalusian tapas spread",
-  "photos/4-and-d2-alcazaba.jpg":"Alcazaba of Málaga fortress",
-  "photos/5-and-d2-roman-theatre.jpg":"Roman theatre Málaga",
-  "photos/6-and-d2-beach.jpg":"La Malagueta beach Málaga",
-  "photos/7-and-d3-walkway.jpg":"Caminito del Rey walkway",
-  "photos/8-and-d3-gorge.jpg":"El Chorro gorge reservoir",
-  "photos/9-and-d3-hiker.jpg":"Caminito del Rey hiker cliff",
-  "photos/10-and-d4-albaicin.jpg":"Albaicín Granada old quarter",
-  "photos/11-and-d4-san-nicolas.jpg":"Mirador San Nicolas Alhambra sunset",
-  "photos/12-and-d4-tapas.jpg":"Granada tapas bar",
-  "photos/13-and-d5-alhambra.jpg":"Alhambra Granada panorama",
-  "photos/14-and-d5-nasrid.jpg":"Nasrid palaces Alhambra interior",
-  "photos/15-and-d5-generalife.jpg":"Generalife gardens Granada",
-  "photos/16-and-d6-suspension-bridge.jpg":"Los Cahorros Monachil suspension bridge",
-  "photos/17-and-d6-gorge-trail.jpg":"Monachil gorge river trail",
-  "photos/18-and-d6-sierra-nevada.jpg":"Sierra Nevada foothills Granada",
-  "photos/19-and-d7-mezquita.jpg":"Mezquita Córdoba arches",
-  "photos/20-and-d7-roman-bridge.jpg":"Roman bridge Córdoba",
-  "photos/21-and-d7-train.jpg":"Renfe AVE high-speed train",
-  "photos/22-and-d8-alcazar.jpg":"Real Alcázar Seville gardens",
-  "photos/23-and-d8-giralda.jpg":"Seville cathedral Giralda",
-  "photos/24-and-d8-triana.jpg":"Triana Seville flamenco",
-  "photos/25-and-d9-plaza-espana.jpg":"Plaza de Espana Seville",
-  "photos/26-and-d9-setas.jpg":"Metropol Parasol Las Setas Seville",
-  "photos/27-and-d9-santa-cruz.jpg":"Santa Cruz Seville street",
-  "photos/28-and-d10-sunset.jpg":"Seville rooftop sunset panorama",
-  "photos/29-and-d10-airplane.jpg":"From the plane window",
-  "photos/30-and-d10-airport.jpg":"Airport departures hall",
-  "photos/31-cas-d1-plaza-mayor.jpg":"Madrid Plaza Mayor",
-  "photos/32-cas-d1-puerta-del-sol.jpg":"Puerta del Sol Madrid",
-  "photos/33-cas-d1-tapas.jpg":"Madrid tapas bar La Latina",
-  "photos/34-cas-d2-prado.jpg":"Prado Museum Madrid building",
-  "photos/35-cas-d2-crystal-palace.jpg":"Retiro Park Crystal Palace Madrid",
-  "photos/36-cas-d2-gran-via.jpg":"Madrid Gran Vía sunset",
-  "photos/37-cas-d3-guadarrama.jpg":"Sierra de Guadarrama mountains",
-  "photos/38-cas-d3-pine-trail.jpg":"Pine-forest mountain trail",
-  "photos/39-cas-d3-ridge-view.jpg":"On a Guadarrama ridge",
-  "photos/40-cas-d4-aqueduct.jpg":"Segovia Roman aqueduct",
-  "photos/41-cas-d4-alcazar.jpg":"Alcázar of Segovia castle",
-  "photos/42-cas-d4-cochinillo.jpg":"Cochinillo — roast suckling pig",
-  "photos/43-cas-d5-hanging-houses.jpg":"Cuenca hanging houses Casas Colgadas",
-  "photos/44-cas-d5-san-pablo-bridge.jpg":"Cuenca Puente San Pablo bridge",
-  "photos/45-cas-d5-old-town.jpg":"Cuenca old town colorful houses",
-  "photos/46-cas-d6-ciudad-encantada.jpg":"Ciudad Encantada Cuenca rock formations",
-  "photos/47-cas-d6-jucar-gorge.jpg":"Júcar river gorge Cuenca",
-  "photos/48-cas-d6-karst.jpg":"Karst rock formations",
-  "photos/49-cas-d7-skyline.jpg":"Toledo Spain panorama skyline",
-  "photos/50-cas-d7-sunset.jpg":"Toledo sunset gorge",
-  "photos/51-cas-d7-train.jpg":"Renfe AVE high-speed train",
-  "photos/52-cas-d8-cathedral.jpg":"Toledo cathedral Spain",
-  "photos/53-cas-d8-alcazar.jpg":"Alcázar of Toledo",
-  "photos/54-cas-d8-synagogue.jpg":"Santa María la Blanca synagogue Toledo",
-  "photos/55-cas-d9-san-martin-bridge.jpg":"Toledo San Martin bridge Tagus river",
-  "photos/56-cas-d9-gorge.jpg":"Toledo Tagus river gorge view",
-  "photos/57-cas-d9-san-miguel-market.jpg":"Mercado San Miguel Madrid",
-  "photos/58-cas-d10-skyline.jpg":"The Madrid skyline",
-  "photos/59-cas-d10-airport.jpg":"Madrid-Barajas Airport",
-  "photos/60-cas-d10-airplane.jpg":"From the plane window",
-  "photos/61-nor-d1-old-town.jpg":"Bilbao Casco Viejo old town",
-  "photos/62-nor-d1-pintxos.jpg":"A Basque pintxos bar",
-  "photos/63-nor-d1-river.jpg":"Bilbao Nervión river",
-  "photos/64-nor-d2-guggenheim.jpg":"Guggenheim Bilbao museum",
-  "photos/65-nor-d2-puppy.jpg":"Guggenheim Bilbao Puppy flowers Koons",
-  "photos/66-nor-d2-artxanda.jpg":"Bilbao city view Artxanda",
-  "photos/67-nor-d3-gaztelugatxe.jpg":"San Juan de Gaztelugatxe",
-  "photos/68-nor-d3-la-concha.jpg":"San Sebastián La Concha beach",
-  "photos/69-nor-d3-parte-vieja.jpg":"San Sebastián old town Parte Vieja street",
-  "photos/70-nor-d4-igueldo.jpg":"San Sebastián bay aerial Monte Igueldo",
-  "photos/71-nor-d4-peine-del-viento.jpg":"Peine del Viento Chillida San Sebastián",
-  "photos/72-nor-d4-pintxos.jpg":"San Sebastián pintxos counter",
-  "photos/73-nor-d5-flysch.jpg":"Zumaia flysch cliffs",
-  "photos/74-nor-d5-coast.jpg":"Cantabrian-sea cliffs",
-  "photos/75-nor-d5-zumaia-beach.jpg":"Zumaia Itzurun beach",
-  "photos/76-nor-d6-oviedo.jpg":"Oviedo old town Asturias",
-  "photos/77-nor-d6-sidra.jpg":"Pouring Asturian sidra",
-  "photos/78-nor-d6-cathedral.jpg":"Oviedo cathedral",
-  "photos/79-nor-d7-naranco.jpg":"Santa María del Naranco Oviedo",
-  "photos/80-nor-d7-roman-bridge.jpg":"Cangas de Onís Roman bridge",
-  "photos/81-nor-d7-cangas-town.jpg":"Cangas de Onís town Asturias",
-  "photos/82-nor-d8-basilica.jpg":"Covadonga basilica Asturias",
-  "photos/83-nor-d8-lakes.jpg":"Lagos de Covadonga lakes",
-  "photos/84-nor-d8-cave.jpg":"Covadonga Holy Cave Santa Cueva",
-  "photos/85-nor-d9-cares.jpg":"Ruta del Cares gorge trail",
-  "photos/86-nor-d9-picos.jpg":"Picos de Europa mountains",
-  "photos/87-nor-d9-cares-bridge.jpg":"Ruta del Cares bridge tunnel cliff",
-  "photos/88-nor-d10-peaks.jpg":"Picos de Europa peaks panorama",
-  "photos/89-nor-d10-coast.jpg":"Asturias green coast cliffs",
-  "photos/90-nor-d10-airplane.jpg":"From the plane window",
-  "photos/91-mal-d1-cathedral.jpg":"Palma Cathedral (La Seu)",
-  "photos/92-mal-d1-old-town.jpg":"Palma old-town street",
-  "photos/93-mal-d1-seafood.jpg":"Mallorca seafood & tapas",
-  "photos/94-mal-d2-bellver.jpg":"Palma de Mallorca from above",
-  "photos/95-mal-d2-kayak.jpg":"Sea-kayaking the coast",
-  "photos/96-mal-d2-marina.jpg":"Palma marina at sunset",
-  "photos/97-mal-d3-valldemossa.jpg":"Valldemossa village",
-  "photos/98-mal-d3-deia.jpg":"Deià, above the sea",
-  "photos/99-mal-d3-cala-deia.jpg":"Cala Deià",
-  "photos/100-mal-d4-train.jpg":"The vintage Sóller train",
-  "photos/101-mal-d4-port-soller.jpg":"Port de Sóller tram",
-  "photos/102-mal-d4-tramuntana.jpg":"Serra de Tramuntana trail",
-  "photos/103-mal-d5-sa-calobra.jpg":"Sa Calobra",
-  "photos/104-mal-d5-torrent-pareis.jpg":"Torrent de Pareis gorge",
-  "photos/105-mal-d5-serpentine.jpg":"The Sa Calobra serpentine road",
+  "photos/96-mal-d2-marina.jpg":"Marina at golden hour",
+  "photos/92-mal-d1-old-town.jpg":"Old-town lanes",
+  "photos/93-mal-d1-seafood.jpg":"Seafood & tapas",
+  "photos/99-mal-d3-cala-deia.jpg":"A quiet cove",
+  "photos/111-mal-d7-snorkel.jpg":"Snorkeling clear water",
+  "photos/113-mal-d8-mondrago.jpg":"A natural-park cove",
   "photos/106-mal-d6-formentor-lighthouse.jpg":"Cap de Formentor lighthouse",
   "photos/107-mal-d6-es-colomer.jpg":"Mirador des Colomer",
   "photos/108-mal-d6-formentor-beach.jpg":"Platja de Formentor",
-  "photos/109-mal-d7-drach-caves.jpg":"Coves del Drac",
-  "photos/110-mal-d7-porto-cristo.jpg":"Porto Cristo harbour",
-  "photos/111-mal-d7-snorkel.jpg":"A turquoise cove",
-  "photos/112-mal-d8-calo-des-moro.jpg":"Caló des Moro",
-  "photos/113-mal-d8-mondrago.jpg":"Cala Mondragó",
-  "photos/114-mal-d8-es-trenc.jpg":"Es Trenc beach",
-  "photos/115-mal-d9-cabrera.jpg":"Cabrera National Park",
-  "photos/116-mal-d9-blue-cave.jpg":"A cove on Cabrera",
-  "photos/117-mal-d9-boat.jpg":"Out on the turquoise sea",
+  "photos/117-mal-d9-boat.jpg":"Out on the water",
+  "photos/103-mal-d5-sa-calobra.jpg":"Sa Calobra",
+  "photos/104-mal-d5-torrent-pareis.jpg":"Torrent de Pareis gorge",
+  "photos/105-mal-d5-serpentine.jpg":"The serpentine road",
+  "photos/112-mal-d8-calo-des-moro.jpg":"A turquoise cove",
+  "photos/94-mal-d2-bellver.jpg":"The coast from above",
+  "photos/95-mal-d2-kayak.jpg":"Sea-kayaking",
+  "photos/102-mal-d4-tramuntana.jpg":"In the Tramuntana",
+  "photos/97-mal-d3-valldemossa.jpg":"A mountain village",
+  "photos/98-mal-d3-deia.jpg":"Above the sea",
+  "photos/100-mal-d4-train.jpg":"The vintage Sóller train",
+  "photos/101-mal-d4-port-soller.jpg":"Port de Sóller tram",
   "photos/118-mal-d10-coast.jpg":"The Mallorca coast",
   "photos/119-mal-d10-skyline.jpg":"The Palma skyline",
   "photos/120-mal-d10-airplane.jpg":"From the plane window",
 };
 
-/* ============================ gallery / card ============================ */
-function galShift(btn, dir){
-  const gal = btn.closest('.gal');
-  const imgs = [...gal.querySelectorAll('img')];
-  const dots = [...gal.querySelectorAll('.gdot')];
-  let i = imgs.findIndex(x=>x.classList.contains('active'));
-  imgs[i].classList.remove('active'); if(dots[i]) dots[i].classList.remove('active');
-  i = (i + dir + imgs.length) % imgs.length;
-  imgs[i].classList.add('active'); if(dots[i]) dots[i].classList.add('active');
-}
-// Photo gallery when the day has imgs; otherwise a designed gradient hero card.
-function galleryHTML(imgs, day, stop){
-  if(!imgs.length){
-    return `<div class="gal hero"><button class="xbtn" onclick="closeCard()">✕</button>
-      <div class="hicon">${day.hero||'📍'}</div>
-      <div class="hname">${stop.name}</div>
-      <div class="hsub">Day ${day.d} · ${day.title}</div></div>`;
-  }
-  const multi = imgs.length>1;
-  const imgEls = imgs.map((src,j)=>`<img class="${j===0?'active':''}" src="${src}" alt="" loading="lazy" onerror="this.remove()" onclick="openLightbox()">`).join('');
-  const dots = multi ? `<div class="gdots">${imgs.map((_,j)=>`<span class="gdot ${j===0?'active':''}"></span>`).join('')}</div>` : '';
-  const nav = multi ? `<button class="gnav prev" onclick="galShift(this,-1)">‹</button><button class="gnav next" onclick="galShift(this,1)">›</button>` : '';
-  const expand = `<span class="gexpand" onclick="openLightbox()" title="View larger">⤢ Enlarge</span>`;
-  return `<div class="gal"><button class="xbtn" onclick="closeCard()">✕</button>${imgEls}${nav}${expand}${dots}</div>`;
-}
+const DAYS = [
+  { n:1, date:"Sat–Sun · Sep 11–12", title:"Arrive & settle in", place:"Port de Pollença", ll:BASE, type:"travel",
+    summary:"Land in Palma, pick up the rental car and drive ~1 hr north to Port de Pollença — home for the next 10 nights. Shake off the flights with a first swim off the bay and an easy dinner in town.",
+    photos:["photos/96-mal-d2-marina.jpg","photos/92-mal-d1-old-town.jpg","photos/93-mal-d1-seafood.jpg"],
+    plan:[["✈️","Arrive Palma (PMI); collect the rental car"],["🚗","Drive ~1 hr north to Port de Pollença, check in"],
+          ["🏊","First swim off the bay + the Pine Walk (Passeig Voramar)"],["🍽️","Easy dinner in town — early night for the jet lag"]],
+    stay:"Port de Pollença — (add your stay: name + address)",
+    book:[["Rental car","Pick up at Palma (PMI). Add confirmation #"],["Accommodation","10 nights, Port de Pollença. Add booking + check-in time"]],
+    maps:[["Port de Pollença","Port de Pollença, Mallorca"],["Palma Airport (PMI)","Palma de Mallorca Airport"]],
+    note:"9-hour time change from Eugene — go to bed when the locals do and you'll reset faster." },
 
-/* ============================ map ============================ */
-const mapTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
-  attribution:'&copy; OpenStreetMap &copy; CARTO', maxZoom:18 });
-const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
-  attribution:'Imagery &copy; Esri', maxZoom:18 });
-const satLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{ maxZoom:18 });
-const satellite = L.layerGroup([sat, satLabels]);
+  { n:2, date:"Mon · Sep 13", title:"Vall de Bóquer & first swim", place:"Bóquer valley", ll:[39.9180,3.0900], type:"hike",
+    summary:"Ease in with the gentle Bóquer valley walk out to a quiet cove, then sort the e-bikes and lock in the week's bookings.",
+    photos:["photos/99-mal-d3-cala-deia.jpg","photos/111-mal-d7-snorkel.jpg","photos/113-mal-d8-mondrago.jpg"],
+    plan:[["🥾","Vall de Bóquer walk (~5 km, easy) — a birdlife valley between the hills"],["🏊","Swim at Cala Bóquer at the far end"],
+          ["🚲","Reserve e-bikes for the Formentor ride (book 3+ days ahead)"],["📞","Confirm the sail, kayak & coasteering for the week"]],
+    stay:"Port de Pollença",
+    book:[["E-bikes","CCT Bike Rental or 2GoCycling — ~€48/day e-MTB. Reserve now"],["Activities","Sail+snorkel, sea-kayak, coasteering — book this week"]],
+    maps:[["Vall de Bóquer trailhead","Vall de Boquer Pollensa"],["Cala Sant Vicenç","Cala Sant Vicenc Mallorca"]] },
 
+  { n:3, date:"Tue · Sep 14", title:"E-bike Cap de Formentor", place:"Formentor peninsula", ll:[39.9619,3.2106], type:"bike",
+    summary:"Cars are banned on the Formentor road in September, so e-bike is the way — the island's most famous ride out to the lighthouse, with cliff miradors and a swim at the end.",
+    photos:["photos/106-mal-d6-formentor-lighthouse.jpg","photos/107-mal-d6-es-colomer.jpg","photos/108-mal-d6-formentor-beach.jpg"],
+    plan:[["🚴","E-bike from Port de Pollença out along the Formentor peninsula"],["👀","Mirador des Colomer — cliffs straight into the sea"],
+          ["🗼","Walk up to the Talaia d'Albercutx watchtower"],["🏖️","On to the lighthouse; swim at Platja de Formentor"]],
+    stay:"Port de Pollença",
+    book:[["E-bikes","Pick up in Port de Pollença. ~€48/day e-MTB"]],
+    maps:[["Mirador des Colomer","Mirador es Colomer Formentor"],["Formentor lighthouse","Far de Formentor"],["Platja de Formentor","Playa de Formentor"]],
+    note:"⚠️ Formentor road is closed to cars 10am–10pm (Jun–Oct). E-bike, shuttle bus 334, or boat — or drive before 10am. Re-check the 2027 hours nearer the trip." },
+
+  { n:4, date:"Wed · Sep 15", title:"Sail + snorkel day", place:"Pollença bay", ll:[39.8990,3.0950], type:"water",
+    summary:"A half-day skippered sail around Pollença bay and the Formentor coves — snorkel the clear water, paddle the SUP, snacks aboard. Easy afternoon on the beach.",
+    photos:["photos/117-mal-d9-boat.jpg","photos/111-mal-d7-snorkel.jpg","photos/96-mal-d2-marina.jpg"],
+    plan:[["⛵","Skippered sail from Port de Pollença (half day)"],["🤿","Snorkel the coves toward Formentor / Cala Sant Vicenç"],
+          ["🏄","SUP + swim stops; snacks & drinks aboard"],["🏖️","Lazy afternoon back in town"]],
+    stay:"Port de Pollença",
+    book:[["Sail + snorkel","NoFrills Excursions — Pollença bay, ~€89pp high season (gear + snacks). Book ahead"]],
+    maps:[["Port de Pollença marina","Port de Pollensa marina"]] },
+
+  { n:5, date:"Thu · Sep 16", title:"Sa Calobra & Torrent de Pareis", place:"Sa Calobra", ll:[39.8517,2.8003], type:"hike",
+    summary:"The big one. Drive the legendary serpentine road down to Sa Calobra, walk into the Torrent de Pareis where the gorge meets the sea, and swim in the cove. Cala Tuent and the Lluc monastery on the way back.",
+    photos:["photos/103-mal-d5-sa-calobra.jpg","photos/104-mal-d5-torrent-pareis.jpg","photos/105-mal-d5-serpentine.jpg"],
+    plan:[["🚗","Early start — drive the MA-2141 serpentine (the 'Nus de sa Corbata')"],["🏞️","Walk into the Torrent de Pareis gorge mouth (full scramble optional)"],
+          ["🏊","Swim in the cove between the cliffs"],["🌄","Cala Tuent + MA-10 ridge views + Lluc monastery on the way home"]],
+    stay:"Port de Pollença",
+    book:[["No booking needed","Self-drive ~1h15. Go EARLY to beat the coaches. Or take the boat from Port de Sóller (Barcos Azules, ~€30 round trip)"]],
+    maps:[["Sa Calobra car park","Sa Calobra parking"],["Lluc Monastery","Santuari de Lluc"]],
+    note:"⚠️ Check the weather — the Torrent de Pareis is a flash-flood canyon (people have died); never enter if rain is about. Strong boots; it's a boulder scramble." },
+
+  { n:6, date:"Fri · Sep 17", title:"Recovery — coves & old town", place:"Cala Sant Vicenç", ll:[39.9230,3.0560], type:"chill",
+    summary:"Sleep in. Float around the Cala Sant Vicenç coves, then a gentle climb to the Puig de Maria hermitage for sunset, and a wander through Pollença's old town and the Calvari steps.",
+    photos:["photos/112-mal-d8-calo-des-moro.jpg","photos/99-mal-d3-cala-deia.jpg","photos/94-mal-d2-bellver.jpg"],
+    plan:[["🏊","Cala Sant Vicenç — four little coves, easy swimming"],["🥾","Optional: Puig de Maria — short steep climb to a hermitage with huge views"],
+          ["🪜","Pollença old town: the 365 Calvari steps + Plaça Major"],["🍷","Long, relaxed dinner"]],
+    stay:"Port de Pollença",
+    book:[],
+    maps:[["Cala Sant Vicenç","Cala Sant Vicenc Mallorca"],["Puig de Maria","Puig de Maria Pollensa"]] },
+
+  { n:7, date:"Sat · Sep 18", title:"Sea-kayak & sea caves", place:"La Victòria, Alcúdia", ll:[39.8760,3.1700], type:"water",
+    summary:"Paddle the cliffs and sea caves on the Alcúdia peninsula (beginner-friendly, with a snorkel stop), then explore Alcúdia's Roman walls or hike down to the wild Coll Baix beach.",
+    photos:["photos/95-mal-d2-kayak.jpg","photos/111-mal-d7-snorkel.jpg","photos/113-mal-d8-mondrago.jpg"],
+    plan:[["🛶","Guided sea-kayak from La Victòria / Alcúdia (~2 hr) — cliffs & sea caves"],["🤿","Snorkel stop in a hidden cove"],
+          ["🏛️","Alcúdia old town & Roman walls"],["🏖️","Optional: hike down to Coll Baix beach (~45 min each way)"]],
+    stay:"Port de Pollença",
+    book:[["Sea-kayak tour","~€65pp, ~2 hr, from La Victòria. Beginner-friendly. Book ahead"]],
+    maps:[["La Victòria (kayak launch)","Ermita de la Victoria Alcudia"],["Alcúdia old town","Alcudia old town"]] },
+
+  { n:8, date:"Sun · Sep 19", title:"Puig de Massanella", place:"Tramuntana (near Lluc)", ll:[39.8180,2.8570], type:"hike",
+    summary:"The big mountain day: Puig de Massanella, the highest peak you can walk in Mallorca, deep in the Tramuntana. All-day, with one short scrambly bit near the top, and a reward swim back near the coast.",
+    photos:["photos/102-mal-d4-tramuntana.jpg","photos/97-mal-d3-valldemossa.jpg","photos/98-mal-d3-deia.jpg"],
+    plan:[["🛒","Catch the Pollença Sunday market first (Plaça Major)"],["🚗","Drive ~1 hr to the trailhead near Lluc / Coll de sa Batalla"],
+          ["⛰️","Summit Puig de Massanella (1,367 m) — long, with a short unprotected scramble near the top"],["🏊","Down by afternoon; reward swim near base"]],
+    stay:"Port de Pollença",
+    book:[],
+    maps:[["Massanella trailhead (Coll de sa Batalla)","Coll de sa Batalla Mallorca"],["Pollença market (Plaça Major)","Placa Major Pollensa"]],
+    note:"Big day — start early, carry lots of water, proper boots. You can skip the final scramble if it feels exposed; the views are huge regardless." },
+
+  { n:9, date:"Mon · Sep 20", title:"Coasteering (or a chill day)", place:"Bonaire, Alcúdia", ll:[39.8660,3.1450], type:"water",
+    summary:"Guided coasteering on the north cliffs — scrambling, swimming through sea caves, and supervised jumps into the sea, all with a guide, helmet and wetsuit. Not feeling it? Swap for a chill SUP-and-beach day.",
+    photos:["photos/111-mal-d7-snorkel.jpg","photos/95-mal-d2-kayak.jpg","photos/117-mal-d9-boat.jpg"],
+    plan:[["🪨","Guided coasteering (~3.5 hr) — cliff scrambles, caves, supervised jumps"],["🦺","Wetsuit, helmet, harness & guide all provided"],
+          ["🏖️","Or swap for a relaxed SUP + beach day"],["🍤","Seaside dinner"]],
+    stay:"Port de Pollença",
+    book:[["Coasteering","Mon d'Aventura (Pollença) — ~€65pp, full safety gear & certified guide. Book ahead"]],
+    maps:[["Coasteering meet (Bonaire)","Mon d'Aventura Pollensa"]],
+    note:"Only as a guided trip — never DIY the cliffs." },
+
+  { n:10, date:"Tue · Sep 21", title:"Flex day — Sóller & the train", place:"Sóller (or your pick)", ll:[39.7667,2.7150], type:"flex",
+    summary:"A flexible last full day. Suggested: drive the scenic MA-10 to Sóller for the vintage wooden train and seaside tram, with Deià and Valldemossa on the way. Or repeat a favorite cove, or a second easy e-bike. Last big dinner.",
+    photos:["photos/100-mal-d4-train.jpg","photos/101-mal-d4-port-soller.jpg","photos/98-mal-d3-deia.jpg"],
+    plan:[["🚋","Sóller — the 1912 wooden train & seaside tram (Deià + Valldemossa en route)"],["🚲","Or: a relaxed second e-bike (bay loop to Alcúdia / wine country)"],
+          ["🏊","Or: back to your favorite cove for one more swim"],["🥂","Last big dinner in Port de Pollença"]],
+    stay:"Port de Pollença",
+    book:[],
+    maps:[["Sóller train station","Estacio Soller"],["Valldemossa","Valldemossa Mallorca"]] },
+
+  { n:11, date:"Wed · Sep 22", title:"Fly home", place:"Palma → Eugene", ll:[39.5517,2.7388], type:"travel",
+    summary:"Return the car at Palma and fly home to Eugene (2 connections, ~20 hrs). Build in buffer for the drive south and the airport.",
+    photos:["photos/118-mal-d10-coast.jpg","photos/119-mal-d10-skyline.jpg","photos/120-mal-d10-airplane.jpg"],
+    plan:[["🚗","Drive ~1 hr to Palma; return the rental car (allow buffer)"],["✈️","Fly Palma (PMI) → Eugene — 2 connections"],
+          ["🛋️","Recovery days at home before work"],["🎉","Trip complete"]],
+    stay:"—",
+    book:[["Return flight","PMI → EUG. Add confirmation + departure time"],["Car drop-off","Palma airport. Allow buffer"]],
+    maps:[["Palma Airport (PMI)","Palma de Mallorca Airport"]] },
+];
+
+/* ---------- helpers ---------- */
+function mapUrl(q){ return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q); }
+
+/* ---------- map ---------- */
+const mapTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO', maxZoom:18});
+const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Imagery &copy; Esri', maxZoom:18});
+const satLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18});
 const map = L.map('map',{scrollWheelZoom:true, layers:[mapTiles]});
-L.control.layers({"🗺️ Map":mapTiles, "🛰️ Satellite":satellite},null,{position:'topright'}).addTo(map);
+L.control.layers({"🗺️ Map":mapTiles,"🛰️ Satellite":L.layerGroup([sat,satLabels])},null,{position:'topright'}).addTo(map);
 
-// All three trips live on the map at once, colour-coded. The active trip is
-// highlighted; the others stay faded but fully clickable.
-const TRIP_ORDER = ['andalucia','castile','north','mallorca'];
-const TRIP_COLORS = { andalucia:'#C1660F', castile:'#7A5AA8', north:'#1F8A70', mallorca:'#1565C0' };
-const layers = {};
-let activeKey = null, current = 0, curImgs = [], lbIdx = 0;
-const card = document.getElementById('daycard');
-const hint = document.getElementById('hint');
+const markers = [];
+// base marker
+L.marker(BASE,{icon:L.divIcon({className:'',html:`<div class="pin base">🏠</div>`,iconSize:[34,34],iconAnchor:[17,17]})})
+  .addTo(map).bindTooltip("Home base · Port de Pollença",{direction:'top'});
+// day markers (skip duplicates that sit exactly on base)
+DAYS.forEach((d,i)=>{
+  if(d.ll===BASE) return;
+  const col=TYPE[d.type].c;
+  const m=L.marker(d.ll,{icon:L.divIcon({className:'',html:`<div class="pin" data-i="${i}" style="background:${col}">${d.n}</div>`,iconSize:[30,30],iconAnchor:[15,15]})}).addTo(map);
+  m.on('click',()=>openDay(i));
+  markers[i]=m;
+});
 
-// Flat, day-ordered photo list per trip — powers "browse all photos" in the lightbox.
-const TRIP_PHOTOS = {};
-function buildTripPhotos(){
-  TRIP_ORDER.forEach(key=>{
-    const list = [];
-    itineraries[key].days.forEach(day=>{
-      ((PHOTOS[key] && PHOTOS[key][day.d]) || []).forEach(src=> list.push({src, d:day.d, title:day.title}));
-    });
-    TRIP_PHOTOS[key] = list;
-  });
-}
+/* ---------- day card ---------- */
+let current=0, curImgs=[], lbIdx=0;
+const card=document.getElementById('daycard');
 
-function renderAll(){
-  TRIP_ORDER.forEach(key=>{
-    const it = itineraries[key], color = TRIP_COLORS[key];
-    const polys = [], mks = [];
-    it.routes.forEach(r=>{
-      const style = r.type==='train'
-        ? {color, weight:4, opacity:.9}
-        : {color, weight:3, opacity:.9, dashArray:'5,8'};
-      const pl = L.polyline(r.pts, style).addTo(map);
-      pl._kind = r.type;
-      pl.on('click', ()=> loadItinerary(key));
-      polys.push(pl);
-    });
-    it.stops.forEach((s, si)=>{
-      const icon = L.divIcon({className:'', html:`<div class="pin ${s.type}" data-key="${key}" data-si="${si}" style="background:${color}">${s.label}</div>`,
-        iconSize:s.type==='city'?[34,34]:[32,32], iconAnchor:s.type==='city'?[17,17]:[16,16]});
-      const m = L.marker(s.ll,{icon}).addTo(map);
-      const firstDay = it.days.findIndex(d=>d.stop===si);
-      m.on('click', ()=>{ if(activeKey!==key) setActive(key, false); openDay(firstDay>=0?firstDay:0); });
-      mks.push(m);
-    });
-    layers[key] = {polys, markers:mks};
-  });
+function pills(){
+  document.getElementById('pills').innerHTML = DAYS.map((d,i)=>`<button data-i="${i}" onclick="openDay(${i})">Day ${d.n}</button>`).join('');
 }
+function galleryHTML(d){
+  const imgs=d.photos||[];
+  const t=TYPE[d.type];
+  const imgEls=imgs.map((src,j)=>`<img class="${j===0?'active':''}" src="${src}" alt="" loading="lazy" onerror="this.remove()" onclick="openLightbox()">`).join('');
+  const multi=imgs.length>1;
+  const dots=multi?`<div class="gdots">${imgs.map((_,j)=>`<span class="gdot ${j===0?'active':''}"></span>`).join('')}</div>`:'';
+  const nav=multi?`<button class="gnav prev" onclick="galShift(this,-1)">‹</button><button class="gnav next" onclick="galShift(this,1)">›</button>`:'';
+  return `<div class="gal"><span class="gtype" style="background:${t.c}">${t.label}</span>${imgEls}${nav}<span class="gexpand" onclick="openLightbox()">⤢ Enlarge</span>${dots}</div>`;
+}
+function galShift(btn,dir){
+  const gal=btn.closest('.gal'); const imgs=[...gal.querySelectorAll('img')]; const dots=[...gal.querySelectorAll('.gdot')];
+  let i=imgs.findIndex(x=>x.classList.contains('active')); imgs[i].classList.remove('active'); if(dots[i])dots[i].classList.remove('active');
+  i=(i+dir+imgs.length)%imgs.length; imgs[i].classList.add('active'); if(dots[i])dots[i].classList.add('active');
+}
+function detailsHTML(d){
+  const stay = d.stay && d.stay!=='—' ? `<div class="det-row"><span class="di">🛏️</span><div><b>Stay:</b> ${d.stay}</div></div>` : '';
+  const book = (d.book||[]).map(b=>`<div class="det-row"><span class="di">📋</span><div><b>${b[0]}:</b> <span class="${/add |confirmation|booking/i.test(b[1])?'todo':''}">${b[1]}</span></div></div>`).join('');
+  const maps = (d.maps&&d.maps.length)?`<div class="det-row"><span class="di">📍</span><div><b>Get there:</b><div class="maplinks">${d.maps.map(m=>`<a href="${mapUrl(m[1])}" target="_blank" rel="noopener">📍 ${m[0]}</a>`).join('')}</div></div></div>`:'';
+  const note = d.note?`<div class="note">${d.note}</div>`:'';
+  return `<details class="det" open><summary>Details & bookings <span class="chev">▾</span></summary>${stay}${book}${maps}</details>${note}`;
+}
+function openDay(i){
+  current=i; const d=DAYS[i]; curImgs=d.photos||[];
+  document.getElementById('cardGal').innerHTML=galleryHTML(d);
+  document.getElementById('cardBody').innerHTML=
+    `<div class="pd">Day ${d.n} · ${d.date}</div>`+
+    `<h2>${d.title}</h2><div class="loc">📍 ${d.place}</div>`+
+    `<p class="summary">${d.summary}</p>`+
+    `<ul class="acts">${d.plan.map(a=>`<li><span class="ic">${a[0]}</span>${a[1]}</li>`).join('')}</ul>`+
+    detailsHTML(d);
+  document.getElementById('footCount').textContent=`Day ${d.n} of ${DAYS.length}`;
+  document.getElementById('prevBtn').disabled=(i===0);
+  document.getElementById('nextBtn').disabled=(i===DAYS.length-1);
+  document.querySelector('.card-scroll').scrollTop=0;
+  document.querySelectorAll('#pills button').forEach(b=>b.classList.toggle('active',+b.dataset.i===i));
+  document.querySelectorAll('.pin[data-i]').forEach(p=>p.classList.toggle('sel',+p.dataset.i===i));
+  map.flyTo(d.ll, d.type==='travel'?10:12, {duration:.7});
+}
+function step(dir){ const n=current+dir; if(n>=0&&n<DAYS.length) openDay(n); }
 
-// Highlight one trip, fade the rest. fit=true reframes the map to that trip.
-function setActive(key, fit){
-  activeKey = key;
-  const it = itineraries[key];
-  document.querySelectorAll('.switch button').forEach(b=>b.classList.toggle('active', b.dataset.key===key));
-  document.getElementById('trip-title').textContent = it.title;
-  document.getElementById('trip-sub').textContent = it.sub;
-  TRIP_ORDER.forEach(k=>{
-    const on = (k===key);
-    layers[k].polys.forEach(pl=>{
-      const train = pl._kind==='train';
-      pl.setStyle({ opacity: on?0.95:0.25, weight: train?(on?4:2.5):(on?3:2) });
-      if(on && pl._path && pl._path.parentNode) pl.bringToFront();
-    });
-    layers[k].markers.forEach(m=>{
-      const el = m.getElement(); if(el){ const pin = el.querySelector('.pin'); if(pin) pin.classList.toggle('dim', !on); }
-      m.setZIndexOffset(on?1000:0);
-    });
-  });
-  if(fit) map.fitBounds(L.latLngBounds(it.stops.map(s=>s.ll)).pad(0.18));
-}
-
-// Header buttons: focus a trip and jump to its start.
-function loadItinerary(key){
-  setActive(key, true);
-  openDay(0, false);
-}
-
-function markSelected(si){
-  document.querySelectorAll('.pin').forEach(p=>p.classList.toggle('sel', p.dataset.key===activeKey && +p.dataset.si===si));
-}
-function openDay(i, fly){
-  if(fly===undefined) fly = true;
-  const it = itineraries[activeKey];
-  current = i;
-  const day = it.days[i], s = it.stops[day.stop];
-  const imgs = (PHOTOS[activeKey] && PHOTOS[activeKey][day.d]) || day.imgs || [];
-  curImgs = imgs;
-  document.getElementById('cardGal').innerHTML = galleryHTML(imgs, day, s);
-  document.getElementById('cardBody').innerHTML = `
-    <div class="pd">Day ${day.d} · ${day.date}</div>
-    <h2>${day.title}</h2><div class="loc">📍 ${s.name}</div>
-    <ul class="acts">${day.acts.map(a=>`<li><span class="ic">${a[0]}</span>${a[1]}</li>`).join('')}</ul>
-    <span class="tag">${day.tag}</span>`;
-  document.getElementById('footCount').textContent = `Day ${day.d} of ${it.days.length}`;
-  document.getElementById('prevBtn').disabled = (i===0);
-  document.getElementById('nextBtn').disabled = (i===it.days.length-1);
-  document.querySelector('.card-scroll').scrollTop = 0;
-  card.classList.add('show');
-  if(hint) hint.style.opacity = 0;
-  markSelected(day.stop);
-  if(fly) map.flyTo(s.ll, s.type==='city'?11:12, {duration:.7});
-}
-function step(dir){ const it=itineraries[activeKey]; const n=current+dir; if(n>=0 && n<it.days.length) openDay(n); }
-function closeCard(){ card.classList.remove('show'); markSelected(-1); }
-
-// Trip overview panel
-function openOverview(){
-  const o = OVERVIEW[activeKey], it = itineraries[activeKey], color = TRIP_COLORS[activeKey];
-  const row = (ic,label,txt)=>`<div class="ov-row"><span class="ov-ic">${ic}</span><div class="ov-tx"><b>${label}</b>${txt}</div></div>`;
-  document.getElementById('ovContent').innerHTML =
-    `<div class="ov-accent" style="background:${color}"></div>`+
-    `<h2 class="ov-title">${it.title.replace('🇪🇸 Spain 2027 — ','')}</h2>`+
-    `<p class="ov-blurb">${o.blurb}</p>`+
-    row('🌡️','Temperatures',o.temp)+
-    row('🥾',"What you'll do &amp; see",o.doSee)+
-    row('🚆','Getting around',o.travel)+
-    row('📏','Distances',o.distance)+
-    `<div class="ov-special"><div class="ov-sp-h" style="color:${color}">✨ What makes it special</div>`+
-    `<ul>${o.unique.map(u=>`<li>${u}</li>`).join('')}</ul></div>`+
-    ((TRIP_PHOTOS[activeKey]||[]).length
-      ? `<button class="ov-allbtn" style="background:${color}" onclick="openAllPhotos()">📷 Browse all ${TRIP_PHOTOS[activeKey].length} photos</button>`
-      : `<div class="ov-nophotos">📷 Photos coming soon</div>`);
-  document.getElementById('overlay').classList.add('show');
-}
-function closeOverview(){ document.getElementById('overlay').classList.remove('show'); }
-
-// Fullscreen photo lightbox — spans the WHOLE active trip's photos so you can
-// flip through all of them in one go; opens at whichever photo you clicked.
-function activeGalIndex(){
-  const imgs = [...document.querySelectorAll('#cardGal img')];
-  const i = imgs.findIndex(x=>x.classList.contains('active'));
-  return i<0 ? 0 : i;
-}
-function renderLb(){
-  const list = TRIP_PHOTOS[activeKey] || [];
-  const item = list[lbIdx]; if(!item) return;
-  document.getElementById('lbImg').src = item.src;
-  const cap = CAPTIONS[item.src] || '';
-  document.getElementById('lbCap').innerHTML = `Day ${item.d} · ${cap}<span class="lb-count">${lbIdx+1} / ${list.length}</span>`;
-}
-function openLightbox(){
-  const list = TRIP_PHOTOS[activeKey] || [];
-  if(!list.length) return;
-  const clicked = curImgs[activeGalIndex()];
-  const gi = list.findIndex(p=>p.src===clicked);
-  lbIdx = gi<0 ? 0 : gi;
-  renderLb();
-  document.getElementById('lightbox').classList.add('show');
-}
-function openAllPhotos(){
-  const list = TRIP_PHOTOS[activeKey] || [];
-  if(!list.length) return;
-  closeOverview();
-  lbIdx = 0; renderLb();
-  document.getElementById('lightbox').classList.add('show');
-}
-function lbStep(d){ const n=(TRIP_PHOTOS[activeKey]||[]).length; if(!n) return; lbIdx=(lbIdx+d+n)%n; renderLb(); }
+/* ---------- lightbox ---------- */
+function activeGalIndex(){ const imgs=[...document.querySelectorAll('#cardGal img')]; const i=imgs.findIndex(x=>x.classList.contains('active')); return i<0?0:i; }
+function renderLb(){ const src=curImgs[lbIdx]; document.getElementById('lbImg').src=src; const cap=CAPTIONS[src]||''; const ctx=curImgs.length>1?`${lbIdx+1} / ${curImgs.length}`:''; document.getElementById('lbCap').innerHTML=`${cap}<span class="lb-count">${ctx}</span>`; }
+function openLightbox(){ if(!curImgs.length)return; lbIdx=activeGalIndex(); renderLb(); document.getElementById('lightbox').classList.add('show'); }
+function lbStep(d){ lbIdx=(lbIdx+d+curImgs.length)%curImgs.length; renderLb(); }
 function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); }
 function lbBackdrop(e){ if(e.target.id==='lightbox') closeLightbox(); }
 
-document.addEventListener('keydown', e=>{
-  const lb = document.getElementById('lightbox');
-  if(lb.classList.contains('show')){
-    if(e.key==='ArrowRight') lbStep(1);
-    else if(e.key==='ArrowLeft') lbStep(-1);
-    else if(e.key==='Escape') closeLightbox();
-    return;
-  }
-  if(e.key==='Escape' && document.getElementById('overlay').classList.contains('show')){ closeOverview(); return; }
-  if(!card.classList.contains('show')) return;
-  if(e.key==='ArrowRight') step(1);
-  else if(e.key==='ArrowLeft') step(-1);
-  else if(e.key==='Escape') closeCard();
+document.addEventListener('keydown',e=>{
+  const lb=document.getElementById('lightbox');
+  if(lb.classList.contains('show')){ if(e.key==='ArrowRight')lbStep(1); else if(e.key==='ArrowLeft')lbStep(-1); else if(e.key==='Escape')closeLightbox(); return; }
+  if(e.key==='ArrowRight')step(1); else if(e.key==='ArrowLeft')step(-1);
 });
 
-// Draw all three trips, then open with an overview of the whole of Spain and
-// the Andalucía proposal active. Buttons/pins take it from there.
-function frameAll(){ const p = TRIP_ORDER.flatMap(k=>itineraries[k].stops.map(s=>s.ll)); map.fitBounds(L.latLngBounds(p).pad(0.08)); }
-buildTripPhotos();
-renderAll();
-setActive('andalucia', false);
-openDay(0, false);
-frameAll();
-// Layout/preview safety: once the map truly has its size, re-apply highlight + reframe.
-setTimeout(()=>{ map.invalidateSize(); setActive(activeKey, false); openDay(current, false); frameAll(); }, 240);
-setTimeout(()=>{ if(hint) hint.style.display='none'; }, 6000);
+/* ---------- add-to-home-screen hint (iOS Safari, not already installed) ---------- */
+function dismissA2HS(){ document.getElementById('a2hs').style.display='none'; try{localStorage.setItem('a2hs','1');}catch(e){} }
+(function(){
+  const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const standalone=window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+  let seen=false; try{seen=localStorage.getItem('a2hs')==='1';}catch(e){}
+  if(isiOS && !standalone && !seen){ document.getElementById('a2hs').style.display='flex'; }
+})();
+
+/* ---------- init ---------- */
+pills();
+map.fitBounds(L.latLngBounds([BASE,...DAYS.map(d=>d.ll)]).pad(0.12));
+openDay(0);
+setTimeout(()=>{ map.invalidateSize(); map.fitBounds(L.latLngBounds([BASE,...DAYS.map(d=>d.ll)]).pad(0.12)); }, 240);
+
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
 </script>
 </body>
 </html>

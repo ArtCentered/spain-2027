@@ -1,0 +1,16 @@
+{
+  "name": "Mar i Muntanya — Mallorca 2027",
+  "short_name": "Mar i Muntanya",
+  "description": "Our Mallorca trip companion — day-by-day plans, hikes, rides, water days, addresses & bookings.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14333d",
+  "theme_color": "#1F4E5F",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

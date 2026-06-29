@@ -1,5 +1,6 @@
 .DS_Store
 photos/originals/
 *.png
+!icons/*.png
 Thumbs.db
 .claude/
