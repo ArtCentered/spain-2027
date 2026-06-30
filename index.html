@@ -189,22 +189,27 @@ function cap(day,slug,text){ CAPS[P(day,slug)]=text; return P(day,slug); }
 
 // ---- the trip: days -> events ----
 const DAYS=[
- { n:1, iso:"2027-09-12", date:"Sat–Sun · Sep 11–12", title:"Arrive & settle in", place:"Port de Pollença",
+ { n:1, iso:"2027-09-10", iso2:"2027-09-11", date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive", place:"Eugene → Port de Pollença",
    ll:BASE, mode:"car", chips:[["Travel","#6b7a80"]],
-   summary:"Fly Eugene → Palma (2 connections, ~18–20 hrs), pick up the car and drive ~1 hr north to Port de Pollença — home for the next 10 nights. First swim and an easy dinner to beat the jet lag.",
+   summary:"The long haul. Out of Eugene around midday Friday, two stops (Denver, Frankfurt), and into the hotel in Port de Pollença about 22 hours later — Saturday evening, local. Palma runs 9 hours ahead of Eugene.",
    events:[
-    { ic:"✈️", cat:"move", time:"Sep 11–12", title:"Fly Eugene → Palma", place:"Palma Airport (PMI)", mapq:"Palma de Mallorca Airport",
-      desc:"Two connections, roughly 18–20 hrs door to door. Palma is 9 hrs ahead of Eugene.", book:[["Flight","Add confirmation + arrival time"]] },
-    { ic:"🚗", cat:"move", time:"On arrival", title:"Pick up car & drive north", place:"PMI → Port de Pollença", mapq:"Port de Pollença, Mallorca",
-      desc:"Collect the rental car and drive ~1 hr to Port de Pollença.", book:[["Rental car","Add confirmation"],["Stay","Add accommodation + check-in"]] },
-    { ic:"🏊", cat:"water", time:"Afternoon", title:"First swim + the Pine Walk", place:"Passeig Voramar", mapq:"Passeig Voramar Port de Pollensa",
-      desc:"Shake off the flights with a swim off the bay and a stroll down the famous pine-lined seafront.",
+    { ic:"✈️", cat:"move", time:"Fri 12:47 PM · EUG", title:"Eugene → Denver", place:"Denver (DEN)", mapq:"Denver International Airport",
+      desc:"United UA1057 · 2h40. Land Denver 4:27 PM, 1h13 layover.", book:[["Flights","Example routing below — add your real confirmation once booked"]] },
+    { ic:"🛫", cat:"move", time:"Fri 5:40 PM · DEN", title:"Denver → Frankfurt (overnight)", place:"Frankfurt (FRA)", mapq:"Frankfurt Airport",
+      desc:"Lufthansa LH447 · 9h35 overnight. Land Frankfurt 11:15 AM Saturday, 3h05 layover. You lose the night to the +9 hr jump." },
+    { ic:"🛫", cat:"move", time:"Sat 2:20 PM · FRA", title:"Frankfurt → Palma", place:"Palma (PMI)", mapq:"Palma de Mallorca Airport",
+      desc:"Discover 4Y518 · 2h05. Touch down Palma 4:25 PM Saturday." },
+    { ic:"🚗", cat:"move", time:"Sat ~5 PM", title:"Pick up car & drive north", place:"PMI → Port de Pollença", mapq:"Port de Pollença, Mallorca",
+      desc:"Collect the rental car and drive ~1 hr north — at the hotel around 6 PM Saturday (≈9 AM back in Eugene).",
+      book:[["Rental car","Add confirmation"],["Stay","Add accommodation + check-in"]],
+      note:"Door-to-door ≈ 22 hrs. Palma is 9 hrs ahead of Eugene — push through to a local bedtime Saturday and the jet lag fades much faster." },
+    { ic:"🏊", cat:"water", time:"Sat evening", title:"First swim + the Pine Walk", place:"Passeig Voramar", mapq:"Passeig Voramar Port de Pollensa",
+      desc:"If there's any gas left — a dip off the bay and a slow stroll down the pine-lined seafront.",
       photos:[cap(1,"portpollensa-bay","Port de Pollença bay"), cap(1,"pine-walk","The Pine Walk (Passeig Voramar)")] },
-    { ic:"🍽️", cat:"food", time:"Evening", title:"Easy dinner in town", place:"Port de Pollença", mapq:"Port de Pollença",
-      desc:"Early night — bed when the locals do and the jet lag resets faster.",
-      photos:[cap(1,"pollensa-evening","Port de Pollença seafront")] } ] },
+    { ic:"🍽️", cat:"food", time:"Sat evening", title:"Easy dinner, then sleep", place:"Port de Pollença", mapq:"Port de Pollença",
+      desc:"Low-key first dinner in town.", photos:[cap(1,"pollensa-evening","Port de Pollença seafront")] } ] },
 
- { n:2, iso:"2027-09-13", date:"Mon · Sep 13", title:"Vall de Bóquer & first swim", place:"Bóquer valley",
+ { n:2, iso:"2027-09-12", date:"Sun · Sep 12", title:"Vall de Bóquer & first swim", place:"Bóquer valley",
    ll:[39.9180,3.0900], mode:"bike", chips:[["Hike","#2E7D32"],["Swim","#2C7A8C"]],
    summary:"Ease in with the gentle Bóquer valley walk out to a quiet cove, then sort the e-bikes and lock in the week's bookings.",
    events:[
@@ -219,7 +224,7 @@ const DAYS=[
     { ic:"📞", cat:"move", time:"Afternoon", title:"Confirm the week's activities", place:"",
       desc:"Lock the sail + snorkel, the sea-kayak day, and coasteering." } ] },
 
- { n:3, iso:"2027-09-14", date:"Tue · Sep 14", title:"E-bike Cap de Formentor", place:"Formentor peninsula",
+ { n:3, iso:"2027-09-13", date:"Mon · Sep 13", title:"E-bike Cap de Formentor", place:"Formentor peninsula",
    ll:[39.9619,3.2106], mode:"bike", chips:[["E-bike","#C1660F"]],
    summary:"Cars are banned on the Formentor road in September, so e-bike is the way — the island's most famous ride to the lighthouse, with cliff miradors and a swim at the end.",
    events:[
@@ -233,7 +238,7 @@ const DAYS=[
     { ic:"🏖️", cat:"water", time:"Midday", title:"Lighthouse & swim at Platja de Formentor", place:"Cap de Formentor", mapq:"Far de Formentor",
       desc:"Ride to the lighthouse, then a swim at the pine-backed beach.", photos:[cap(3,"formentor-lighthouse","Cap de Formentor lighthouse")] } ] },
 
- { n:4, iso:"2027-09-15", date:"Wed · Sep 15", title:"Sail + snorkel", place:"Pollença bay",
+ { n:4, iso:"2027-09-14", date:"Tue · Sep 14", title:"Sail + snorkel", place:"Pollença bay",
    ll:[39.8990,3.0950], mode:"boat", chips:[["Water","#2C7A8C"]],
    summary:"A half-day skippered sail around Pollença bay and the Formentor coves — snorkel the clear water, paddle the SUP, snacks aboard. Easy afternoon on the beach.",
    events:[
@@ -244,7 +249,7 @@ const DAYS=[
     { ic:"🏄", cat:"water", time:"On the water", title:"SUP & swim stops", place:"", desc:"Paddleboards and swims; snacks & drinks aboard.", photos:[cap(4,"sup-cove","Paddleboarding a cove")] },
     { ic:"🏖️", cat:"rest", time:"Afternoon", title:"Lazy afternoon in town", place:"Port de Pollença", desc:"Beach and a wander." } ] },
 
- { n:5, iso:"2027-09-16", date:"Thu · Sep 16", title:"Sa Calobra & Torrent de Pareis", place:"Sa Calobra",
+ { n:5, iso:"2027-09-15", date:"Wed · Sep 15", title:"Sa Calobra & Torrent de Pareis", place:"Sa Calobra",
    ll:[39.8517,2.8003], mode:"car", chips:[["Big day","#C1660F"],["Hike","#2E7D32"]],
    summary:"The big one. Drive the legendary serpentine road down to Sa Calobra, walk into the Torrent de Pareis where the gorge meets the sea, and swim in the cove. Cala Tuent and Lluc on the way back.",
    events:[
@@ -259,7 +264,7 @@ const DAYS=[
     { ic:"🌄", cat:"sight", time:"Afternoon", title:"Cala Tuent + Lluc on the way back", place:"Santuari de Lluc", mapq:"Santuari de Lluc",
       desc:"A quieter cove and the mountain monastery, with MA-10 ridge views." } ] },
 
- { n:6, iso:"2027-09-17", date:"Fri · Sep 17", title:"Recovery — coves & old town", place:"Cala Sant Vicenç",
+ { n:6, iso:"2027-09-16", date:"Thu · Sep 16", title:"Recovery — coves & old town", place:"Cala Sant Vicenç",
    ll:[39.9230,3.0560], mode:"bike", chips:[["Easy day","#1F4E5F"]],
    summary:"Sleep in. Float around the Cala Sant Vicenç coves, then a gentle climb to the Puig de Maria hermitage for sunset, and a wander through Pollença's old town and Calvari steps.",
    events:[
@@ -270,7 +275,7 @@ const DAYS=[
     { ic:"🪜", cat:"sight", time:"Evening", title:"Pollença old town & Calvari steps", place:"Pollença", mapq:"Calvari Pollensa",
       desc:"The 365 cypress-lined steps and Plaça Major.", photos:[cap(6,"pollensa-calvari","The Calvari steps, Pollença")] } ] },
 
- { n:7, iso:"2027-09-18", date:"Sat · Sep 18", title:"Sea-kayak & sea caves", place:"La Victòria, Alcúdia",
+ { n:7, iso:"2027-09-17", date:"Fri · Sep 17", title:"Sea-kayak & sea caves", place:"La Victòria, Alcúdia",
    ll:[39.8760,3.1700], mode:"bike", chips:[["Water","#2C7A8C"]],
    summary:"Paddle the cliffs and sea caves on the Alcúdia peninsula (beginner-friendly, with a snorkel stop), then explore Alcúdia's old town or hike to the wild Coll Baix beach.",
    events:[
@@ -281,52 +286,66 @@ const DAYS=[
     { ic:"🏛️", cat:"sight", time:"Afternoon", title:"Alcúdia old town & Roman walls", place:"Alcúdia", mapq:"Alcudia old town",
       desc:"Walk the medieval walls and the old streets.", photos:[cap(7,"alcudia-walls","Alcúdia old town")] } ] },
 
- { n:8, iso:"2027-09-19", date:"Sun · Sep 19", title:"Puig de Massanella", place:"Tramuntana (near Lluc)",
+ { n:8, iso:"2027-09-18", date:"Sat · Sep 18", title:"Free day — beach & buffer", place:"Port de Pollença",
+   ll:BASE, mode:"none", chips:[["Easy day","#1F4E5F"],["Buffer","#C8902F"]],
+   summary:"A deliberate open day — rest before tomorrow's big Massanella hike, revisit a favorite cove, or hold it as weather / contingency buffer. Nothing booked.",
+   events:[
+    { ic:"🏖️", cat:"rest", time:"All day", title:"Beach & wander", place:"Port de Pollença / nearby coves", mapq:"Port de Pollença",
+      desc:"Sleep in, swim, read, wander the old town — or go back to the best cove of the week so far." },
+    { ic:"🚲", cat:"bike", time:"Optional", title:"Easy e-bike spin", place:"Around the bay to Alcúdia", mapq:"Alcudia bay path",
+      desc:"A flat loop along the bay if you want gentle movement." },
+    { ic:"🛒", cat:"sight", time:"Evening", title:"Provision for the mountain", place:"Port de Pollença", mapq:"Port de Pollença supermarket",
+      desc:"Stock up — water, snacks — for the big Massanella day tomorrow." } ] },
+
+ { n:9, iso:"2027-09-19", date:"Sun · Sep 19", title:"Puig de Massanella", place:"Tramuntana (near Lluc)",
    ll:[39.8180,2.8570], mode:"car", chips:[["Big day","#C1660F"],["Hike","#2E7D32"]],
    summary:"The big mountain day: Puig de Massanella, the highest walkable peak in Mallorca, deep in the Tramuntana. All-day, with one short scrambly bit, and a reward swim back near the coast.",
    events:[
     { ic:"🛒", cat:"sight", time:"Early", title:"Pollença Sunday market", place:"Plaça Major", mapq:"Placa Major Pollensa",
-      desc:"Grab provisions before you drive up." },
+      desc:"Sunday market in the square before you drive up." },
     { ic:"🚗", cat:"move", time:"Morning", title:"Drive to the trailhead", place:"Coll de sa Batalla", mapq:"Coll de sa Batalla Mallorca",
-      desc:"~1 hr to the Lluc area trailhead.", photos:[cap(8,"tramuntana-trail","The hike — trail map"), cap(8,"lluc-monastery","Santuari de Lluc")] },
+      desc:"~1 hr to the Lluc area trailhead.", photos:[cap(9,"tramuntana-trail","The hike — trail map"), cap(9,"lluc-monastery","Santuari de Lluc")] },
     { ic:"⛰️", cat:"hike", time:"All day", title:"Summit Puig de Massanella (1,367 m)", place:"Puig de Massanella", mapq:"Puig de Massanella",
-      desc:"Long climb with one short unprotected scramble near the top.", photos:[cap(8,"massanella-summit","Puig de Massanella")],
+      desc:"Long climb with one short unprotected scramble near the top.", photos:[cap(9,"massanella-summit","Puig de Massanella")],
       note:"Start early, carry lots of water, proper boots. Skip the final scramble if it feels exposed — the views are huge regardless." },
     { ic:"🏊", cat:"water", time:"Late afternoon", title:"Reward swim near base", place:"", desc:"Back down for a dip." } ] },
 
- { n:9, iso:"2027-09-20", date:"Mon · Sep 20", title:"Coasteering (or a chill day)", place:"Bonaire, Alcúdia",
+ { n:10, iso:"2027-09-20", date:"Mon · Sep 20", title:"Coasteering (or a chill day)", place:"Bonaire, Alcúdia",
    ll:[39.8660,3.1450], mode:"bike", chips:[["Water","#2C7A8C"],["Flex","#C8902F"]],
    summary:"Guided coasteering on the north cliffs — scrambling, swimming through sea caves, and supervised jumps into the sea, all with a guide, helmet and wetsuit. Not feeling it? Swap for a chill SUP-and-beach day.",
    events:[
     { ic:"🪨", cat:"water", time:"Morning", title:"Guided coasteering", place:"Bonaire / Alcúdia", mapq:"Mon d'Aventura Pollensa",
-      desc:"~3.5 hr of cliff scrambles, sea caves and supervised jumps.", photos:[cap(9,"coasteering-jump","Coasteering — the jump"), cap(9,"sea-cave-swim","Through a sea cave")],
+      desc:"~3.5 hr of cliff scrambles, sea caves and supervised jumps.", photos:[cap(10,"coasteering-jump","Coasteering — the jump"), cap(10,"sea-cave-swim","Through a sea cave")],
       book:[["Coasteering","Mon d'Aventura — ~€65pp (~$70), full safety gear & guide. Book ahead"]],
       note:"Only as a guided trip — never DIY the cliffs." },
-    { ic:"🌊", cat:"water", time:"Alternative", title:"Or: a SUP + beach day", place:"", desc:"Swap in a relaxed paddle-and-swim day if you'd rather.", photos:[cap(9,"north-cliffs","North-coast cliffs")] },
+    { ic:"🌊", cat:"water", time:"Alternative", title:"Or: a SUP + beach day", place:"", desc:"Swap in a relaxed paddle-and-swim day if you'd rather.", photos:[cap(10,"north-cliffs","North-coast cliffs")] },
     { ic:"🍤", cat:"food", time:"Evening", title:"Seaside dinner", place:"", desc:"" } ] },
 
- { n:10, iso:"2027-09-21", date:"Tue · Sep 21", title:"Flex day — Sóller & the train", place:"Sóller (or your pick)",
+ { n:11, iso:"2027-09-21", date:"Tue · Sep 21", title:"Flex day — Sóller & the train", place:"Sóller (or your pick)",
    ll:[39.7667,2.7150], mode:"car", chips:[["Flex","#C8902F"]],
-   summary:"A flexible last full day. Suggested: drive the scenic MA-10 to Sóller for the vintage wooden train and seaside tram, with Deià and Valldemossa on the way. Or repeat a favorite cove, or an easy second e-bike. Last big dinner.",
+   summary:"Last full day, flexible. Suggested: drive the scenic MA-10 to Sóller for the vintage wooden train and seaside tram, with Deià and Valldemossa on the way. Or repeat a favorite cove, or an easy e-bike. Last big dinner.",
    events:[
     { ic:"🚗", cat:"move", time:"Morning", title:"Drive the MA-10 to Sóller", place:"Sóller", mapq:"Soller Mallorca",
-      desc:"Scenic mountain drive, with Deià and Valldemossa en route.", photos:[cap(10,"deia-village","Deià")] },
+      desc:"Scenic mountain drive, with Deià and Valldemossa en route.", photos:[cap(11,"deia-village","Deià")] },
     { ic:"🚋", cat:"sight", time:"Midday", title:"Vintage train & seaside tram", place:"Sóller / Port de Sóller", mapq:"Estacio Soller",
       desc:"The 1912 wooden train through the mountains, then the open-air tram to the port.",
-      photos:[cap(10,"soller-train","The Sóller wooden train"), cap(10,"port-soller-tram","Port de Sóller tram")] },
+      photos:[cap(11,"soller-train","The Sóller wooden train"), cap(11,"port-soller-tram","Port de Sóller tram")] },
     { ic:"🏊", cat:"water", time:"Alternative", title:"Or: favorite cove / easy e-bike", place:"", desc:"Stay local and repeat the best of the week." },
     { ic:"🥂", cat:"food", time:"Evening", title:"Last big dinner", place:"Port de Pollença", desc:"Send-off in town." } ] },
 
- { n:11, iso:"2027-09-22", date:"Wed · Sep 22", title:"Fly home", place:"Palma → Eugene",
+ { n:12, iso:"2027-09-22", date:"Wed · Sep 22", title:"Fly home", place:"Palma → Eugene",
    ll:[39.5517,2.7388], mode:"car", chips:[["Travel","#6b7a80"]],
-   summary:"Return the car at Palma and fly home to Eugene (2 connections, ~20 hrs). Build in buffer for the drive south and the airport.",
+   summary:"Up early, return the car at Palma and fly home — Palma → Newark → San Francisco → Eugene. Flying west you gain the day: leave Palma mid-morning and touch down in Eugene the same evening (~8:30 PM, Wed Sep 22).",
    events:[
-    { ic:"🚗", cat:"move", time:"Morning", title:"Drive to Palma & return the car", place:"Palma Airport (PMI)", mapq:"Palma de Mallorca Airport",
-      desc:"~1 hr south; allow buffer.", photos:[cap(11,"coast-aerial","The Mallorca coast")], book:[["Car drop-off","Palma airport — allow buffer"]] },
-    { ic:"✈️", cat:"move", time:"Midday", title:"Fly Palma → Eugene", place:"", mapq:"",
-      desc:"Two connections, ~20 hrs.", photos:[cap(11,"palma-skyline","Palma from the air"), cap(11,"plane-window","From the plane window")],
-      book:[["Return flight","Add confirmation + departure time"]] },
-    { ic:"🛋️", cat:"rest", time:"After", title:"Recovery days at home", place:"", desc:"Before back to work. 🎉" } ] },
+    { ic:"🚗", cat:"move", time:"Wed early", title:"Drive to Palma & return the car", place:"Palma Airport (PMI)", mapq:"Palma de Mallorca Airport",
+      desc:"~1 hr south; allow buffer for the drop-off.", photos:[cap(12,"coast-aerial","The Mallorca coast")], book:[["Car drop-off","Palma airport — allow buffer"]] },
+    { ic:"✈️", cat:"move", time:"Wed 10:00 AM · PMI", title:"Palma → Newark", place:"Newark (EWR)", mapq:"Newark Liberty International Airport",
+      desc:"United UA237 · 9h10. Land Newark 1:10 PM, 1h35 layover.", book:[["Return flight","Example routing — add your real confirmation"]] },
+    { ic:"🛫", cat:"move", time:"Wed 2:45 PM · EWR", title:"Newark → San Francisco", place:"San Francisco (SFO)", mapq:"San Francisco International Airport",
+      desc:"United UA2328 · 6h03. Land SFO 5:48 PM, 57 min layover." },
+    { ic:"🛬", cat:"move", time:"Wed 6:45 PM · SFO", title:"San Francisco → Eugene", place:"Eugene (EUG)", mapq:"Eugene Airport",
+      desc:"United UA4742 (SkyWest). Touch down Eugene 8:29 PM, Wednesday Sep 22.", photos:[cap(12,"palma-skyline","Palma from the air"), cap(12,"plane-window","From the plane window")] },
+    { ic:"🛋️", cat:"rest", time:"After", title:"Home", place:"", desc:"Recovery days before back to work. 🎉" } ] },
 ];
 
 /* ===== all photos (for whole-trip lightbox) ===== */
@@ -410,7 +429,7 @@ function galShift(btn,dir){ const g=btn.closest('.egal'); const im=[...g.querySe
 function localISO(dt){ const p=n=>String(n).padStart(2,'0'); return dt.getFullYear()+'-'+p(dt.getMonth()+1)+'-'+p(dt.getDate()); }
 function renderToday(){
   const today=localISO(new Date());
-  const idx=DAYS.findIndex(d=>d.iso===today);
+  const idx=DAYS.findIndex(d=>d.iso===today||d.iso2===today);
   const body=document.getElementById('today-body');
   if(idx>=0){
     body.classList.remove('scrollpad');
@@ -422,10 +441,10 @@ function renderToday(){
     return;
   }
   body.classList.add('scrollpad');
-  const start=new Date('2027-09-12T00:00:00'); const now=new Date();
+  const start=new Date('2027-09-10T00:00:00'); const now=new Date();
   const diff=Math.ceil((start-now)/86400000);
   if(diff>0){
-    body.innerHTML=`<div class="todaybanner"><div class="lbl">Countdown to Mallorca</div><div class="big">${diff}</div><p>days until you land in Palma. Tap <b>Itinerary</b> to plan, or <b>Map</b> to see where it all is.</p></div>
+    body.innerHTML=`<div class="todaybanner"><div class="lbl">Countdown to Mallorca</div><div class="big">${diff}</div><p>days until you fly out to Mallorca. Tap <b>Itinerary</b> to plan, or <b>Map</b> to see where it all is.</p></div>
       <div class="dayrow" onclick="openDay(0)">${firstPhoto(DAYS[0])?`<img class="thumb" src="${firstPhoto(DAYS[0])}">`:''}<div class="meta"><div class="dnum">First up · Day 1</div><h3>${DAYS[0].title}</h3>${chipsHTML(DAYS[0])}</div><span class="arrow">›</span></div>`;
   } else {
     body.innerHTML=`<div class="todaybanner"><div class="lbl">Mar i Muntanya</div><h2>Hope it was epic ✨</h2><p>The trip's a wrap — flip through <b>Itinerary</b> to relive it.</p></div>`;
@@ -436,7 +455,7 @@ function renderToday(){
 function renderInfo(){
   document.getElementById('info-body').innerHTML=`
    <div class="infocard"><h3>Trip at a glance</h3>
-     <div class="inforow"><span class="ii">📅</span><div><b>Dates:</b> Fri Sep 11 → Wed Sep 22, 2027 (10 nights)</div></div>
+     <div class="inforow"><span class="ii">📅</span><div><b>Dates:</b> Fri Sep 10 → Wed Sep 22, 2027 (11 nights)</div></div>
      <div class="inforow"><span class="ii">🏠</span><div><b>Base:</b> Port de Pollença (one home base, day-trips out)</div></div>
      <div class="inforow"><span class="ii">✈️</span><div><b>Flights:</b> Eugene (EUG) ⇄ Palma (PMI), 2 connections each way · <span class="todo">add confirmation</span></div></div>
      <div class="inforow"><span class="ii">🚗</span><div><b>Getting around:</b> rental car for the far hikes; e-bikes for the nearby spots</div></div>
@@ -470,10 +489,10 @@ const ROUTES = {
   5:{mode:"car", pts:[[39.90798,3.08184],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.9093,3.07865],[39.90426,3.07458],[39.8922,3.0358],[39.88746,3.02917],[39.88493,3.02337],[39.88289,3.00838],[39.87498,2.9935],[39.8693,2.97942],[39.86761,2.97199],[39.86985,2.96239],[39.86833,2.9533],[39.86941,2.9461],[39.86581,2.93891],[39.86973,2.94335],[39.86928,2.94105],[39.86731,2.93933],[39.8666,2.93555],[39.86732,2.93262],[39.86596,2.93072],[39.86732,2.9276],[39.86837,2.92854],[39.86938,2.92536],[39.86639,2.92427],[39.866,2.92095],[39.86412,2.91761],[39.85676,2.91356],[39.85848,2.91074],[39.85422,2.90751],[39.85615,2.90248],[39.85365,2.89779],[39.84595,2.89486],[39.8374,2.89736],[39.83149,2.8956],[39.82576,2.89996],[39.82073,2.89451],[39.82074,2.8924],[39.8177,2.89249],[39.81581,2.89631],[39.81334,2.88947],[39.81598,2.8866],[39.81532,2.88488],[39.81601,2.87851],[39.81977,2.87629],[39.82064,2.8744],[39.82205,2.86467],[39.82479,2.85914],[39.82243,2.85583],[39.82249,2.85398],[39.82614,2.84742],[39.82585,2.83945],[39.82865,2.83731],[39.82775,2.83153],[39.82326,2.82753],[39.82172,2.82768],[39.82032,2.83001],[39.81791,2.82873],[39.81628,2.8298],[39.81487,2.82596],[39.81622,2.82397],[39.81515,2.82247],[39.81739,2.82084],[39.81881,2.81518],[39.82009,2.8161],[39.82186,2.81522],[39.82061,2.81428],[39.82323,2.81585],[39.82494,2.8147],[39.82533,2.81663],[39.82732,2.81802],[39.83247,2.8161],[39.82921,2.81456],[39.82992,2.8135],[39.8297,2.81466],[39.83035,2.81358],[39.83247,2.8144],[39.83354,2.81199],[39.83168,2.8138],[39.83268,2.81261],[39.83091,2.8101],[39.831,2.80659],[39.82925,2.80298],[39.83076,2.80522],[39.8355,2.80259],[39.83387,2.80619],[39.83469,2.80682],[39.84127,2.80536],[39.84342,2.80365],[39.84522,2.80435],[39.8452,2.79965],[39.83804,2.79886],[39.84028,2.7955],[39.84282,2.79585],[39.8446,2.79404],[39.84552,2.79678],[39.85015,2.79991],[39.85098,2.79922]]},
   6:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.9093,3.07865],[39.90855,3.07846],[39.90492,3.07558],[39.90426,3.07458],[39.8963,3.04801],[39.89274,3.03754],[39.89278,3.03696],[39.89624,3.03392],[39.89697,3.03374],[39.89963,3.03466],[39.90137,3.03672],[39.90341,3.03683],[39.90493,3.03783],[39.90617,3.03758],[39.91196,3.04076],[39.9137,3.04376],[39.91534,3.0458],[39.91573,3.04719],[39.91741,3.0507],[39.92074,3.05413],[39.92045,3.05524],[39.92057,3.05498],[39.92132,3.05542]]},
   7:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.90928,3.07861],[39.90455,3.07493],[39.89977,3.07348],[39.89604,3.07342],[39.89032,3.07346],[39.8849,3.07481],[39.88379,3.07633],[39.88307,3.08008],[39.87291,3.08498],[39.86543,3.09082],[39.86133,3.09706],[39.85892,3.09921],[39.85773,3.10371],[39.85462,3.11092],[39.85155,3.11515],[39.85305,3.11844],[39.8511,3.12068],[39.85186,3.12522],[39.85352,3.13022],[39.86167,3.13995],[39.86322,3.14307],[39.86469,3.14391],[39.86729,3.14932],[39.8705,3.15288],[39.87132,3.15304],[39.87058,3.15724],[39.87333,3.16359],[39.87301,3.16489],[39.87441,3.16534],[39.87517,3.16959]]},
-  8:{mode:"car", pts:[[39.90798,3.08184],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.9093,3.07865],[39.90426,3.07458],[39.8922,3.0358],[39.88746,3.02917],[39.88493,3.02337],[39.88289,3.00838],[39.87498,2.9935],[39.8693,2.97942],[39.86761,2.97199],[39.86985,2.96239],[39.86833,2.9533],[39.86941,2.9461],[39.86581,2.93891],[39.86973,2.94335],[39.86928,2.94105],[39.86731,2.93933],[39.8666,2.93555],[39.86732,2.93262],[39.86596,2.93072],[39.86732,2.9276],[39.86837,2.92854],[39.86938,2.92536],[39.86639,2.92427],[39.866,2.92095],[39.86412,2.91761],[39.85676,2.91356],[39.85848,2.91074],[39.85422,2.90751],[39.85613,2.9022],[39.85327,2.89758],[39.84595,2.89486],[39.8374,2.89736],[39.83149,2.8956],[39.82576,2.89996],[39.82073,2.89451],[39.82026,2.89229],[39.8177,2.89249],[39.81572,2.89621],[39.81334,2.88947],[39.81598,2.8866],[39.81532,2.88488],[39.81601,2.87851],[39.81977,2.87629],[39.82064,2.8744],[39.82271,2.86358],[39.82259,2.85817],[39.81966,2.86015],[39.81882,2.85878]]},
-  9:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.90928,3.07861],[39.90455,3.07493],[39.89977,3.07348],[39.89032,3.07346],[39.88544,3.07456],[39.88387,3.07609],[39.88316,3.08001],[39.87783,3.08223],[39.87013,3.08671],[39.86543,3.09082],[39.86133,3.09706],[39.85892,3.09921],[39.85773,3.10371],[39.85462,3.11092],[39.85155,3.11515],[39.85305,3.11844],[39.8511,3.12068],[39.85186,3.12522],[39.85357,3.13032],[39.86167,3.13995],[39.86322,3.14307],[39.86469,3.14391],[39.86595,3.14604],[39.86629,3.14519]]},
-  10:{mode:"car", pts:[[39.90798,3.08184],[39.90847,3.08389],[39.9093,3.07865],[39.90426,3.07458],[39.89158,3.03439],[39.8847,3.02225],[39.87818,3.0229],[39.87005,3.0135],[39.8654,3.01493],[39.85253,3.0344],[39.84046,3.02931],[39.82427,3.02856],[39.80974,3.02566],[39.80135,3.02045],[39.79374,3.02031],[39.76419,2.96666],[39.75177,2.95947],[39.73208,2.93614],[39.71347,2.92081],[39.69004,2.86512],[39.68301,2.8553],[39.67252,2.83022],[39.65996,2.80794],[39.6417,2.78265],[39.6371,2.771],[39.63733,2.75472],[39.6306,2.74092],[39.63214,2.73506],[39.64616,2.72254],[39.66647,2.71371],[39.66764,2.70529],[39.66566,2.69206],[39.66842,2.6768],[39.69759,2.6884],[39.74583,2.69765],[39.75791,2.71109],[39.76673,2.708],[39.76817,2.71137],[39.76649,2.71473]]},
-  11:{mode:"car", pts:[[39.55196,2.73935],[39.5488,2.74165],[39.55744,2.75992],[39.55566,2.76529],[39.53898,2.73074],[39.53978,2.72506],[39.53486,2.73575],[39.54744,2.70386],[39.597,2.71672],[39.60974,2.71306],[39.61664,2.70271],[39.62912,2.72045],[39.6386,2.77623],[39.67203,2.82974],[39.71476,2.92312],[39.76411,2.96689],[39.79386,3.02175],[39.85231,3.0344],[39.86832,3.01341],[39.87568,3.02169],[39.88436,3.02256],[39.90798,3.08184]]},
+  9:{mode:"car", pts:[[39.90798,3.08184],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.9093,3.07865],[39.90426,3.07458],[39.8922,3.0358],[39.88746,3.02917],[39.88493,3.02337],[39.88289,3.00838],[39.87498,2.9935],[39.8693,2.97942],[39.86761,2.97199],[39.86985,2.96239],[39.86833,2.9533],[39.86941,2.9461],[39.86581,2.93891],[39.86973,2.94335],[39.86928,2.94105],[39.86731,2.93933],[39.8666,2.93555],[39.86732,2.93262],[39.86596,2.93072],[39.86732,2.9276],[39.86837,2.92854],[39.86938,2.92536],[39.86639,2.92427],[39.866,2.92095],[39.86412,2.91761],[39.85676,2.91356],[39.85848,2.91074],[39.85422,2.90751],[39.85613,2.9022],[39.85327,2.89758],[39.84595,2.89486],[39.8374,2.89736],[39.83149,2.8956],[39.82576,2.89996],[39.82073,2.89451],[39.82026,2.89229],[39.8177,2.89249],[39.81572,2.89621],[39.81334,2.88947],[39.81598,2.8866],[39.81532,2.88488],[39.81601,2.87851],[39.81977,2.87629],[39.82064,2.8744],[39.82271,2.86358],[39.82259,2.85817],[39.81966,2.86015],[39.81882,2.85878]]},
+  10:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.90928,3.07861],[39.90455,3.07493],[39.89977,3.07348],[39.89032,3.07346],[39.88544,3.07456],[39.88387,3.07609],[39.88316,3.08001],[39.87783,3.08223],[39.87013,3.08671],[39.86543,3.09082],[39.86133,3.09706],[39.85892,3.09921],[39.85773,3.10371],[39.85462,3.11092],[39.85155,3.11515],[39.85305,3.11844],[39.8511,3.12068],[39.85186,3.12522],[39.85357,3.13032],[39.86167,3.13995],[39.86322,3.14307],[39.86469,3.14391],[39.86595,3.14604],[39.86629,3.14519]]},
+  11:{mode:"car", pts:[[39.90798,3.08184],[39.90847,3.08389],[39.9093,3.07865],[39.90426,3.07458],[39.89158,3.03439],[39.8847,3.02225],[39.87818,3.0229],[39.87005,3.0135],[39.8654,3.01493],[39.85253,3.0344],[39.84046,3.02931],[39.82427,3.02856],[39.80974,3.02566],[39.80135,3.02045],[39.79374,3.02031],[39.76419,2.96666],[39.75177,2.95947],[39.73208,2.93614],[39.71347,2.92081],[39.69004,2.86512],[39.68301,2.8553],[39.67252,2.83022],[39.65996,2.80794],[39.6417,2.78265],[39.6371,2.771],[39.63733,2.75472],[39.6306,2.74092],[39.63214,2.73506],[39.64616,2.72254],[39.66647,2.71371],[39.66764,2.70529],[39.66566,2.69206],[39.66842,2.6768],[39.69759,2.6884],[39.74583,2.69765],[39.75791,2.71109],[39.76673,2.708],[39.76817,2.71137],[39.76649,2.71473]]},
+  12:{mode:"car", pts:[[39.55196,2.73935],[39.5488,2.74165],[39.55744,2.75992],[39.55566,2.76529],[39.53898,2.73074],[39.53978,2.72506],[39.53486,2.73575],[39.54744,2.70386],[39.597,2.71672],[39.60974,2.71306],[39.61664,2.70271],[39.62912,2.72045],[39.6386,2.77623],[39.67203,2.82974],[39.71476,2.92312],[39.76411,2.96689],[39.79386,3.02175],[39.85231,3.0344],[39.86832,3.01341],[39.87568,3.02169],[39.88436,3.02256],[39.90798,3.08184]]},
 };
 
 /* ===== Map ===== */
@@ -510,7 +529,7 @@ document.addEventListener('keydown',e=>{ const lb=document.getElementById('light
 document.getElementById('itin-body').classList.remove('scrollpad');
 document.getElementById('today-body').classList.remove('scrollpad');
 const _today=localISO(new Date());
-const _isTrip=DAYS.some(d=>d.iso===_today) || (new Date('2027-09-12')-new Date())>0;
+const _isTrip=DAYS.some(d=>d.iso===_today) || (new Date('2027-09-10')-new Date())>0;
 showTab(_isTrip && DAYS.some(d=>d.iso===_today) ? 'today' : 'itinerary');
 // ensure itinerary list renders first paint
 if(curTab==='itinerary' && openDayIdx===null) renderDayList();
