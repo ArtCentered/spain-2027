@@ -27,7 +27,11 @@
   header .opts{font-size:11.5px;color:#cfe0e4;text-decoration:none;white-space:nowrap;}
   header .opts:hover{color:#fff;}
   header p{margin:3px 0 0;font-size:12px;opacity:.85;}
-  .legend{margin-top:6px;font-size:11px;color:#cfe0e4;display:flex;align-items:center;flex-wrap:wrap;}
+  .legend{margin-top:6px;font-size:11px;color:#cfe0e4;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+  .legend .lgwrap{display:flex;align-items:center;flex-wrap:wrap;}
+  .allphotos{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:999px;
+    padding:4px 11px;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .allphotos:hover{background:rgba(255,255,255,.26);}
   .legend .lg{display:inline-block;width:20px;height:0;vertical-align:middle;margin-right:5px;}
   .legend .lg.car{border-top:3px solid #3Fa23f;}
   .legend .lg.bike{border-top:3px dotted #E08A3C;}
@@ -138,7 +142,7 @@
       <a class="opts" href="options.html">Pre-planning options →</a>
     </div>
     <p>Mallorca · 11 days · Sep 11–22, 2027 · based in Port de Pollença</p>
-    <div class="legend"><span class="lg car"></span>car&nbsp;&nbsp;<span class="lg bike"></span>e-bike&nbsp;&nbsp;<span class="lg boat"></span>boat</div>
+    <div class="legend"><span class="lgwrap"><span class="lg car"></span>car&nbsp;&nbsp;<span class="lg bike"></span>e-bike&nbsp;&nbsp;<span class="lg boat"></span>boat</span><button class="allphotos" onclick="openAllPhotos()">📷 All photos</button></div>
     <div class="pills" id="pills"></div>
   </header>
   <div id="main">
@@ -440,10 +444,13 @@ function openDay(i){
 function step(dir){ const n=current+dir; if(n>=0&&n<DAYS.length) openDay(n); }
 
 /* ---------- lightbox ---------- */
+// Lightbox spans EVERY trip photo in day order — flip through them all in one go.
+const ALL_PHOTOS = DAYS.flatMap(d => (d.photos||[]).map(src => ({src, n:d.n})));
 function activeGalIndex(){ const imgs=[...document.querySelectorAll('#cardGal img')]; const i=imgs.findIndex(x=>x.classList.contains('active')); return i<0?0:i; }
-function renderLb(){ const src=curImgs[lbIdx]; document.getElementById('lbImg').src=src; const cap=CAPTIONS[src]||''; const ctx=curImgs.length>1?`${lbIdx+1} / ${curImgs.length}`:''; document.getElementById('lbCap').innerHTML=`${cap}<span class="lb-count">${ctx}</span>`; }
-function openLightbox(){ if(!curImgs.length)return; lbIdx=activeGalIndex(); renderLb(); document.getElementById('lightbox').classList.add('show'); }
-function lbStep(d){ lbIdx=(lbIdx+d+curImgs.length)%curImgs.length; renderLb(); }
+function renderLb(){ const it=ALL_PHOTOS[lbIdx]; if(!it)return; document.getElementById('lbImg').src=it.src; const cap=CAPTIONS[it.src]||''; document.getElementById('lbCap').innerHTML=`Day ${it.n} · ${cap}<span class="lb-count">${lbIdx+1} / ${ALL_PHOTOS.length}</span>`; }
+function openLightbox(){ const clicked=curImgs[activeGalIndex()]; const gi=ALL_PHOTOS.findIndex(p=>p.src===clicked); lbIdx=gi<0?0:gi; renderLb(); document.getElementById('lightbox').classList.add('show'); }
+function openAllPhotos(){ if(!ALL_PHOTOS.length)return; lbIdx=0; renderLb(); document.getElementById('lightbox').classList.add('show'); }
+function lbStep(d){ const n=ALL_PHOTOS.length; lbIdx=(lbIdx+d+n)%n; renderLb(); }
 function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); }
 function lbBackdrop(e){ if(e.target.id==='lightbox') closeLightbox(); }
 
