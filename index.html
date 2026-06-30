@@ -378,13 +378,14 @@ function goBack(){ openDayIdx=null; document.getElementById('topbar').classList.
 /* ===== Itinerary: day list ===== */
 function chipsHTML(d){ return `<div class="chips">${d.chips.map(c=>`<span class="chip" style="background:${c[1]}">${c[0]}</span>`).join('')}</div>`; }
 function firstPhoto(d){ for(const e of d.events){ if(e.photos&&e.photos.length) return e.photos[0]; } return null; }
+function heroOf(d){ return 'photos/day-'+String(d.n).padStart(2,'0')+'/header.jpg'; }
 function renderDayList(){
   document.getElementById('topbar').classList.remove('has-back');
   document.getElementById('itin-body').classList.add('scrollpad');
   document.getElementById('itin-body').innerHTML =
     `<div class="listhead">The 12 days</div>` +
     DAYS.map((d,i)=>{
-      const ph=firstPhoto(d);
+      const ph=heroOf(d);
       return `<div class="dayrow" onclick="openDay(${i})">
         ${ph?`<img class="thumb" src="${ph}" alt="" onerror="this.style.visibility='hidden'">`:`<div class="thumb"></div>`}
         <div class="meta"><div class="dnum">Day ${d.n} · ${d.date}</div><h3>${d.nick||d.title}</h3><div class="subttl">${d.title}</div>${chipsHTML(d)}</div>
@@ -415,7 +416,7 @@ function eventHTML(e){
     </div></div></div>`;
 }
 function renderDayDetail(target, i){
-  const d=DAYS[i]; const hero=firstPhoto(d);
+  const d=DAYS[i]; const hero=heroOf(d);
   if(target==='itin-body') document.getElementById('itin-body').classList.remove('scrollpad');
   document.getElementById('topbar').classList.toggle('has-back', curTab==='itinerary');
   document.getElementById(target).innerHTML =
@@ -445,7 +446,7 @@ const TODOS=[
  {t:"Check Formentor 2027 car-ban dates", w:"Confirm e-bike / shuttle access nearer the trip"},
 ];
 function fitMap(){ map.fitBounds(L.latLngBounds([BASE,...DAYS.map(d=>d.ll)]).pad(0.12)); }
-function dayCardsHTML(){ return DAYS.map((d,i)=>{ const ph=firstPhoto(d); return `<div class="dayrow" onclick="openDay(${i})">${ph?`<img class="thumb" src="${ph}" alt="" onerror="this.style.visibility='hidden'">`:`<div class="thumb"></div>`}<div class="meta"><div class="dnum">Day ${d.n} · ${d.date}</div><h3>${d.nick||d.title}</h3><div class="subttl">${d.title}</div>${chipsHTML(d)}</div><span class="arrow">›</span></div>`; }).join(''); }
+function dayCardsHTML(){ return DAYS.map((d,i)=>{ const ph=heroOf(d); return `<div class="dayrow" onclick="openDay(${i})">${ph?`<img class="thumb" src="${ph}" alt="" onerror="this.style.visibility='hidden'">`:`<div class="thumb"></div>`}<div class="meta"><div class="dnum">Day ${d.n} · ${d.date}</div><h3>${d.nick||d.title}</h3><div class="subttl">${d.title}</div>${chipsHTML(d)}</div><span class="arrow">›</span></div>`; }).join(''); }
 function renderToday(){
   const today=localISO(new Date());
   const idx=DAYS.findIndex(d=>d.iso===today||d.iso2===today);
