@@ -104,6 +104,13 @@
   .todaybanner h2{margin:4px 0 5px;font-size:24px;}
   .todaybanner p{margin:0;font-size:13px;opacity:.92;line-height:1.45;}
   .todaybanner .big{font-size:40px;font-weight:800;letter-spacing:-1px;margin:2px 0;}
+  .dayrow .subttl{font-size:11.5px;color:var(--muted);margin:0 0 4px;}
+  .dayhero .cap .subt{font-size:12.5px;opacity:.92;margin-top:2px;text-shadow:0 1px 5px rgba(0,0,0,.5);}
+  .todoitem{display:flex;gap:9px;padding:8px 0;border-top:1px solid #f3eee2;}
+  .todoitem:first-of-type{border-top:none;}
+  .todoitem .cb{flex:0 0 auto;font-size:17px;color:var(--terra);line-height:1.15;}
+  .todoitem b{color:var(--teal);font-size:13px;}
+  .when{font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.35;}
 
   /* ---------- Map ---------- */
   #map{position:absolute;inset:0;}
@@ -189,7 +196,7 @@ function cap(day,slug,text){ CAPS[P(day,slug)]=text; return P(day,slug); }
 
 // ---- the trip: days -> events ----
 const DAYS=[
- { n:1, iso:"2027-09-10", iso2:"2027-09-11", date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive", place:"Eugene → Port de Pollença",
+ { n:1, nick:"The Long Haul", iso:"2027-09-10", iso2:"2027-09-11", date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive", place:"Eugene → Port de Pollença",
    ll:BASE, mode:"car", chips:[["Travel","#6b7a80"]],
    summary:"The long haul. Out of Eugene around midday Friday, two stops (Denver, Frankfurt), and into the hotel in Port de Pollença about 22 hours later — Saturday evening, local. Palma runs 9 hours ahead of Eugene.",
    events:[
@@ -209,7 +216,7 @@ const DAYS=[
     { ic:"🍽️", cat:"food", time:"Sat evening", title:"Easy dinner, then sleep", place:"Port de Pollença", mapq:"Port de Pollença",
       desc:"Low-key first dinner in town.", photos:[cap(1,"pollensa-evening","Port de Pollença seafront")] } ] },
 
- { n:2, iso:"2027-09-12", date:"Sun · Sep 12", title:"Vall de Bóquer & first swim", place:"Bóquer valley",
+ { n:2, nick:"Easing In", iso:"2027-09-12", date:"Sun · Sep 12", title:"Vall de Bóquer & first swim", place:"Bóquer valley",
    ll:[39.9180,3.0900], mode:"bike", chips:[["Hike","#2E7D32"],["Swim","#2C7A8C"]],
    summary:"Ease in with the gentle Bóquer valley walk out to a quiet cove, then sort the e-bikes and lock in the week's bookings.",
    events:[
@@ -224,7 +231,7 @@ const DAYS=[
     { ic:"📞", cat:"move", time:"Afternoon", title:"Confirm the week's activities", place:"",
       desc:"Lock the sail + snorkel, the sea-kayak day, and coasteering." } ] },
 
- { n:3, iso:"2027-09-13", date:"Mon · Sep 13", title:"E-bike Cap de Formentor", place:"Formentor peninsula",
+ { n:3, nick:"The Lighthouse Ride", iso:"2027-09-13", date:"Mon · Sep 13", title:"E-bike Cap de Formentor", place:"Formentor peninsula",
    ll:[39.9619,3.2106], mode:"bike", chips:[["E-bike","#C1660F"]],
    summary:"Cars are banned on the Formentor road in September, so e-bike is the way — the island's most famous ride to the lighthouse, with cliff miradors and a swim at the end.",
    events:[
@@ -238,7 +245,7 @@ const DAYS=[
     { ic:"🏖️", cat:"water", time:"Midday", title:"Lighthouse & swim at Platja de Formentor", place:"Cap de Formentor", mapq:"Far de Formentor",
       desc:"Ride to the lighthouse, then a swim at the pine-backed beach.", photos:[cap(3,"formentor-lighthouse","Cap de Formentor lighthouse")] } ] },
 
- { n:4, iso:"2027-09-14", date:"Tue · Sep 14", title:"Sail + snorkel", place:"Pollença bay",
+ { n:4, nick:"Out on the Water", iso:"2027-09-14", date:"Tue · Sep 14", title:"Sail + snorkel", place:"Pollença bay",
    ll:[39.8990,3.0950], mode:"boat", chips:[["Water","#2C7A8C"]],
    summary:"A half-day skippered sail around Pollença bay and the Formentor coves — snorkel the clear water, paddle the SUP, snacks aboard. Easy afternoon on the beach.",
    events:[
@@ -249,7 +256,7 @@ const DAYS=[
     { ic:"🏄", cat:"water", time:"On the water", title:"SUP & swim stops", place:"", desc:"Paddleboards and swims; snacks & drinks aboard.", photos:[cap(4,"sup-cove","Paddleboarding a cove")] },
     { ic:"🏖️", cat:"rest", time:"Afternoon", title:"Lazy afternoon in town", place:"Port de Pollença", desc:"Beach and a wander." } ] },
 
- { n:5, iso:"2027-09-15", date:"Wed · Sep 15", title:"Sa Calobra & Torrent de Pareis", place:"Sa Calobra",
+ { n:5, nick:"Into the Gorge", iso:"2027-09-15", date:"Wed · Sep 15", title:"Sa Calobra & Torrent de Pareis", place:"Sa Calobra",
    ll:[39.8517,2.8003], mode:"car", chips:[["Big day","#C1660F"],["Hike","#2E7D32"]],
    summary:"The big one. Drive the legendary serpentine road down to Sa Calobra, walk into the Torrent de Pareis where the gorge meets the sea, and swim in the cove. Cala Tuent and Lluc on the way back.",
    events:[
@@ -264,7 +271,7 @@ const DAYS=[
     { ic:"🌄", cat:"sight", time:"Afternoon", title:"Cala Tuent + Lluc on the way back", place:"Santuari de Lluc", mapq:"Santuari de Lluc",
       desc:"A quieter cove and the mountain monastery, with MA-10 ridge views." } ] },
 
- { n:6, iso:"2027-09-16", date:"Thu · Sep 16", title:"Recovery — coves & old town", place:"Cala Sant Vicenç",
+ { n:6, nick:"Slow Day", iso:"2027-09-16", date:"Thu · Sep 16", title:"Recovery — coves & old town", place:"Cala Sant Vicenç",
    ll:[39.9230,3.0560], mode:"bike", chips:[["Easy day","#1F4E5F"]],
    summary:"Sleep in. Float around the Cala Sant Vicenç coves, then a gentle climb to the Puig de Maria hermitage for sunset, and a wander through Pollença's old town and Calvari steps.",
    events:[
@@ -275,7 +282,7 @@ const DAYS=[
     { ic:"🪜", cat:"sight", time:"Evening", title:"Pollença old town & Calvari steps", place:"Pollença", mapq:"Calvari Pollensa",
       desc:"The 365 cypress-lined steps and Plaça Major.", photos:[cap(6,"pollensa-calvari","The Calvari steps, Pollença")] } ] },
 
- { n:7, iso:"2027-09-17", date:"Fri · Sep 17", title:"Sea-kayak & sea caves", place:"La Victòria, Alcúdia",
+ { n:7, nick:"Caves by Kayak", iso:"2027-09-17", date:"Fri · Sep 17", title:"Sea-kayak & sea caves", place:"La Victòria, Alcúdia",
    ll:[39.8760,3.1700], mode:"bike", chips:[["Water","#2C7A8C"]],
    summary:"Paddle the cliffs and sea caves on the Alcúdia peninsula (beginner-friendly, with a snorkel stop), then explore Alcúdia's old town or hike to the wild Coll Baix beach.",
    events:[
@@ -286,7 +293,7 @@ const DAYS=[
     { ic:"🏛️", cat:"sight", time:"Afternoon", title:"Alcúdia old town & Roman walls", place:"Alcúdia", mapq:"Alcudia old town",
       desc:"Walk the medieval walls and the old streets.", photos:[cap(7,"alcudia-walls","Alcúdia old town")] } ] },
 
- { n:8, iso:"2027-09-18", date:"Sat · Sep 18", title:"Free day — beach & buffer", place:"Port de Pollença",
+ { n:8, nick:"Wild-Card Day", iso:"2027-09-18", date:"Sat · Sep 18", title:"Free day — beach & buffer", place:"Port de Pollença",
    ll:BASE, mode:"none", chips:[["Easy day","#1F4E5F"],["Buffer","#C8902F"]],
    summary:"A deliberate open day — rest before tomorrow's big Massanella hike, revisit a favorite cove, or hold it as weather / contingency buffer. Nothing booked.",
    events:[
@@ -297,7 +304,7 @@ const DAYS=[
     { ic:"🛒", cat:"sight", time:"Evening", title:"Provision for the mountain", place:"Port de Pollença", mapq:"Port de Pollença supermarket",
       desc:"Stock up — water, snacks — for the big Massanella day tomorrow." } ] },
 
- { n:9, iso:"2027-09-19", date:"Sun · Sep 19", title:"Puig de Massanella", place:"Tramuntana (near Lluc)",
+ { n:9, nick:"Top of the Island", iso:"2027-09-19", date:"Sun · Sep 19", title:"Puig de Massanella", place:"Tramuntana (near Lluc)",
    ll:[39.8180,2.8570], mode:"car", chips:[["Big day","#C1660F"],["Hike","#2E7D32"]],
    summary:"The big mountain day: Puig de Massanella, the highest walkable peak in Mallorca, deep in the Tramuntana. All-day, with one short scrambly bit, and a reward swim back near the coast.",
    events:[
@@ -310,7 +317,7 @@ const DAYS=[
       note:"Start early, carry lots of water, proper boots. Skip the final scramble if it feels exposed — the views are huge regardless." },
     { ic:"🏊", cat:"water", time:"Late afternoon", title:"Reward swim near base", place:"", desc:"Back down for a dip." } ] },
 
- { n:10, iso:"2027-09-20", date:"Mon · Sep 20", title:"Coasteering (or a chill day)", place:"Bonaire, Alcúdia",
+ { n:10, nick:"Cliffs & Jumps", iso:"2027-09-20", date:"Mon · Sep 20", title:"Coasteering (or a chill day)", place:"Bonaire, Alcúdia",
    ll:[39.8660,3.1450], mode:"bike", chips:[["Water","#2C7A8C"],["Flex","#C8902F"]],
    summary:"Guided coasteering on the north cliffs — scrambling, swimming through sea caves, and supervised jumps into the sea, all with a guide, helmet and wetsuit. Not feeling it? Swap for a chill SUP-and-beach day.",
    events:[
@@ -321,7 +328,7 @@ const DAYS=[
     { ic:"🌊", cat:"water", time:"Alternative", title:"Or: a SUP + beach day", place:"", desc:"Swap in a relaxed paddle-and-swim day if you'd rather.", photos:[cap(10,"north-cliffs","North-coast cliffs")] },
     { ic:"🍤", cat:"food", time:"Evening", title:"Seaside dinner", place:"", desc:"" } ] },
 
- { n:11, iso:"2027-09-21", date:"Tue · Sep 21", title:"Flex day — Sóller & the train", place:"Sóller (or your pick)",
+ { n:11, nick:"The Old Train", iso:"2027-09-21", date:"Tue · Sep 21", title:"Flex day — Sóller & the train", place:"Sóller (or your pick)",
    ll:[39.7667,2.7150], mode:"car", chips:[["Flex","#C8902F"]],
    summary:"Last full day, flexible. Suggested: drive the scenic MA-10 to Sóller for the vintage wooden train and seaside tram, with Deià and Valldemossa on the way. Or repeat a favorite cove, or an easy e-bike. Last big dinner.",
    events:[
@@ -333,7 +340,7 @@ const DAYS=[
     { ic:"🏊", cat:"water", time:"Alternative", title:"Or: favorite cove / easy e-bike", place:"", desc:"Stay local and repeat the best of the week." },
     { ic:"🥂", cat:"food", time:"Evening", title:"Last big dinner", place:"Port de Pollença", desc:"Send-off in town." } ] },
 
- { n:12, iso:"2027-09-22", date:"Wed · Sep 22", title:"Fly home", place:"Palma → Eugene",
+ { n:12, nick:"Homeward", iso:"2027-09-22", date:"Wed · Sep 22", title:"Fly home", place:"Palma → Eugene",
    ll:[39.5517,2.7388], mode:"car", chips:[["Travel","#6b7a80"]],
    summary:"Up early, return the car at Palma and fly home — Palma → Newark → San Francisco → Eugene. Flying west you gain the day: leave Palma mid-morning and touch down in Eugene the same evening (~8:30 PM, Wed Sep 22).",
    events:[
@@ -364,7 +371,7 @@ function showTab(tab){
   if(tab==='today') renderToday();
   if(tab==='itinerary') openDayIdx===null ? renderDayList() : renderDayDetail('itin-body', openDayIdx);
   if(tab==='info') renderInfo();
-  if(tab==='map'){ setTimeout(()=>{ map.invalidateSize(); },60); }
+  if(tab==='map'){ setTimeout(()=>{ map.invalidateSize(); fitMap(); },80); }
 }
 function goBack(){ openDayIdx=null; document.getElementById('topbar').classList.remove('has-back'); renderDayList(); }
 
@@ -375,12 +382,12 @@ function renderDayList(){
   document.getElementById('topbar').classList.remove('has-back');
   document.getElementById('itin-body').classList.add('scrollpad');
   document.getElementById('itin-body').innerHTML =
-    `<div class="listhead">The 11 days</div>` +
+    `<div class="listhead">The 12 days</div>` +
     DAYS.map((d,i)=>{
       const ph=firstPhoto(d);
       return `<div class="dayrow" onclick="openDay(${i})">
         ${ph?`<img class="thumb" src="${ph}" alt="" onerror="this.style.visibility='hidden'">`:`<div class="thumb"></div>`}
-        <div class="meta"><div class="dnum">Day ${d.n} · ${d.date}</div><h3>${d.title}</h3>${chipsHTML(d)}</div>
+        <div class="meta"><div class="dnum">Day ${d.n} · ${d.date}</div><h3>${d.nick||d.title}</h3><div class="subttl">${d.title}</div>${chipsHTML(d)}</div>
         <span class="arrow">›</span></div>`;
     }).join('');
 }
@@ -412,7 +419,7 @@ function renderDayDetail(target, i){
   if(target==='itin-body') document.getElementById('itin-body').classList.remove('scrollpad');
   document.getElementById('topbar').classList.toggle('has-back', curTab==='itinerary');
   document.getElementById(target).innerHTML =
-    (hero?`<div class="dayhero"><img src="${hero}" alt=""><div class="grad"></div><div class="cap"><div class="d">Day ${d.n} · ${d.date}</div><h2>${d.title}</h2></div></div>`:`<div class="listhead" style="margin-top:4px">Day ${d.n} · ${d.date} — ${d.title}</div>`) +
+    (hero?`<div class="dayhero"><img src="${hero}" alt=""><div class="grad"></div><div class="cap"><div class="d">Day ${d.n} · ${d.date}</div><h2>${d.nick||d.title}</h2><div class="subt">${d.title}</div></div></div>`:`<div class="listhead" style="margin-top:4px">Day ${d.n} · ${d.date} — ${d.title}</div>`) +
     `<div class="daysum">${d.summary}</div>` +
     `<div class="timeline">${d.events.map(eventHTML).join('')}</div>`;
 }
@@ -427,16 +434,26 @@ function galShift(btn,dir){ const g=btn.closest('.egal'); const im=[...g.querySe
 
 /* ===== Today ===== */
 function localISO(dt){ const p=n=>String(n).padStart(2,'0'); return dt.getFullYear()+'-'+p(dt.getMonth()+1)+'-'+p(dt.getDate()); }
+const TODOS=[
+ {t:"Book the flights", w:"EUG ⇄ PMI · book ~10–12 months out for the best fares"},
+ {t:"Reserve the accommodation", w:"Port de Pollença, 11 nights · lock in early — the good places go fast"},
+ {t:"Reserve the rental car", w:"Palma airport pickup · book ahead for September"},
+ {t:"Reserve e-bikes", w:"CCT Bike / 2GoCycling · 3+ days ahead; reserve once dates are firm"},
+ {t:"Book the sail + snorkel", w:"NoFrills Excursions · a few weeks ahead"},
+ {t:"Book the sea-kayak tour", w:"La Victòria, Alcúdia · a few weeks ahead"},
+ {t:"Book coasteering", w:"Mon d'Aventura · a few weeks ahead"},
+ {t:"Check Formentor 2027 car-ban dates", w:"Confirm e-bike / shuttle access nearer the trip"},
+];
+function fitMap(){ map.fitBounds(L.latLngBounds([BASE,...DAYS.map(d=>d.ll)]).pad(0.12)); }
+function dayCardsHTML(){ return DAYS.map((d,i)=>{ const ph=firstPhoto(d); return `<div class="dayrow" onclick="openDay(${i})">${ph?`<img class="thumb" src="${ph}" alt="" onerror="this.style.visibility='hidden'">`:`<div class="thumb"></div>`}<div class="meta"><div class="dnum">Day ${d.n} · ${d.date}</div><h3>${d.nick||d.title}</h3><div class="subttl">${d.title}</div>${chipsHTML(d)}</div><span class="arrow">›</span></div>`; }).join(''); }
 function renderToday(){
   const today=localISO(new Date());
   const idx=DAYS.findIndex(d=>d.iso===today||d.iso2===today);
   const body=document.getElementById('today-body');
   if(idx>=0){
     body.classList.remove('scrollpad');
-    body.innerHTML=`<div style="padding:12px 14px 0"><div class="todaybanner"><div class="lbl">Today · ${DAYS[idx].date.split('·').pop().trim()}</div><h2>${DAYS[idx].title}</h2><p>📍 ${DAYS[idx].place}</p></div></div>`;
-    const wrap=document.createElement('div'); body.appendChild(wrap); wrap.id='today-detail';
-    // render detail into a sub-container
-    const tmp=document.createElement('div'); tmp.id='today-detail-inner'; wrap.appendChild(tmp);
+    body.innerHTML=`<div style="padding:12px 14px 0"><div class="todaybanner"><div class="lbl">Today · Day ${DAYS[idx].n}</div><h2>${DAYS[idx].nick||DAYS[idx].title}</h2><p>${DAYS[idx].title} · 📍 ${DAYS[idx].place}</p></div></div>`;
+    const tmp=document.createElement('div'); tmp.id='today-detail-inner'; body.appendChild(tmp);
     renderDayDetail('today-detail-inner', idx);
     return;
   }
@@ -444,10 +461,10 @@ function renderToday(){
   const start=new Date('2027-09-10T00:00:00'); const now=new Date();
   const diff=Math.ceil((start-now)/86400000);
   if(diff>0){
-    body.innerHTML=`<div class="todaybanner"><div class="lbl">Countdown to Mallorca</div><div class="big">${diff}</div><p>days until you fly out to Mallorca. Tap <b>Itinerary</b> to plan, or <b>Map</b> to see where it all is.</p></div>
-      <div class="dayrow" onclick="openDay(0)">${firstPhoto(DAYS[0])?`<img class="thumb" src="${firstPhoto(DAYS[0])}">`:''}<div class="meta"><div class="dnum">First up · Day 1</div><h3>${DAYS[0].title}</h3>${chipsHTML(DAYS[0])}</div><span class="arrow">›</span></div>`;
+    const todos=`<div class="infocard"><h3>Before you go — to book &amp; reserve</h3>${TODOS.map(td=>`<div class="todoitem"><span class="cb">▢</span><div><b>${td.t}</b><div class="when">${td.w}</div></div></div>`).join('')}<div class="when" style="padding-top:8px">These drop off as you book them and send me the details.</div></div>`;
+    body.innerHTML=`<div class="todaybanner"><div class="lbl">Countdown to Mallorca</div><div class="big">${diff}</div><p>days until you fly out to Mallorca.</p></div>${todos}<div class="listhead">The 12 days</div>${dayCardsHTML()}`;
   } else {
-    body.innerHTML=`<div class="todaybanner"><div class="lbl">Mar i Muntanya</div><h2>Hope it was epic ✨</h2><p>The trip's a wrap — flip through <b>Itinerary</b> to relive it.</p></div>`;
+    body.innerHTML=`<div class="todaybanner"><div class="lbl">Mar i Muntanya</div><h2>Hope it was epic ✨</h2><p>The trip's a wrap — flip through the days to relive it.</p></div><div class="listhead">The 12 days</div>${dayCardsHTML()}`;
   }
 }
 
@@ -529,8 +546,7 @@ document.addEventListener('keydown',e=>{ const lb=document.getElementById('light
 document.getElementById('itin-body').classList.remove('scrollpad');
 document.getElementById('today-body').classList.remove('scrollpad');
 const _today=localISO(new Date());
-const _isTrip=DAYS.some(d=>d.iso===_today) || (new Date('2027-09-10')-new Date())>0;
-showTab(_isTrip && DAYS.some(d=>d.iso===_today) ? 'today' : 'itinerary');
+showTab('today');
 // ensure itinerary list renders first paint
 if(curTab==='itinerary' && openDayIdx===null) renderDayList();
 
