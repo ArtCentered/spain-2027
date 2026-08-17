@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Spain 2027 — Eclipse at Tarifa → Basque Country</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  :root{ --teal:#1F4E5F; --teal2:#2C7A8C; --terra:#C1660F; --gold:#C8902F; --sand:#FBF6EE; --ink:#243239;
+    --muted:#6b7a80; --line:#ece3d4; --bg:#f4f1ea; --hike:#2E7D32; --night:#2b2340; --eclipse:#4b2a8a; }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);}
+  a{color:var(--teal2);}
+  button{font-family:inherit;cursor:pointer;}
+  #app{display:flex;flex-direction:column;height:100vh;height:100dvh;}
+  header{background:var(--teal);color:#fff;padding:12px 18px 0;flex:0 0 auto;}
+  header .row{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  header h1{margin:0;font-size:19px;letter-spacing:.2px;}
+  header .sub{font-size:12.5px;opacity:.85;}
+  nav.tabs{display:flex;gap:4px;margin-top:10px;overflow-x:auto;}
+  nav.tabs button{background:transparent;border:none;color:#fff;opacity:.72;padding:8px 12px;font-size:13.5px;font-weight:600;
+    border-bottom:3px solid transparent;white-space:nowrap;}
+  nav.tabs button.active{opacity:1;border-bottom-color:var(--gold);}
+  #main{flex:1 1 auto;min-height:0;display:flex;}
+  #left{flex:0 0 46%;max-width:620px;min-width:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 60px;}
+  #right{flex:1 1 auto;position:relative;min-width:0;}
+  #map{position:absolute;inset:0;}
+  .mapbtn{display:none;}
+  @media (max-width:860px){
+    #main{flex-direction:column;}
+    #left{flex:1 1 auto;max-width:none;}
+    #right{flex:0 0 0;height:0;}
+    #right.open{flex:0 0 42vh;height:42vh;}
+    .mapbtn{display:inline-block;position:fixed;right:14px;bottom:14px;z-index:1200;background:var(--terra);color:#fff;border:none;
+      border-radius:999px;padding:11px 16px;font-weight:700;font-size:14px;box-shadow:0 6px 18px rgba(0,0,0,.25);}
+  }
+  .view{display:none;} .view.active{display:block;}
+  h2.sec{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:14px 2px 8px;font-weight:700;}
+  .note{background:#fff8ea;border-left:4px solid var(--gold);padding:10px 12px;border-radius:8px;font-size:13.5px;line-height:1.5;margin:0 0 12px;}
+  .note.red{background:#fdeeea;border-left-color:#c0392b;}
+  .note.purple{background:#efeafa;border-left-color:var(--eclipse);}
+
+  /* day cards */
+  .day{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:12px;overflow:hidden;border:1px solid transparent;}
+  .day.sel{border-color:var(--terra);}
+  .dayhead{display:flex;gap:12px;align-items:center;padding:11px 13px;cursor:pointer;}
+  .dayhead .num{width:38px;height:38px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex:0 0 auto;}
+  .dayhead .meta{flex:1;min-width:0;}
+  .dayhead .d{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--terra);}
+  .dayhead h3{margin:1px 0 2px;font-size:15.5px;color:var(--teal);line-height:1.15;}
+  .dayhead .base{font-size:12px;color:var(--muted);}
+  .dayhead .chev{color:#c4cccd;font-size:18px;transition:transform .2s;}
+  .day.open .dayhead .chev{transform:rotate(90deg);}
+  .daybody{display:none;padding:0 13px 12px;}
+  .day.open .daybody{display:block;}
+  .daysum{font-size:13.5px;line-height:1.5;margin:0 0 10px;color:#3a4a52;}
+  .ev{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line);cursor:pointer;}
+  .ev:hover{background:#faf7f0;}
+  .ev .ph{width:76px;height:64px;border-radius:9px;flex:0 0 auto;background:linear-gradient(135deg,#dfe6e6,#c9d6d8);display:flex;align-items:center;justify-content:center;
+    font-size:26px;overflow:hidden;position:relative;}
+  .ev .ph img{width:100%;height:100%;object-fit:cover;display:block;}
+  .ev .ph .add{position:absolute;inset:auto 0 0 0;background:rgba(31,78,95,.75);color:#fff;font-size:8.5px;text-align:center;padding:2px 3px;line-height:1.1;}
+  .ev .body{flex:1;min-width:0;}
+  .ev .t{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;}
+  .ev h4{margin:1px 0 2px;font-size:14px;color:var(--ink);}
+  .ev .pl{font-size:12px;color:var(--teal2);font-weight:600;}
+  .ev p{margin:3px 0 0;font-size:12.5px;line-height:1.45;color:#3a4a52;}
+  .ev .cost{display:inline-block;background:#f1ece2;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700;color:var(--terra);margin-left:6px;}
+  .chip{display:inline-block;font-size:10.5px;font-weight:700;color:#fff;border-radius:6px;padding:2px 7px;letter-spacing:.2px;margin-right:4px;}
+
+  /* stays */
+  .stayblock{margin-bottom:16px;}
+  .stayblock h3{margin:0 0 6px;font-size:15px;color:var(--teal);}
+  .stayblock .why{font-size:12.5px;color:#3a4a52;margin:0 0 8px;line-height:1.45;}
+  .stay{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;cursor:pointer;border:1px solid transparent;}
+  .stay.sel{border-color:var(--terra);}
+  .stay .ph{width:64px;height:56px;border-radius:8px;flex:0 0 auto;background:linear-gradient(135deg,#efe6d6,#dccdb4);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;position:relative;}
+  .stay .ph img{width:100%;height:100%;object-fit:cover;}
+  .stay .ph .add{position:absolute;inset:auto 0 0 0;background:rgba(31,78,95,.75);color:#fff;font-size:8px;text-align:center;padding:2px;line-height:1.1;}
+  .stay .b{flex:1;min-width:0;}
+  .stay h4{margin:0;font-size:14px;}
+  .stay .area{font-size:12px;color:var(--teal2);font-weight:600;}
+  .stay p{margin:3px 0 0;font-size:12.5px;line-height:1.4;color:#3a4a52;}
+  .band{float:right;font-size:12px;font-weight:800;color:var(--terra);}
+  .st{display:inline-block;font-size:10.5px;font-weight:700;border-radius:6px;padding:1px 6px;margin-top:4px;}
+  .st.hot{background:#fdeeea;color:#c0392b;} .st.ok{background:#e9f5ea;color:#2E7D32;} .st.unk{background:#eef0f1;color:#5b6b71;} .st.pick{background:#efeafa;color:var(--eclipse);}
+
+  /* logistics table */
+  table{width:100%;border-collapse:collapse;font-size:12.5px;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:12px;}
+  th,td{padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;}
+  th{background:#f7f2e8;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);}
+  .card{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:12px 13px;margin-bottom:10px;font-size:13px;line-height:1.5;}
+  .card h3{margin:0 0 6px;font-size:14.5px;color:var(--teal);}
+  .card ul{margin:4px 0 0 18px;padding:0;} .card li{margin-bottom:3px;}
+  .big{font-size:30px;font-weight:800;color:var(--eclipse);letter-spacing:-.5px;}
+  .tl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;}
+  .tl b{color:var(--eclipse);}
+
+  /* map pins */
+  .pin{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.4);border:2px solid #fff;
+    width:28px;height:28px;border-radius:50%;font-size:12px;}
+  .pin.small{width:20px;height:20px;font-size:10px;opacity:.9;}
+  .pin.sel{outline:3px solid var(--terra);outline-offset:1px;}
+  .leaflet-popup-content{font-size:12.5px;line-height:1.4;} .leaflet-popup-content b{color:var(--teal);}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="row">
+      <h1>🌘 Spain 2027 · Eclipse at Tarifa → Basque Country</h1>
+      <div class="sub">Sat 31 Jul → Wed 11 Aug 2027 · Travis &amp; Mike · totality Mon 2 Aug 10:45:07–10:49:47 CEST</div>
+    </div>
+    <nav class="tabs">
+      <button class="active" data-v="itin">Itinerary</button>
+      <button data-v="stays">Places to stay</button>
+      <button data-v="eclipse">Eclipse</button>
+      <button data-v="logi">Logistics</button>
+      <button data-v="decide">Decisions</button>
+    </nav>
+  </header>
+  <div id="main">
+    <div id="left">
+      <div id="v-itin" class="view active"></div>
+      <div id="v-stays" class="view"></div>
+      <div id="v-eclipse" class="view"></div>
+      <div id="v-logi" class="view"></div>
+      <div id="v-decide" class="view"></div>
+    </div>
+    <div id="right"><div id="map"></div></div>
+  </div>
+  <button class="mapbtn" id="mapbtn">🗺 Map</button>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ------------------------------------------------------------------
+// DATA — edit freely. Photos: drop a .jpg into photos/eclipse/ named
+// as the "photo" slug below (e.g. photos/eclipse/tarifa-los-lances.jpg).
+// If the file isn't there yet the card shows an emoji + the expected name.
+// ------------------------------------------------------------------
+const PHOTO_DIR = "photos/";
+const C = { fly:"#5b6b71", tarifa:"#4b2a8a", malaga:"#C1660F", train:"#1F4E5F", ss:"#2C7A8C", bilbao:"#2E7D32" };
+
+const days = [
+ { n:0, date:"Sat 31 Jul", title:"Depart Eugene", base:"On the plane", color:C.fly, ic:"✈️",
+   sum:"Overnight to Europe. Smoothest single ticket: Alaska EUG→SEA, BA52 SEA 13:30→LHR 06:45, BA LHR→Málaga. Best schedule: KLM PDX 13:05→AMS 07:55, AMS→Málaga 12:35.",
+   items:[
+    {t:"Sat AM", ic:"✈️", title:"EUG → SEA (or PDX)", place:"Eugene Airport", ll:[44.1246,-123.2120], photo:"eugene-airport",
+     desc:"Alaska to SEA (~8/day). Everything else is one ticket from here."},
+    {t:"Sat 13:30", ic:"🌍", title:"SEA → LHR (BA52) or PDX → AMS (KLM)", place:"Transatlantic", ll:[47.4502,-122.3088], photo:"transatlantic",
+     desc:"BA52 lands LHR 06:45 Sun; KL616 lands AMS 07:55 Sun. Premium economy is worth pricing (~$2.3–3.5k pp peak) — this is the sleep that protects Sunday. If the base is Gibraltar (Option B), BA continues LHR → GIB directly (06:10–13:55 departures, 2h50)."},
+   ]},
+ { n:1, date:"Sun 1 Aug", title:"Land → Tarifa", base:"Tarifa", color:C.tarifa, ic:"🚐",
+   sum:"Land Málaga ~11:00–14:00. Pre-booked private transfer to Tarifa (1h45). Check in, walk the old town, scout tomorrow's spot, confirm the whale trip, early dinner.",
+   items:[
+    {t:"~12:00", ic:"🛬", title:"Land Málaga (AGP)", place:"Málaga–Costa del Sol Airport", ll:[36.6749,-4.4991], photo:"malaga-airport",
+     desc:"BA from LHR (~11:00–14:00) or KLM from AMS (12:35). Gibraltar (GIB) is the alternative — 45 min from Tarifa, but wind/fog diversions happen."},
+    {t:"~13:00", ic:"🚐", title:"Private transfer → Tarifa", place:"A-7 / N-340, 150 km", ll:[36.42,-5.15], photo:"transfer-tarifa", cost:"~€190",
+     desc:"malagaairtransfers.com / solhop.com, 1h45. Bus fallback: Avanza airport → Algeciras (1h55, from €17.70) + M-150 → Tarifa (45 min)."},
+    {t:"~15:30", ic:"🏨", title:"Check in — Tarifa (Option A)", place:"Old town / port side", ll:[36.0128,-5.6047], photo:"tarifa-hotel",
+     desc:"See Places to stay. Priority: walkable to Playa Chica and Los Lances."},
+    {t:"Opt B", ic:"🇬🇮", title:"…or land Gibraltar, walk to the hotel", place:"Gibraltar / La Línea — 4 m 23–29 s", ll:[36.1408,-5.3536], photo:"gibraltar-arrival",
+     desc:"BA LHR → GIB lands 10:00–17:00. Runway → town on foot / bus 5. Afternoon: Main Street, Europa Point scouting (bus 2), the frontier walk to La Línea for dinner."},
+    {t:"Opt C", ic:"🏙", title:"…or stay in Málaga for three nights", place:"Soho / old town — 1 m 49 s in the city, 3 m 10 s at Fuengirola", ll:[36.7178,-4.4225], photo:"malaga-base",
+     desc:"Taxi/Cercanías from the airport (15 min). Easiest logistics of all; the eclipse plan is a 45-min C-1 ride west on Monday morning. Do the Málaga walk (Day 3 items) today or Tuesday."},
+    {t:"17:00", ic:"🏰", title:"Old-town walk + scout the viewing spot", place:"Puerta de Jerez → Sancho IV → San Mateo → Alameda → Playa Chica", ll:[36.0136,-5.6062], photo:"tarifa-old-town",
+     desc:"Stand on Playa Chica and on the south end of Los Lances; look ESE ~38° up — that's the Sun at 10:47 tomorrow. Note shade and wind."},
+    {t:"18:30", ic:"🐋", title:"Confirm firmm whale trip for Mon pm", place:"firmm office, C/ Alcalde Juan Núñez 10 (harbour)", ll:[36.0104,-5.6034], photo:"firmm-office",
+     desc:"+34 956 627 008 · 2-h trip €50 · Jul–Aug 3-h orca trip €70 · cancelled in strong Levante."},
+    {t:"20:30", ic:"🍽", title:"Dinner: El Lola or La Pescadería", place:"Old town", ll:[36.0130,-5.6055], photo:"tarifa-el-lola",
+     desc:"El Lola: tuna tartare, no reservations, go early. La Pescadería: almadraba tuna, fried fish."},
+   ]},
+ { n:2, date:"Mon 2 Aug", title:"🌘 TOTAL SOLAR ECLIPSE", base:"Tarifa", color:C.tarifa, ic:"🌘",
+   sum:"Partial 09:40:52 · TOTALITY 10:45:07 → 10:49:47 (max 10:47:27) · 4 m 40 s · partial ends 12:00:45. Sun ~38° up in the ESE. Decide the spot at dawn on the wind. Walk — never drive — this morning.",
+   items:[
+    {t:"06:30", ic:"🌬", title:"Wind check → pick the spot", place:"Hotel", ll:[36.0128,-5.6047], photo:"tarifa-dawn",
+     desc:"Poniente / calm → Los Lances (south end). Strong Levante → Playa Chica / Punta causeway, sheltered by Isla de las Palomas. Fog forecast → pre-arranged driver east (Algeciras/Getares) or inland (Facinas)."},
+    {t:"08:30", ic:"🏖", title:"Playa de los Lances (Plan A)", place:"South end, by port/castle", ll:[36.0180,-5.6130], photo:"tarifa-los-lances",
+     desc:"Km of open sand, sea foreground, open western horizon — you'll see the shadow race in from the Atlantic. Water, hats, eclipse glasses, shade, iPad."},
+    {t:"08:30", ic:"🏝", title:"Playa Chica / Punta de Tarifa (Plan B)", place:"Causeway to Isla de las Palomas", ll:[36.0060,-5.6075], photo:"tarifa-playa-chica",
+     desc:"5 min from the old town, sheltered from Levante, small capacity — get there early. Southernmost point of continental Europe."},
+    {t:"Opt B", ic:"🇬🇮", title:"Gibraltar: Europa Point (4 m 29 s) / La Línea beach (4 m 23 s)", place:"Europa Point — bus 2 from town, or walk 40 min", ll:[36.1097,-5.3457], photo:"europa-point",
+     desc:"Totality 10:45:33 → 10:50:01. Open horizon SE over the Strait; the lighthouse and mosque as foreground. In a Levante avoid the upper Rock (banner cloud). Official viewing sites are being organised — gibraltar-eclipse.com."},
+    {t:"Opt C", ic:"🚆", title:"Málaga base: Cercanías C-1 → Fuengirola (3 m 10 s)", place:"María Zambrano / Centro-Alameda → Fuengirola, 45 min, every 20 min", ll:[36.5400,-4.6250], photo:"fuengirola-beach",
+     desc:"Leave by 08:00 — trains will be packed. Totality at Fuengirola 10:47:03 → 10:50:13. Torremolinos (2 m 40) and Benalmádena (2 m 51) are earlier stops. Staying in Málaga city gives only 1 m 49 s (10:48:02 → 10:49:51)."},
+    {t:"10:45:07", ic:"🌑", title:"TOTALITY — 4 min 40 s (Tarifa)", place:"Look ESE, ~38° up", ll:[36.0128,-5.6047], photo:"totality",
+     desc:"Glasses off only during totality. Corona, prominences, 360° sunset, Venus. Glasses back on at 10:49:47 (diamond ring)."},
+    {t:"12:00", ic:"🍤", title:"Lunch + siesta", place:"Old town", ll:[36.0134,-5.6050], photo:"tarifa-lunch",
+     desc:"Bar El Francés / Chilimosa (veg) / Café Azul. Everything will be packed — book if you can."},
+    {t:"16:00", ic:"🐋", title:"firmm whale & dolphin trip", place:"Tarifa harbour", ll:[36.0104,-5.6034], photo:"tarifa-whales", cost:"€50–70",
+     desc:"Pilot whales, dolphins, and in Jul–Aug orcas hunting tuna in the Strait. Be at the office 1 h before. Alt: Valdevaqueros dune + kite-watching (10 km)."},
+    {t:"21:00", ic:"🥂", title:"Celebration dinner", place:"Mandrágora / La Pescadería / Hurricane terrace", ll:[36.0128,-5.6060], photo:"tarifa-dinner",
+     desc:"Castle is closed Mondays — save it for the morning of the 3rd if you want a look."},
+   ]},
+ { n:3, date:"Tue 3 Aug", title:"Tarifa → Málaga", base:"Málaga (Soho)", color:C.malaga, ic:"🚌",
+   sum:"The whole coast leaves today — pre-book the move. Driver (1h45, optional Baelo Claudia stop) or bus via Algeciras. Málaga afternoon: Soho, Atarazanas, Alcazaba, Picasso, El Pimpi, Muelle Uno.",
+   items:[
+    {t:"Opt B/C", ic:"↔️", title:"From Gibraltar: La Línea → Algeciras (M-120, 40 min) → Avanza to Málaga (~2 h) · From Málaga base: you're already here", place:"", ll:[36.1650,-5.3480], photo:"la-linea-bus",
+     desc:"Direct La Línea → Málaga Avanza buses also run (~3 h). If based in Málaga, today is a free Málaga/coast day — or take the Cercanías to El Chorro for the Caminito del Rey (book ahead)."},
+    {t:"09:00", ic:"🚐", title:"Tarifa → Málaga (Option A)", place:"Driver ~€190 / Avanza bus ~€22", ll:[36.20,-5.35], photo:"n340-coast",
+     desc:"Driver: 1h45 with an optional stop. Bus: M-150 to Algeciras (06:30/09:45/11:00) + Avanza Algeciras→Málaga (~2 h, ~11/day), or direct Avanza (2–4/day, 2h30–3h). Book on booking.avanzabus.com."},
+    {t:"opt.", ic:"🏛", title:"Baelo Claudia (Roman ruins on Bolonia beach)", place:"Bolonia, 22 km NW of Tarifa", ll:[36.0893,-5.7742], photo:"baelo-claudia", cost:"free EU / €1.50",
+     desc:"Open Tue 09:00–15:00 (closed Mon). Only with the driver option — it's a dead-end road."},
+    {t:"~13:00", ic:"🏨", title:"Drop bags — Soho", place:"Between María Zambrano station and the old town", ll:[36.7160,-4.4245], photo:"malaga-soho-hotel",
+     desc:"Soho Boutique Equitativa / Room Mate Valeria / Only YOU. 20 min walk to the station for the 08:09 train."},
+    {t:"14:00", ic:"🎨", title:"Soho street art → Atarazanas market", place:"Calle Casas de Campos → Mercado de Atarazanas", ll:[36.7175,-4.4237], photo:"malaga-atarazanas",
+     desc:"Obey/D*Face murals; the market (14th-c. Moorish gate, stained glass) closes ~15:00 — tapas at the bar if you make it, else the fried fish is nearby."},
+    {t:"16:00", ic:"🏰", title:"Cathedral → Picasso Museum → Roman Theatre + Alcazaba", place:"Old town", ll:[36.7213,-4.4155], photo:"malaga-alcazaba", cost:"€13 + €3.50",
+     desc:"Picasso 10–20. Alcazaba to 20:00 (last entry 19:00) — Roman-on-Moorish stacked, evening light on the ramparts."},
+    {t:"19:30", ic:"🍷", title:"El Pimpi → Muelle Uno sunset", place:"Calle Granada → port", ll:[36.7195,-4.4160], photo:"malaga-el-pimpi",
+     desc:"The bodega institution, terrace facing the Roman theatre; then the waterfront and Pompidou cube for sunset."},
+    {t:"21:00", ic:"🍽", title:"Dinner: El Tapeo de Cervantes or La Cosmopolita", place:"Calle Cárcer / Calle José Denis Belgrano", ll:[36.7238,-4.4185], photo:"malaga-dinner",
+     desc:"Book both ahead — Mike's list."},
+   ]},
+ { n:4, date:"Wed 4 Aug", title:"🚄 The big train day → San Sebastián", base:"San Sebastián (Gros)", color:C.train, ic:"🚄",
+   sum:"Iryo 08:09 Málaga → Madrid 10:56 (car 3, all tables), Cercanías to Chamartín, Alvia ~14:00 → Donostia ~19:15 through the green Oria valley. Verify in spring 2027 that the Alvia reaches Donostia (2026 had track works).",
+   items:[
+    {t:"08:09", ic:"🚄", title:"Iryo Málaga → Madrid Atocha", place:"María Zambrano → Puerta de Atocha, 2h47", ll:[36.7115,-4.4319], photo:"iryo-car3", cost:"€40–90",
+     desc:"Book CAR 3 (all-table seating) or Infinita 2+1. The wow is the first 25 min: Abdalajís tunnels + Arroyo de las Piedras viaduct (LEFT for the drop, RIGHT for the sierras). Peña de los Enamorados on the right after Antequera. Then Sierra Morena, then La Mancha — paint."},
+    {t:"10:56", ic:"🚉", title:"Atocha → Chamartín (Cercanías C-1/C-10)", place:"Madrid", ll:[40.4066,-3.6895], photo:"madrid-atocha",
+     desc:"12 min, every 5–10 min. Free with Renfe ticket code; ~€2 on Iryo. Allow 45–60 min; X-ray at Chamartín. Lunch near Chamartín."},
+    {t:"~14:00", ic:"🚆", title:"Alvia Chamartín → Donostia/San Sebastián", place:"Madrid-Chamartín-Clara Campoamor → Donostia, ~5 h", ll:[40.4722,-3.6825], photo:"alvia-north", cost:"€28–60",
+     desc:"Elige Confort (2+1). Guadarrama tunnel then the Sierra (LEFT); Valladolid, Burgos; Pancorbo gorge; Vitoria; then the descent into the Oria valley (Zumarraga→Tolosa) — the 'we're in the Basque Country' hour."},
+    {t:"~19:15", ic:"🏨", title:"Arrive Donostia → Gros", place:"Estación del Norte → Gros (10 min walk)", ll:[43.3183,-1.9812], photo:"donostia-station",
+     desc:"Buy a Mugi card. Drop bags in Gros."},
+    {t:"20:30", ic:"🍢", title:"First pintxos, Gros side", place:"Bergara Bar · Bodega Donostiarra · Hidalgo 56", ll:[43.3245,-1.9755], photo:"gros-pintxos",
+     desc:"The local crawl, one block from Zurriola beach."},
+   ]},
+ { n:5, date:"Thu 5 Aug", title:"San Sebastián — the classic loop", base:"San Sebastián", color:C.ss, ic:"🌊",
+   sum:"La Concha → Peine del Viento → Igueldo funicular; San Telmo or Tabakalera; Monte Urgull at sunset; Thursday pintxo-pote in Gros then Parte Vieja.",
+   items:[
+    {t:"09:00", ic:"🚶", title:"La Concha promenade → Ondarreta", place:"Paseo de la Concha", ll:[43.3160,-1.9880], photo:"la-concha",
+     desc:"The bay at low tide, the railing, the Belle Époque backdrop."},
+    {t:"10:00", ic:"🗿", title:"Peine del Viento (Chillida)", place:"End of Ondarreta", ll:[43.3195,-2.0068], photo:"peine-del-viento",
+     desc:"Free; best at high tide/wind when the blowholes fire. Sketch stop."},
+    {t:"10:45", ic:"🚡", title:"Monte Igueldo funicular", place:"Igueldo base station", ll:[43.3178,-2.0060], photo:"monte-igueldo", cost:"~€5",
+     desc:"1912 funicular; the postcard view of the bay. Coffee at the top."},
+    {t:"13:00", ic:"🏛", title:"San Telmo Museoa (or Tabakalera)", place:"Parte Vieja / Egia", ll:[43.3240,-1.9840], photo:"san-telmo", cost:"€10",
+     desc:"Basque society museum in a 16th-c. convent. Tabakalera (free galleries, rooftop; closed Mon) is the art alternative and it's next door to Gros."},
+    {t:"18:30", ic:"⛰", title:"Monte Urgull walk", place:"From Parte Vieja to the Cristo", ll:[43.3255,-1.9870], photo:"monte-urgull",
+     desc:"Free; sunset from the batteries."},
+    {t:"20:00", ic:"🍢", title:"Thursday pintxo-pote in Gros → Parte Vieja", place:"Gros, then Ganbara · Borda Berri · Cuchara de San Telmo · Néstor · La Viña", ll:[43.3238,-1.9835], photo:"parte-vieja-pintxos",
+     desc:"Pintxo-pote = drink + pintxo ~€2.50, the neighborhood's night out — the 'could we live here?' test. Bar Néstor tortilla sign-up at 20:00; La Viña for the cheesecake."},
+   ]},
+ { n:6, date:"Fri 6 Aug", title:"The coast: Zarautz → Getaria (or Zumaia flysch)", base:"San Sebastián", color:C.ss, ic:"🐟",
+   sum:"Euskotren to Zarautz, walk the coastal path to Getaria, Balenciaga museum, grilled turbot at Elkano, txakoli. Plan B on a low-tide day: Zumaia flysch + Geoparkea boat.",
+   items:[
+    {t:"09:30", ic:"🚃", title:"Euskotren Amara → Zarautz", place:"~30 min, hourly", ll:[43.2844,-2.1699], photo:"zarautz",
+     desc:"2.5 km beach, surf culture — the small-town 'could we live here?' candidate. Look at it that way."},
+    {t:"11:00", ic:"🥾", title:"Coastal path Zarautz → Getaria", place:"~4 km, ~1 h", ll:[43.2960,-2.1900], photo:"zarautz-getaria-path",
+     desc:"Cliffs, txakoli vines, the mouse-shaped San Antón headland ahead."},
+    {t:"12:15", ic:"👗", title:"Cristóbal Balenciaga Museoa", place:"Getaria", ll:[43.3020,-2.2050], photo:"balenciaga", cost:"€14",
+     desc:"Open daily in summer."},
+    {t:"14:00", ic:"🐟", title:"Lunch: Elkano (or Kaia-Kaipe)", place:"Getaria harbour", ll:[43.3033,-2.2058], photo:"elkano", cost:"€120–180 pp",
+     desc:"Whole grilled turbot over coals — book weeks ahead. Kaia-Kaipe is the same tradition, easier table."},
+    {t:"17:00", ic:"🍷", title:"Txakoli tasting", place:"Txomin Etxaniz / Gaintza, above town", ll:[43.2985,-2.2020], photo:"txakoli",
+     desc:"Then Lurraldebus UK09/UK10 back to Donostia."},
+    {t:"Plan B", ic:"🪨", title:"Zumaia flysch (low-tide day)", place:"Itzurun beach · Algorri centre · Geoparkea boat", ll:[43.2975,-2.2569], photo:"zumaia-flysch", cost:"boat €20–25",
+     desc:"Euskotren ~45 min. Walk the platform at low tide; ~1 h flysch boat (weather-dependent). Optional walk toward Sakoneta."},
+   ]},
+ { n:7, date:"Sat 7 Aug", title:"Chillida-Leku + a real walk", base:"San Sebastián", color:C.ss, ic:"🎨",
+   sum:"La Bretxa market early, bus to Chillida-Leku in Hernani, then the Ulia coastal path to Pasaia (or Hondarribia + the ferry to Hendaye). Cider house or last SS pintxos.",
+   items:[
+    {t:"09:00", ic:"🐟", title:"La Bretxa market", place:"Parte Vieja (fish hall underground)", ll:[43.3232,-1.9825], photo:"la-bretxa",
+     desc:"The 'would we shop here?' test. San Martín market (Centro) is the other one."},
+    {t:"10:30", ic:"🗿", title:"Chillida-Leku", place:"Hernani — bus BU05 from Okendo/Gipuzkoa Plaza, every 30 min", ll:[43.2896,-1.9736], photo:"chillida-leku", cost:"€14",
+     desc:"Sculpture park + farmhouse. 10–19, closed Tue in Jul/Aug. Non-negotiable for a painter."},
+    {t:"14:30", ic:"🥾", title:"Ulia coastal path → Pasaia Donibane", place:"From end of Zurriola, ~11 km one-way, 3–4 h", ll:[43.3253,-1.9227], photo:"ulia-pasaia",
+     desc:"Faro de la Plata lighthouse, then Pasai Donibane (Victor Hugo house, Albaola whaleboat museum), €0.90 rowboat across, bus back. Check the 2026 GR-121 landslide closure has reopened."},
+    {t:"alt", ic:"⛵", title:"Hondarribia + ferry to Hendaye", place:"Ekialdebus E21 ~40 min; ferry €2.50 / 7 min", ll:[43.3667,-1.7935], photo:"hondarribia",
+     desc:"Walled Casco + Marina fishermen's quarter; France for lunch."},
+    {t:"20:30", ic:"🍎", title:"Cider house (Petritegi, Astigarraga) or last SS pintxos", place:"20 min bus from SS", ll:[43.2820,-1.9470], photo:"sidreria", cost:"~€35–40",
+     desc:"Petritegi is open year-round with the classic menu (cod omelette, txuleta, cheese + quince)."},
+   ]},
+ { n:8, date:"Sun 8 Aug", title:"→ Bilbao · Guggenheim", base:"Bilbao (Abando / Casco Viejo)", color:C.bilbao, ic:"🏛",
+   sum:"PESA/ALSA bus 1h15 to Bilbao Intermodal. Barik card. River walk, Guggenheim late afternoon (open to 20:00 in summer), Plaza Nueva pintxos.",
+   items:[
+    {t:"10:00", ic:"🚌", title:"Bus Donostia → Bilbao Intermodal", place:"Geltokia → San Mamés, 1h15, ~hourly", ll:[43.2620,-2.9490], photo:"bilbao-intermodal", cost:"€12–17",
+     desc:"Buy a Barik card at the metro machine (€3 + load)."},
+    {t:"12:00", ic:"🏨", title:"Drop bags", place:"Abando/Indautxu (Vincci Consulado / Miró) or Casco Viejo (Tayko / Iturrienea)", ll:[43.2620,-2.9330], photo:"bilbao-hotel",
+     desc:"See Places to stay."},
+    {t:"13:00", ic:"🚶", title:"River walk", place:"Casco Viejo → Arriaga → Zubizuri → Guggenheim", ll:[43.2650,-2.9270], photo:"bilbao-river",
+     desc:"~3 km flat. Lunch at Mercado de la Ribera gastro hall on the way."},
+    {t:"16:00", ic:"🏛", title:"Guggenheim Bilbao", place:"Abandoibarra", ll:[43.2687,-2.9340], photo:"guggenheim", cost:"€18",
+     desc:"Open to 20:00 (15 Jun–13 Sep). Book online. Go late when the coaches have gone; Puppy and the Maman spider outside."},
+    {t:"20:30", ic:"🍢", title:"Plaza Nueva pintxos", place:"Gure Toki · Sorginzulo · Bar Charly · Víctor Montes", ll:[43.2573,-2.9232], photo:"plaza-nueva",
+     desc:"Or Ledesma/Diputación if you're in Abando: El Globo (txangurro), La Viña del Ensanche."},
+   ]},
+ { n:9, date:"Mon 9 Aug", title:"Gernika Monday market → Mundaka → Bermeo", base:"Bilbao", color:C.bilbao, ic:"🌳",
+   sum:"Euskotren E4 from Casco Viejo. Gernika's famous Monday market, the Tree, Casa de Juntas, the Picasso tile mural. On to Mundaka for lunch and Bermeo. Fine Arts Museum in the evening (closed Tue).",
+   items:[
+    {t:"09:00", ic:"🚃", title:"Euskotren E4 → Gernika", place:"Zazpikaleak/Casco Viejo → Gernika, ~50 min", ll:[43.3150,-2.6800], photo:"gernika-market",
+     desc:"Monday market (Mon 9 Aug — it fits!). Tree of Gernika + Casa de Juntas (free). Peace Museum is closed Mondays."},
+    {t:"12:30", ic:"🌊", title:"Mundaka", place:"E4 onward ~20 min", ll:[43.4070,-2.6980], photo:"mundaka",
+     desc:"The left-hand wave, the harbour, lunch."},
+    {t:"15:00", ic:"⚓", title:"Bermeo", place:"E4 terminus", ll:[43.4210,-2.7220], photo:"bermeo",
+     desc:"Fishing port; back to Bilbao on the E4."},
+    {t:"18:00", ic:"🖼", title:"Museo de Bellas Artes", place:"Abando (Foster+Partners wing, reopened 2026)", ll:[43.2647,-2.9350], photo:"bellas-artes",
+     desc:"Open Mon 11–20, closed Tue — so tonight. El Greco, Goya, Zuloaga, Chillida, Oteiza."},
+    {t:"21:00", ic:"🍢", title:"Casco Viejo / Café Iruña", place:"Jardines de Albia", ll:[43.2620,-2.9295], photo:"cafe-iruna",
+     desc:"Lamb pintxo moruno at night."},
+   ]},
+ { n:10, date:"Tue 10 Aug", title:"Gaztelugatxe · Getxo · Artxanda", base:"Bilbao", color:C.bilbao, ic:"⛪",
+   sum:"Pre-booked Gaztelugatxe in the morning (free timed reservation, mandatory in summer), metro to Getxo for the Vizcaya Bridge and Neguri villas, Artxanda funicular at sunset. Last dinner.",
+   items:[
+    {t:"08:30", ic:"⛪", title:"San Juan de Gaztelugatxe", place:"Bizkaibus A3518 → Bakio + A3524 (or summer A3517 direct)", ll:[43.4470,-2.7850], photo:"gaztelugatxe", cost:"free (reserve)",
+     desc:"241 steps + 1.5 km each way; ~3 h. Reserve on Bizkaia's Tiketa site when 2027 summer slots open (spring)."},
+    {t:"14:30", ic:"🌉", title:"Getxo — Vizcaya Bridge + Ereaga + Neguri", place:"Metro L1 → Areeta", ll:[43.3230,-3.0170], photo:"puente-colgante", cost:"€0.60 gondola",
+     desc:"UNESCO transporter bridge (24 h, every 8 min); beach; villas. The 'beach-suburb of Bilbao' reality check."},
+    {t:"19:30", ic:"🚡", title:"Artxanda funicular at sunset", place:"Plaza Funicular", ll:[43.2780,-2.9260], photo:"artxanda", cost:"€4.30 return",
+     desc:"The whole city below."},
+    {t:"21:00", ic:"🍽", title:"Last dinner", place:"Casco Viejo · or Nerua (in the Guggenheim) / Mina to splurge", ll:[43.2560,-2.9245], photo:"bilbao-last-dinner",
+     desc:"Pack for a 06:45 flight."},
+   ]},
+ { n:11, date:"Wed 11 Aug", title:"Fly home", base:"Eugene", color:C.fly, ic:"🏠",
+   sum:"Bizkaibus A3247 to the airport (every 15 min, ~25 min). KLM BIO 06:45 → AMS → PDX 11:30 (home ~14:00), or LH BIO 06:45 → FRA → SEA 11:55 → EUG.",
+   items:[
+    {t:"05:00", ic:"🚌", title:"Bizkaibus A3247 → Bilbao Airport", place:"Plaza Moyua / Intermodal", ll:[43.3011,-2.9106], photo:"bilbao-airport", cost:"~€3",
+     desc:"Or taxi €25–35, 15–20 min."},
+    {t:"06:45", ic:"✈️", title:"BIO → AMS → PDX (KLM) or BIO → FRA → SEA → EUG (LH)", place:"Home the same day", ll:[44.1246,-123.2120], photo:"home",
+     desc:"KL615 AMS 10:40 → PDX 11:30; LH490 FRA 10:45 → SEA 11:55 then Alaska to EUG."},
+   ]},
+];
+
+const stays = [
+ { city:"OPTION A · Tarifa — Sun 1 + Mon 2 Aug (2 nights) · 4 m 40 s", key:"tarifa", ll:[36.0128,-5.6047],
+   why:"The purist base — closest mainland point to the centreline. Tarifa is already showing 99 % unavailable on Booking.com with leftovers at €2,000–9,000/night; hotels report sell-outs and waitlists a year out. Phone/email the shortlist directly (many small hotels haven't priced 2027 and are holding dates), take anything reasonable with free cancellation, hold a Zahara / Algeciras backup. Bands below are NORMAL season — expect ×3–×10.",
+   list:[
+    {name:"La Residencia Puerto Hotel & Spa", area:"Port / old-town edge", band:"~€199 normal", ll:[36.0115,-5.6045], photo:"stay-la-residencia-puerto", st:"pick", stt:"Top pick — contact directly", why:"Sea views ESE over the port (eclipse from the terrace is plausible), heated pool, walk to Playa Chica and the old town."},
+    {name:"Kook Hotel Tarifa", area:"Old town centre, 14 rooms", band:"~€115 normal", ll:[36.0138,-5.6060], photo:"stay-kook", st:"pick", stt:"Top pick — contact directly", why:"Rooftop with an Africa view; 5 min to Playa Chica."},
+    {name:"Hotel Dos Mares", area:"On Playa de los Lances, 3 km NW", band:"€150–250 normal", ll:[36.0345,-5.6350], photo:"stay-dos-mares", st:"hot", stt:">70 % booked (Aug 2026)", why:"Watch from the sand out front. Ask to be waitlisted."},
+    {name:"Hotel Misiana", area:"Old town, 300 m from beach", band:"~€165 normal", ll:[36.0134,-5.6058], photo:"stay-misiana", st:"unk", stt:"Unknown — ask", why:"Design boutique, central."},
+    {name:"The Riad Tarifa", area:"Old town, 17th-c. house", band:"~€180 normal", ll:[36.0140,-5.6052], photo:"stay-riad", st:"unk", stt:"Unknown — ask", why:"Boutique with roof terrace."},
+    {name:"Silos19 Suites", area:"Old town, 18th-c. building", band:"~€70 normal", ll:[36.0132,-5.6068], photo:"stay-silos19", st:"unk", stt:"Unknown — ask", why:"Roof terrace facing Morocco — a possible eclipse perch."},
+    {name:"La Residencia Tarifa (aparthotel)", area:"Beachfront, Los Lances end", band:"~€175 normal", ll:[36.0200,-5.6150], photo:"stay-la-residencia-tarifa", st:"unk", stt:"Unknown — ask", why:"Sea-view apartments; walk everywhere."},
+    {name:"Hurricane Hotel", area:"N-340 km 78, beachfront gardens", band:"~€120 normal", ll:[36.0520,-5.6520], photo:"stay-hurricane", st:"unk", stt:"Unknown — ask", why:"Moorish boutique with its own beach; needs a taxi to town."},
+    {name:"Arte Vida Hotel", area:"Los Lances beach, N-340 km 79", band:"mid", ll:[36.0450,-5.6450], photo:"stay-arte-vida", st:"unk", stt:"Unknown — ask", why:"Rooms overlook the beach; open horizon."},
+    {name:"Hotel Tarifa Lances (Radisson Individuals)", area:"Los Lances, N-340", band:"~€75 normal", ll:[36.0400,-5.6400], photo:"stay-tarifa-lances", st:"unk", stt:"Unknown — ask", why:"2 pools, spa, beach across the road."},
+    {name:"BACKUP · Hotel Gran Sol, Zahara de los Atunes", area:"Beachfront, 4 m 26 s totality", band:"~€450–530/night showed available", ll:[36.1350,-5.8450], photo:"stay-gran-sol", st:"ok", stt:"Availability seen Aug 2026", why:"Long beach, easier logistics, 10 % historic cloud. Lock as insurance with free cancellation."},
+    {name:"BACKUP · Hotel Reina Cristina, Algeciras", area:"Historic hotel with gardens; 4 m 29 s", band:"ask", ll:[36.1300,-5.4450], photo:"stay-reina-cristina", st:"unk", stt:"Unknown — ask", why:"Levante-sheltered side of the Strait; view from Getares beach; on the bus/train lines north."},
+   ]},
+ { city:"OPTION B · Gibraltar / La Línea — Sun 1 + Mon 2 Aug · 4 m 23–29 s", key:"gib", ll:[36.1408,-5.3536],
+   why:"Loses only ~11 seconds vs Tarifa and simplifies everything: BA flies LHR → Gibraltar direct (EUG–SEA–LHR–GIB, one oneworld ticket), you walk from the runway to your hotel, and Tuesday's exit is a 40-min bus to Algeciras (or 2 h to Málaga). Watch from Europa Point / the southern flats (avoid the upper Rock in a Levante — banner cloud). La Línea is the cheaper Spanish twin, a 10-min walk across the frontier. Levante-sheltered side of the Strait; historic cloud 16–17 % (vs Tarifa 13 %). Gibraltar has an official eclipse committee and gibraltar-eclipse.com.",
+   list:[
+    {name:"The Rock Hotel", area:"Gibraltar, Europa Road — Art Deco, botanic gardens, bay views", band:"~£180–260 normal", ll:[36.1300,-5.3510], photo:"stay-rock-hotel", st:"pick", stt:"Top pick — check GIB dates", why:"Classic; south-facing terraces look over the Strait toward the eclipse Sun."},
+    {name:"The Eliott Hotel", area:"Gibraltar, Governor's Parade — town centre, rooftop pool", band:"~£150–220 normal", ll:[36.1395,-5.3535], photo:"stay-eliott", st:"unk", stt:"Ask", why:"Central; rooftop for the partial phases; 15 min walk/bus 2 to Europa Point."},
+    {name:"Holiday Inn Express Gibraltar", area:"Gibraltar, Devil's Tower Rd — by the airport/frontier", band:"~£120–180 normal", ll:[36.1500,-5.3480], photo:"stay-hiex-gib", st:"unk", stt:"Ask", why:"Walk from the runway; bus 5/10 to town and Europa Point."},
+    {name:"GibraltarStay / Ocean Village apartments", area:"Ocean Village marina", band:"from ~£79 normal", ll:[36.1480,-5.3550], photo:"stay-ocean-village", st:"unk", stt:"Listed on gibraltar-eclipse.com/stay", why:"Apartments; the Sunborn yacht-hotel next door is block-booked by tour groups."},
+    {name:"AC Hotel La Línea", area:"La Línea, 5 min walk to the frontier", band:"~€100–150 normal", ll:[36.1650,-5.3480], photo:"stay-ac-la-linea", st:"unk", stt:"Ask", why:"Spanish prices, walk to Gibraltar; Playa de Levante/Poniente for the eclipse."},
+    {name:"Ohtels Campo de Gibraltar", area:"La Línea, beachfront (Playa de Poniente)", band:"~€90–140 normal", ll:[36.1600,-5.3560], photo:"stay-ohtels-la-linea", st:"unk", stt:"Ask", why:"On the beach with an open sea view south-east; 20-min walk to the frontier."},
+   ]},
+ { city:"OPTION C · Málaga base — Sun 1 → Tue 3 Aug (3 nights) · Málaga 1 m 49 s / Fuengirola 3 m 10 s", key:"mal-base", ll:[36.7213,-4.4214],
+   why:"The 'make the whole trip easy' option: land, taxi to a Soho/old-town hotel, stay put for three nights, walk to the 08:09 train on Wednesday. The catch is the eclipse itself — Málaga city is near the northern edge of the path (1 m 49 s). The fix: on eclipse morning ride the Cercanías C-1 from María Zambrano/Centro-Alameda west to Fuengirola (45 min, every 20 min) → 3 m 10 s on the beach; or Torremolinos 2 m 40 / Benalmádena 2 m 51 en route. Marbella (3 m 16) and Estepona (3 m 36) need a bus/taxi. Note Málaga hotels are also surging for eclipse week (Hotel Larios double seen at €7,592) — but the city has thousands of rooms, so real availability is far better than Tarifa.",
+   list:[
+    {name:"Soho Boutique Equitativa", area:"Alameda Principal, Soho — 300 m to Atarazanas, 1.5 km to station", band:"~€110 normal", ll:[36.7178,-4.4225], photo:"stay-soho-equitativa", st:"pick", stt:"Top pick", why:"Between station and old town; the C-1 to Fuengirola leaves from Centro-Alameda, 3 min away."},
+    {name:"Room Mate Valeria", area:"Soho / Muelle Uno edge, rooftop pool", band:"~€125–200 normal", ll:[36.7175,-4.4185], photo:"stay-room-mate-valeria", st:"pick", stt:"Fun pick", why:"Port views from the roof for the partial phases."},
+    {name:"Only YOU Hotel Málaga", area:"Alameda Principal", band:"~€285 normal", ll:[36.7185,-4.4235], photo:"stay-only-you", st:"unk", stt:"Splurge", why:"Rooftop pool; 15 min walk to station."},
+    {name:"Molina Lario / Vincci Larios Diez / H10 Croma", area:"Old town", band:"~€200–250 normal", ll:[36.7205,-4.4195], photo:"stay-molina-lario", st:"unk", stt:"Old-town options", why:"Rooftop pools with cathedral views; 25 min walk to the station."},
+    {name:"Barceló Málaga (in the station) / Soho Boutique Málaga", area:"María Zambrano", band:"~€120–180 normal", ll:[36.7115,-4.4319], photo:"stay-barcelo-station", st:"unk", stt:"Station option", why:"Zero-stress 08:09 departure Wednesday; C-1 to Fuengirola from the same building."},
+    {name:"Or sleep on the coast: Fuengirola / Marbella", area:"Costa del Sol, 3 m 10 – 3 m 16 s", band:"varies", ll:[36.5400,-4.6250], photo:"stay-fuengirola", st:"unk", stt:"Variant", why:"Fuengirola is on the Cercanías (45 min to Málaga station); Marbella is bus/taxi. Longer totality, still easy Wednesday train."},
+   ]},
+ { city:"Málaga · Tue 3 Aug (1 night)", key:"malaga", ll:[36.7160,-4.4245],
+   why:"Soho sits between María Zambrano station (08:09 train) and the old town. Book by ~Feb 2027; Málaga has plenty of rooms but eclipse-week pricing is inflated.",
+   list:[
+    {name:"Soho Boutique Equitativa", area:"Alameda Principal, Soho — 300 m to Atarazanas, 1.5 km to station", band:"~€110", ll:[36.7178,-4.4225], photo:"stay-soho-equitativa", st:"pick", stt:"Good value pick", why:"Right where you want to be for the walk and the morning train."},
+    {name:"Room Mate Valeria", area:"Soho / Muelle Uno edge", band:"~€125–200", ll:[36.7175,-4.4185], photo:"stay-room-mate-valeria", st:"pick", stt:"Fun pick", why:"Rooftop pool, port views."},
+    {name:"Only YOU Hotel Málaga", area:"Alameda Principal", band:"~€285", ll:[36.7185,-4.4235], photo:"stay-only-you", st:"unk", stt:"Splurge", why:"Rooftop pool, 15 min walk to station."},
+    {name:"Molina Lario", area:"Old town by the cathedral", band:"~€200", ll:[36.7205,-4.4195], photo:"stay-molina-lario", st:"unk", stt:"Old-town option", why:"Rooftop pool with cathedral view; 25 min walk to the station."},
+   ]},
+ { city:"San Sebastián · Wed 4 → Sun 8 Aug (4 nights)", key:"ss", ll:[43.3245,-1.9755],
+   why:"Gros is the answer for you two: surf-y, cosmopolitan, Zurriola beach, Tabakalera next door, Thursday pintxo-pote, lots of foreign residents — and still a real neighborhood. Aug is peak but you're the week BEFORE Semana Grande (14–21 Aug). Book by Feb–Mar 2027. Expect €150–250 for good 3*, €250–350 for 4* boutique.",
+   list:[
+    {name:"One Shot Tabakalera House", area:"Egia/Gros edge, inside Tabakalera", band:"€150–260", ll:[43.3170,-1.9765], photo:"stay-tabakalera-house", st:"pick", stt:"Top pick (art angle)", why:"Ex-tobacco factory, industrial-chic, art centre + cinema downstairs; 8 min to Zurriola, 3 min to the train station."},
+    {name:"Hotel Arrizul Gros", area:"Gros, 2 blocks from Zurriola", band:"€150–230", ll:[43.3250,-1.9740], photo:"stay-arrizul-gros", st:"pick", stt:"Top pick (neighborhood)", why:"Modern 3*, quiet, in the 'living' neighborhood; sister apartments available."},
+    {name:"Pensión Aida / Pensión Kursaal", area:"Gros, by the Kursaal", band:"€110–170", ll:[43.3255,-1.9775], photo:"stay-pension-aida", st:"ok", stt:"Value", why:"Well-reviewed family pensiones a block from Zurriola."},
+    {name:"Hotel Arbaso", area:"Centro, by Buen Pastor cathedral", band:"€220–320", ll:[43.3165,-1.9815], photo:"stay-arbaso", st:"unk", stt:"Design splurge", why:"Sleek design, Narru restaurant downstairs, 5 min to Concha & Parte Vieja."},
+    {name:"Zinema7 Hotel", area:"Centro (Calle Prim)", band:"€130–200", ll:[43.3150,-1.9800], photo:"stay-zinema7", st:"ok", stt:"Value", why:"Former cinema, film-themed; 8 min to La Concha."},
+    {name:"Legazpi Doce Rooms & Suites", area:"Centro, C/Legazpi", band:"€150–250", ll:[43.3200,-1.9830], photo:"stay-legazpi-doce", st:"unk", stt:"Boutique", why:"Design pensión-hotel between Concha and Parte Vieja."},
+    {name:"Villa Soro", area:"Ategorrieta / Gros east", band:"€250–350", ll:[43.3225,-1.9650], photo:"stay-villa-soro", st:"unk", stt:"Quiet splurge", why:"19th-c. villa with garden; 'residential SS'."},
+    {name:"Apart-hotel (Sansebay / Feelfree / Apartamentos Zinema)", area:"Gros / Centro", band:"€150–280", ll:[43.3235,-1.9760], photo:"stay-ss-apartment", st:"unk", stt:"Live-here test", why:"A kitchen for La Bretxa market cooking."},
+   ]},
+ { city:"Bilbao · Sun 8 → Wed 11 Aug (3 nights)", key:"bilbao", ll:[43.2620,-2.9330],
+   why:"Abando/Indautxu for the living-feel (Guggenheim + Fine Arts + Ledesma pintxos walkable, Casco Viejo 10 min); Casco Viejo if you prioritise pintxos + the Euskotren E4 day trips. You're before Aste Nagusia (21–29 Aug).",
+   list:[
+    {name:"Vincci Consulado de Bilbao", area:"Abando / Ensanche", band:"€140–230", ll:[43.2605,-2.9330], photo:"stay-vincci-consulado", st:"pick", stt:"Top pick", why:"#2/57 on TripAdvisor, rooftop terrace, 10 min to Guggenheim and Casco Viejo."},
+    {name:"Hotel Tayko", area:"Casco Viejo riverfront, next to the market", band:"€160–260", ll:[43.2557,-2.9245], photo:"stay-tayko", st:"pick", stt:"Top pick (old town)", why:"Ex-warehouse design hotel + rooftop; Ribera market and Plaza Nueva 3 min."},
+    {name:"Hotel Miró", area:"Abando, opposite the Guggenheim", band:"€170–280", ll:[43.2675,-2.9320], photo:"stay-miro", st:"unk", stt:"Design", why:"Antonio Miró interiors, small spa; Fine Arts 3 min."},
+    {name:"Iturrienea Ostatua", area:"Casco Viejo, Santa María 14", band:"€110–150", ll:[43.2565,-2.9235], photo:"stay-iturrienea", st:"ok", stt:"Value / charm", why:"Antique-filled pensión in an old stone building."},
+    {name:"Pensión Basque Boutique", area:"Casco Viejo", band:"€100–160", ll:[43.2570,-2.9225], photo:"stay-basque-boutique", st:"ok", stt:"Value", why:"Individually decorated rooms near metro/tram."},
+    {name:"Gran Hotel Domine", area:"Facing the Guggenheim", band:"€250–380", ll:[43.2680,-2.9335], photo:"stay-domine", st:"unk", stt:"Art splurge", why:"Mariscal interiors, rooftop breakfast overlooking Puppy."},
+    {name:"Hotel Ercilla (Autograph) / Radisson Collection Gran Vía", area:"Indautxu / Abando", band:"€180–300", ll:[43.2620,-2.9385], photo:"stay-ercilla", st:"unk", stt:"Full-service", why:"Rooftop bars in the Ensanche 'living' grid."},
+    {name:"Getxo option · Hotel Igeretxe", area:"Ereaga beach, Getxo (metro 25 min)", band:"€140–220", ll:[43.3400,-3.0100], photo:"stay-igeretxe", st:"unk", stt:"Suburb test-drive", why:"Beachfront suburb living, at the cost of a metro ride to the pintxos."},
+   ]},
+];
+
+// ------------------------------------------------------------------
+// MAP
+// ------------------------------------------------------------------
+const map = L.map('map',{zoomControl:true, attributionControl:true}).setView([40.2,-3.7],6);
+const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Esri'});
+L.control.layers({"Map":osm,"Satellite":sat},null,{position:'topright'}).addTo(map);
+
+// route lines (great-circle-ish straight lines are fine for a planning map)
+const routes = [
+ {pts:[[44.1246,-123.2120],[47.45,-122.31],[51.47,-0.46],[36.675,-4.499]], color:C.fly, dash:"6 8", label:"Flights out"},
+ {pts:[[36.675,-4.499],[36.13,-5.45],[36.0128,-5.6047]], color:C.tarifa, label:"Transfer to Tarifa"},
+ {pts:[[36.0128,-5.6047],[36.13,-5.45],[36.7115,-4.4319]], color:C.malaga, label:"Tarifa → Málaga"},
+ {pts:[[36.7115,-4.4319],[37.0,-4.55],[37.89,-4.79],[38.98,-3.93],[40.4066,-3.6895]], color:C.train, label:"Iryo Málaga → Madrid"},
+ {pts:[[40.4722,-3.6825],[40.95,-4.11],[41.65,-4.73],[42.34,-3.70],[42.69,-2.94],[42.85,-2.67],[42.90,-2.17],[43.09,-2.31],[43.13,-2.08],[43.3183,-1.9812]], color:C.train, label:"Alvia Madrid → Donostia"},
+ {pts:[[43.3183,-1.9812],[43.20,-2.50],[43.2620,-2.9490]], color:C.bilbao, label:"Bus SS → Bilbao"},
+ {pts:[[43.3011,-2.9106],[52.31,4.76],[45.59,-122.60],[44.1246,-123.2120]], color:C.fly, dash:"6 8", label:"Flights home"},
+];
+routes.forEach(r=>L.polyline(r.pts,{color:r.color,weight:3,opacity:.75,dashArray:r.dash||null}).addTo(map).bindTooltip(r.label));
+
+// eclipse path (approx northern limit + centreline through the Strait)
+L.polyline([[37.05,-7.6],[36.78,-5.32],[36.55,-3.6],[36.35,-2.0]],{color:'#4b2a8a',weight:2,dashArray:'3 6',opacity:.8}).addTo(map).bindTooltip('≈ Northern limit of totality');
+L.polyline([[36.05,-7.6],[35.72,-5.60],[35.55,-3.6],[35.35,-2.0]],{color:'#4b2a8a',weight:3,opacity:.9}).addTo(map).bindTooltip('≈ Centreline of totality');
+
+const markers = {}; // key -> marker
+function pin(ll, color, txt, small, popup, key){
+  const m = L.marker(ll,{icon:L.divIcon({className:'',html:`<div class="pin ${small?'small':''}" style="background:${color}">${txt}</div>`,iconSize:[small?20:28,small?20:28],iconAnchor:[small?10:14,small?10:14]})}).addTo(map);
+  if(popup) m.bindPopup(popup);
+  if(key) markers[key]=m;
+  return m;
+}
+days.forEach(d=>{
+  d.items.forEach((it,i)=>{
+    pin(it.ll, d.color, d.n, true, `<b>Day ${d.n} · ${d.date}</b><br>${it.title}<br><span style="color:#6b7a80">${it.place}</span>`, `d${d.n}-${i}`);
+  });
+});
+stays.forEach(g=>g.list.forEach((s,i)=>pin(s.ll,'#C8902F','🛏',true,`<b>${s.name}</b><br>${s.area}<br>${s.band}`,`s-${g.key}-${i}`)));
+// base pins (bigger)
+[["Tarifa",[36.0128,-5.6047],C.tarifa,"1–2"],["Málaga",[36.7213,-4.4214],C.malaga,"3"],["Madrid",[40.4166,-3.7038],C.train,"4"],["San Sebastián",[43.3183,-1.9812],C.ss,"4–7"],["Bilbao",[43.2630,-2.9350],C.bilbao,"8–10"]]
+ .forEach(b=>pin(b[1],b[2],b[3],false,`<b>${b[0]}</b><br>Nights ${b[3]}`));
+
+let lastView=()=>map.setView([40.2,-3.7],6);
+function applyView(){ map.invalidateSize(); if(map.getSize().x>0) lastView(); }
+function focusLL(ll, z){ lastView=()=>map.setView(ll, z||13, {animate:true}); applyView(); }
+function selectMarker(key){
+  Object.values(markers).forEach(m=>{ const el=m.getElement(); if(el){ const p=el.querySelector('.pin'); p&&p.classList.remove('sel'); }});
+  const m=markers[key]; if(m){ const el=m.getElement(); if(el){ const p=el.querySelector('.pin'); p&&p.classList.add('sel'); } m.openPopup(); }
+}
+function fitDay(d){
+  const b=L.latLngBounds(d.items.map(i=>i.ll)); lastView=()=>map.fitBounds(b.pad(0.4),{animate:true,maxZoom:14}); applyView();
+}
+
+// ------------------------------------------------------------------
+// RENDER
+// ------------------------------------------------------------------
+function photoBox(slug, ic, cls){
+  const src = PHOTO_DIR + slug + ".jpg";
+  return `<div class="ph ${cls||''}"><span class="emo">${ic||'📷'}</span><img src="${src}" alt="" style="display:none" onload="this.style.display='block';this.previousElementSibling.style.display='none';this.nextElementSibling.style.display='none'" onerror="this.remove()"><span class="add">add ${slug}.jpg</span></div>`;
+}
+function renderItin(){
+  const v=document.getElementById('v-itin');
+  let h=`<div class="note purple"><b>Fixed point:</b> Tarifa, Mon 2 Aug — totality <b>10:45:07 → 10:49:47</b> CEST (4 m 40 s), Sun ~38° up in the ESE. Everything else bends around that. Tap a day to expand; tap an item to jump the map. Photos slot in automatically once dropped into <code>photos/eclipse/</code>.</div>`;
+  h+=`<div class="note red"><b>Book first:</b> a bed for Aug 1–2 — Tarifa (Option A, 4:40) if anything sane is available; otherwise Gibraltar/La Línea (Option B, 4:23–4:29) or a Málaga base with a Cercanías ride to Fuengirola on eclipse morning (Option C). Then flights (Alaska/Delta load 31 Jul 2027 ~3 Sep 2026; BA/Iberia already open).</div>`;
+  days.forEach(d=>{
+    h+=`<div class="day" id="day-${d.n}"><div class="dayhead" onclick="toggleDay(${d.n})">
+      <div class="num" style="background:${d.color}">${d.n}</div>
+      <div class="meta"><div class="d">Day ${d.n} · ${d.date}</div><h3>${d.ic} ${d.title}</h3><div class="base">🛌 ${d.base}</div></div>
+      <div class="chev">›</div></div>
+      <div class="daybody"><p class="daysum">${d.sum}</p>`;
+    d.items.forEach((it,i)=>{
+      h+=`<div class="ev" onclick="event.stopPropagation();pick('d${d.n}-${i}',[${it.ll}])">${photoBox(it.photo,it.ic)}
+        <div class="body"><div class="t">${it.t}</div><h4>${it.title}${it.cost?`<span class="cost">${it.cost}</span>`:''}</h4><div class="pl">${it.place}</div><p>${it.desc}</p></div></div>`;
+    });
+    h+=`</div></div>`;
+  });
+  v.innerHTML=h;
+}
+function toggleDay(n){
+  const el=document.getElementById('day-'+n); const open=el.classList.contains('open');
+  document.querySelectorAll('.day').forEach(x=>x.classList.remove('open','sel'));
+  if(!open){ el.classList.add('open','sel'); fitDay(days.find(d=>d.n===n)); el.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+function pick(key, ll){ selectMarker(key); if(window.innerWidth<=860){ document.getElementById('right').classList.add('open'); } setTimeout(()=>focusLL(ll, 13),80); }
+
+function renderStays(){
+  const v=document.getElementById('v-stays');
+  let h=`<div class="note">Bands are indicative <b>normal-season</b> rates from 2026 research; nothing here is booked. Tap a card to see it on the map. Status tags reflect what was visible in Aug 2026 — re-check before booking. Full notes: <code>04_Planning/Research/</code>.</div>`;
+  stays.forEach(g=>{
+    h+=`<div class="stayblock"><h3>${g.city}</h3><p class="why">${g.why}</p>`;
+    g.list.forEach((s,i)=>{
+      h+=`<div class="stay" onclick="pickStay('${g.key}',${i})">${photoBox(s.photo,'🛏')}
+        <div class="b"><span class="band">${s.band}</span><h4>${s.name}</h4><div class="area">${s.area}</div><p>${s.why}</p><span class="st ${s.st}">${s.stt}</span></div></div>`;
+    });
+    h+=`</div>`;
+  });
+  v.innerHTML=h;
+}
+function pickStay(key,i){ const g=stays.find(x=>x.key===key); const s=g.list[i]; document.querySelectorAll('.stay').forEach(x=>x.classList.remove('sel')); event.currentTarget.classList.add('sel'); pick(`s-${key}-${i}`, s.ll); }
+
+function renderEclipse(){
+  document.getElementById('v-eclipse').innerHTML=`
+  <div class="card"><h3>Tarifa, Mon 2 Aug 2027 — timeline (CEST)</h3>
+   <div class="big">4 min 40 s</div>
+   <div class="tl"><b>09:40:52</b><span>Partial begins (first contact)</span>
+   <b>10:45:07</b><span>TOTALITY begins — glasses off</span>
+   <b>10:47:27</b><span>Maximum</span>
+   <b>10:49:47</b><span>Totality ends — glasses on (diamond ring)</span>
+   <b>12:00:45</b><span>Partial ends</span></div>
+   <p style="margin:8px 0 0">Sun altitude ≈ <b>38°</b>, azimuth ≈ <b>95° (ESE)</b> — over the Strait toward the Rif. Shadow arrives from the WSW (Atlantic), leaves ENE. Centreline is ~35 km south in the Strait; Tarifa is the closest point on mainland Europe to it. Cádiz city gets only 2 m 56 s.</p></div>
+  <div class="card"><h3>Nearby, for comparison</h3>
+   <table><tr><th>Place</th><th>Totality</th><th>Duration</th><th>Cloudy 2 Aug (since 2000)</th></tr>
+   <tr><td><b>Tarifa</b></td><td>10:45:07–10:49:47</td><td><b>4:40</b></td><td>13 %</td></tr>
+   <tr><td>Bolonia</td><td>10:45:01–10:49:32</td><td>4:31</td><td>12 %</td></tr>
+   <tr><td>Zahara de los Atunes</td><td>10:45:00–10:49:26</td><td>4:26</td><td>10 %</td></tr>
+   <tr><td>Algeciras</td><td>10:45:26–10:49:55</td><td>4:29</td><td>16 %</td></tr>
+   <tr><td>Gibraltar</td><td>10:45:33–10:50:01</td><td>4:28</td><td>17 %</td></tr>
+   <tr><td>La Línea</td><td>10:45:28–10:49:51</td><td>4:23</td><td>~16 %</td></tr>
+   <tr><td>Estepona</td><td>10:46:11–10:49:47</td><td>3:36</td><td>—</td></tr>
+   <tr><td>Marbella</td><td>10:46:41–10:49:57</td><td>3:16</td><td>—</td></tr>
+   <tr><td>Fuengirola</td><td>10:47:03–10:50:13</td><td>3:10</td><td>—</td></tr>
+   <tr><td>Torremolinos</td><td>10:47:29–10:50:09</td><td>2:40</td><td>—</td></tr>
+   <tr><td><b>Málaga city</b></td><td>10:48:02–10:49:51</td><td><b>1:49</b></td><td>—</td></tr>
+   <tr><td>Cádiz</td><td>10:45:23–10:48:19</td><td>2:56</td><td>13 %</td></tr></table>
+   <p style="margin:8px 0 0;font-size:12.5px">Duration falls steadily eastward along the Costa del Sol because Málaga sits near the northern edge of the path. Sources: IGN municipality table (eclipses.ign.es), timeanddate, Heliora.</p></div>
+  <div class="card"><h3>Weather playbook</h3>
+   <ul><li>Climatology (Jay Anderson): ~<b>74 %</b> sun-visible at eclipse hour at Tarifa vs 88 % at Cádiz. The risk is thin morning marine stratus (usually burns off, but 10:47 is early) and Saharan dust.</li>
+   <li><b>Levante</b> (easterly): usually clear, dusty and windy at Tarifa; puts a banner cloud on the Rock of Gibraltar. → Playa Chica / Punta causeway, sheltered by Isla de las Palomas.</li>
+   <li><b>Poniente</b> / calm: → Los Lances, south end. Humid-Atlantic mornings can fog Bolonia/Zahara/Los Lances while Algeciras and points east are clear.</li>
+   <li>Fallback (only if dawn forecast is bad): pre-arranged driver east to Algeciras/Getares or inland to Facinas (N-340 km 70–80, &lt;15 % cloud). Do <b>not</b> improvise a drive on the N-340 that morning.</li></ul></div>
+  <div class="card"><h3>Viewing spots</h3>
+   <ul><li><b>Playa de los Lances</b> — walkable, huge capacity, open western horizon to watch the shadow arrive; south end for a sea foreground.</li>
+   <li><b>Playa Chica / Punta de Tarifa</b> — 5 min from centre, sheltered, small; the causeway is public (island interior is military).</li>
+   <li><b>Castillo de Guzmán el Bueno</b> — ramparts face SE, but normally closed Mon–Tue; ask the tourist office (+34 956 68 09 93) about eclipse-day opening.</li>
+   <li><b>Mirador del Estrecho</b> (N-340 km 87) — panoramic; a handful of parking spaces; pre-dawn only.</li>
+   <li><b>Valdevaqueros / Punta Paloma</b> — spectacular, windiest, parking fills early.</li>
+   <li><b>Gibraltar</b> — Europa Point (avoid the upper Rock in Levante); gibraltar-eclipse.com.</li></ul></div>
+  <div class="card"><h3>Kit</h3><ul><li>ISO 12312-2 eclipse glasses — bring 4+ pairs from the US.</li><li>Solar filter for the phone/camera if you shoot partials; during totality, no filter.</li><li>Shade, water (2–3 L each), hats, sunscreen; a sand-proof bag for the iPad.</li><li>Junta de Andalucía ran a 2 Aug 2026 rehearsal in Tarifa for viewing zones/parking/water — expect an organised municipal setup by 2027.</li></ul></div>`;
+}
+function renderLogi(){
+  document.getElementById('v-logi').innerHTML=`
+  <h2 class="sec">Flights (open-jaw EUG → Málaga · Bilbao → EUG)</h2>
+  <table><tr><th>Leg</th><th>Best options (2026 schedules as proxy)</th><th>Arrives</th></tr>
+  <tr><td>Out, Sat 31 Jul</td><td><b>EUG–SEA–LHR–AGP</b> Alaska + BA52 (13:30→06:45+1) + BA to Málaga — one oneworld ticket<br><b>EUG–PDX–AMS–AGP</b> KLM (13:05→07:55+1; AMS→AGP 09:35→12:35)<br>EUG–LAX–MAD–AGP Iberia A350 (17:50→13:50+1)<br>EUG–SEA–LHR–<b>GIB</b> BA (Gibraltar is 45 min from Tarifa)</td><td>AGP ~11:00–14:00 Sun<br>AGP 12:35 Sun<br>AGP ~17:00–19:00 Sun<br>GIB ~10:00–17:00 Sun</td></tr>
+  <tr><td>Home, Wed 11 Aug</td><td><b>BIO 06:45–AMS–PDX 11:30</b> KLM (drive 2 h)<br><b>BIO 06:45–FRA–SEA 11:55–EUG</b> Lufthansa + Alaska<br>BIO–MAD–SFO/LAX–EUG Iberia (+United/Alaska)</td><td>Home ~14:00<br>EUG ~15:00–17:00<br>EUG ~21:00–23:00</td></tr></table>
+  <div class="card"><b>Fares (peak):</b> economy ~$1,400–2,000 pp open-jaw; premium economy ~$2,300–3,500 pp. <b>Booking opens:</b> Iberia now · BA ~10 Aug 2026 · <b>Alaska/AA/Delta ~3 Sep 2026 · United ~4 Sep 2026</b> (return date ~14 Sep). Inventory, not price, is the risk — book on a changeable fare or miles the day it loads, re-price later. Mixing two one-ways across alliances is fine.</div>
+  <h2 class="sec">Ground — the south</h2>
+  <table><tr><th>Move</th><th>How</th><th>Time / cost</th></tr>
+  <tr><td>AGP → Tarifa (Sun)</td><td>Private transfer (malagaairtransfers.com, solhop.com); or Avanza airport → Algeciras + Comes M-150 → Tarifa</td><td>1h45 / ~€190 · bus ~3 h / ~€21</td></tr>
+  <tr><td>Tarifa → Málaga (Tue)</td><td>Driver (optional Baelo Claudia stop) · M-150 → Algeciras + Avanza → Málaga · direct Avanza 2–4/day</td><td>1h45 / ~€190 · ~3 h / ~€22</td></tr>
+  <tr><td>Alt: Algeciras → Madrid Alvia</td><td>Ronda mountain line, 2/day, ~5h30 — scenic, but partly bustituted for works through ~2028</td><td>Only if running end-to-end in 2027</td></tr></table>
+  <h2 class="sec">Trains — the big day (Wed 4 Aug)</h2>
+  <table><tr><th>Leg</th><th>Train</th><th>2026 timing</th><th>Notes</th></tr>
+  <tr><td>Málaga → Madrid Atocha</td><td><b>Iryo</b> (Frecciarossa 1000) — car 3 = all tables; or Renfe AVE (Elige Confort); Ouigo (cheapest, upper deck)</td><td>08:09 → 10:56 (2h47); AVE ~25/day 05:37–21:10</td><td>€40–90. Sales open ~Dec 2026–Feb 2027. Iryo Inicial = small bag only → book Inicial Superior/Singular.</td></tr>
+  <tr><td>Atocha → Chamartín</td><td>Cercanías C-1/C-10</td><td>12 min, every 5–10 min</td><td>Free with Renfe ticket code; ~€2 on Iryo. Allow 45–60 min; X-ray.</td></tr>
+  <tr><td>Madrid Chamartín → Donostia</td><td><b>Alvia</b> (Renfe only) — Elige Confort 2+1, café-bar</td><td>07:20→12:43 · ~14:00→~19:15 · 16:00→21:28 · 17:37→22:47</td><td>€28–60. Sales ~Mar–May 2027. <b>Verify Alvia reaches Donostia</b> (2026 summer works ended trains at Tolosa/Vitoria + bus). Fallback: Alvia to Bilbao 12:07/22:28 and flip bases.</td></tr>
+  <tr><td>Scenery</td><td colspan="3">Málaga leg: first 25 min (Abdalajís tunnels, Arroyo de las Piedras viaduct — LEFT), Peña de los Enamorados (RIGHT), then plateau — paint. North leg: Guadarrama (LEFT), Pancorbo gorge, then the Oria valley (Zumarraga→Tolosa) — the green-Basque hour before Donostia.</td></tr></table>
+  <h2 class="sec">Basque local transit</h2>
+  <table><tr><th>Move</th><th>How</th><th>Time / cost</th></tr>
+  <tr><td>SS ↔ Bilbao</td><td>PESA/ALSA bus, Geltokia ↔ Bilbao Intermodal, ~hourly</td><td>1h15 / €12–17</td></tr>
+  <tr><td>SS → Zarautz / Zumaia</td><td>Euskotren from Amara</td><td>~30 / ~50 min</td></tr>
+  <tr><td>SS → Getaria</td><td>Lurraldebus UK09/UK10</td><td>40–60 min</td></tr>
+  <tr><td>SS → Chillida-Leku</td><td>Lurraldebus BU05 from Okendo/Gipuzkoa Plaza, every 30 min</td><td>20–30 min</td></tr>
+  <tr><td>SS → Hondarribia</td><td>Ekialdebus E21</td><td>30–45 min</td></tr>
+  <tr><td>Bilbao → Gernika / Mundaka / Bermeo</td><td>Euskotren E4 from Zazpikaleak (Casco Viejo)</td><td>50 min / 1h10 / 1h20</td></tr>
+  <tr><td>Bilbao → Gaztelugatxe</td><td>Bizkaibus A3518 (Moyua → Bakio) + A3524; summer A3517 direct. <b>Free timed reservation mandatory (Tiketa)</b></td><td>~1h15 each way</td></tr>
+  <tr><td>Bilbao → airport</td><td>Bizkaibus A3247 from Moyua/Intermodal, every 15 min, 05:00–22:00</td><td>~25 min / ~€3</td></tr>
+  <tr><td>Cards</td><td><b>Mugi</b> (Gipuzkoa: Euskotren, Lurraldebus, Dbus) · <b>Barik</b> (Bizkaia: metro, tram, Bizkaibus, E4, funicular, airport bus)</td><td>€5 / €3 + load</td></tr></table>
+  <h2 class="sec">Booking calendar</h2>
+  <table><tr><th>When</th><th>What</th></tr>
+  <tr><td><b>Now (Aug 2026)</b></td><td>Tarifa lodging (direct email/phone; free cancellation) + a Zahara/Algeciras backup. Google Flights alerts. Passports valid ≥6 mo past Aug 2027.</td></tr>
+  <tr><td>~10 Aug 2026</td><td>BA opens 31 Jul 2027 (SEA–LHR–AGP/GIB).</td></tr>
+  <tr><td><b>3–4 Sep 2026</b></td><td>Alaska/AA/Delta/United open 31 Jul 2027 — book outbound. Return opens ~14 Sep.</td></tr>
+  <tr><td>Dec 2026 – Feb 2027</td><td>Málaga–Madrid train tickets (Iryo/Renfe/Ouigo). Málaga, SS, Bilbao hotels. Private transfers.</td></tr>
+  <tr><td>Mar – May 2027</td><td>Alvia Madrid → Donostia tickets; check Adif summer-works notices; Elkano/Arzak reservations; Gaztelugatxe reservation when 2027 slots open.</td></tr>
+  <tr><td>Jul 2027</td><td>Guggenheim tickets, Chillida-Leku, Balenciaga, firmm (2–3 days ahead), Avanza bus seats for Tue 3 Aug. ETIAS if required.</td></tr></table>`;
+}
+function renderDecide(){
+  document.getElementById('v-decide').innerHTML=`
+  <div class="card"><h3>0 · Which eclipse base? (decide by availability)</h3>
+   <table><tr><th>Option</th><th>Totality</th><th>Logistics</th><th>Availability</th></tr>
+   <tr><td><b>A · Tarifa</b></td><td>4:40</td><td>Transfer 1h45 each way; walk to the beach</td><td>Worst — sell-outs a year out</td></tr>
+   <tr><td><b>B · Gibraltar / La Línea</b></td><td>4:23–4:29</td><td>Fly LHR→GIB direct; walk to hotel; bus to Algeciras/Málaga Tue</td><td>Tight but real; official eclipse committee</td></tr>
+   <tr><td><b>C · Málaga (3 nights)</b></td><td>1:49 city / 3:10 Fuengirola by C-1</td><td>Easiest of all; no transfers; walk to Wed train</td><td>Best — thousands of rooms (still surging)</td></tr></table>
+   <p style="margin:6px 0 0">My read: <b>try A this week; if nothing sane comes back, take B</b> — you keep 95 % of the totality and simplify the flights. C is the fallback that makes the whole trip trivially easy at the cost of ~1½ minutes and a crowded commuter train on eclipse morning.</p></div>
+  <div class="card"><h3>1 · Leave Fri 30 Jul instead of Sat 31?</h3>With a Saturday departure you land Sunday midday and everything hinges on that itinerary running clean; the only buffer is the same day. Leaving Friday and sleeping in Málaga Saturday night (relaxed Sunday to Tarifa) is cheap insurance for a once-in-a-lifetime timed event, and gives Mike a bonus Málaga evening. Adds one hotel night; the north is unchanged. <b>Recommendation: Jul 30.</b></div>
+  <div class="card"><h3>2 · Tarifa lodging ceiling</h3>What's the max per night you'll pay for the two eclipse nights? That decides whether the plan is "any Tarifa room with free cancellation" or "Zahara/Algeciras backup and be happy." Either way: email the shortlist directly this week.</div>
+  <div class="card"><h3>3 · Málaga overnight vs straight through</h3>As written: sleep Málaga Tue, ride north Wed (one long, glorious train day). Alternative: Tarifa → Málaga → Madrid Tue and the 16:00/17:37 Alvia (SS 21:28 / Bilbao 22:28) — saves a hotel night, loses Mike's Málaga stop. <b>Kept Málaga.</b></div>
+  <div class="card"><h3>4 · San Sebastián first, or Bilbao first?</h3>SS-first (as written) ends 25 min from the airport and puts Gernika's Monday market on Mon 9 Aug. Flip only if the Alvia isn't reaching Donostia in Aug 2027 (track works).</div>
+  <div class="card"><h3>5 · Any splurge dinner?</h3>Elkano (Getaria) fits Fri 6 Aug naturally. Arzak needs a request 2–3 months out; Mugaritz is a taxi. Nerua (in the Guggenheim) for the last night?</div>
+  <div class="card"><h3>6 · Premium economy on the transatlantic?</h3>~$900–1,500 pp more each way at peak. The outbound overnight is the sleep that protects Sunday's arrival; the return doesn't matter as much.</div>`;
+}
+
+renderItin(); renderStays(); renderEclipse(); renderLogi(); renderDecide();
+document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('nav.tabs button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById('v-'+b.dataset.v).classList.add('active');
+  document.getElementById('left').scrollTop=0;
+}));
+document.getElementById('mapbtn').addEventListener('click',()=>{ const r=document.getElementById('right'); r.classList.toggle('open'); setTimeout(applyView,80); });
+// open the eclipse day by default (after layout settles so the map sizes correctly)
+setTimeout(()=>{ map.invalidateSize(); toggleDay(2); },250);
+window.addEventListener('resize',()=>map.invalidateSize());
+</script>
+</body>
+</html>
