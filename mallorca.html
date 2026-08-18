@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Mar i Muntanya — Mallorca 2027</title>
+<meta name="description" content="Our Mallorca trip companion — day-by-day events, hikes, rides, water days, photos, addresses & bookings." />
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#1F4E5F" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Mar i Muntanya" />
+<link rel="apple-touch-icon" href="icons/icon-180.png" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  :root{ --teal:#1F4E5F; --teal2:#2C7A8C; --terra:#C1660F; --sea:#2C7A8C; --gold:#C8902F;
+    --sand:#FBF6EE; --ink:#243239; --muted:#6b7a80; --hike:#2E7D32; --line:#ece3d4;
+    --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px); }
+  *{box-sizing:border-box;}
+  button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
+  html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#f4f1ea;}
+  #app{display:flex;flex-direction:column;height:100vh;height:100dvh;}
+
+  /* ---------- top bar ---------- */
+  .topbar{background:var(--teal);color:#fff;padding:calc(8px + var(--safe-t)) 16px 9px;flex:0 0 auto;
+    display:flex;align-items:center;gap:9px;box-shadow:0 1px 0 rgba(0,0,0,.1);}
+  .topbar .brand{font-size:16px;font-weight:700;letter-spacing:.3px;display:flex;align-items:center;gap:6px;}
+  .topbar .ctx{margin-left:auto;font-size:11.5px;opacity:.82;text-align:right;line-height:1.25;}
+  .topbar .back{background:rgba(255,255,255,.16);border:none;color:#fff;border-radius:8px;font-size:13px;
+    padding:6px 10px;cursor:pointer;display:none;}
+  .topbar.has-back .back{display:inline-block;}
+  .topbar.has-back .ctx{display:none;}
+  .topbar .brand{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* ---------- main scroll area ---------- */
+  #views{flex:1 1 auto;min-height:0;position:relative;overflow:hidden;}
+  .view{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;}
+  .view.active{display:block;}
+  #view-map{overflow:hidden;}
+  .scrollpad{padding:14px 14px calc(20px + var(--safe-b));}
+
+  /* ---------- bottom tab bar ---------- */
+  .tabbar{flex:0 0 auto;display:flex;background:#fff;border-top:1px solid var(--line);
+    padding-bottom:var(--safe-b);box-shadow:0 -2px 12px rgba(0,0,0,.06);}
+  .tabbar button{flex:1;background:none;border:none;padding:8px 0 7px;cursor:pointer;color:var(--muted);
+    display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;font-weight:600;}
+  .tabbar button .ti{font-size:21px;line-height:1;}
+  .tabbar button.active{color:var(--teal);}
+
+  /* ---------- day list (Itinerary) ---------- */
+  .listhead{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin:2px 2px 10px;}
+  .dayrow{display:flex;gap:12px;align-items:center;background:#fff;border-radius:14px;padding:9px;margin-bottom:9px;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);cursor:pointer;}
+  .dayrow .thumb{width:74px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:#dfe6e6;}
+  .dayrow .meta{min-width:0;flex:1;}
+  .dayrow .dnum{font-size:11px;color:var(--terra);font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+  .dayrow h3{margin:1px 0 3px;font-size:15.5px;color:var(--teal);line-height:1.15;}
+  .dayrow .chips{display:flex;flex-wrap:wrap;gap:5px;}
+  .chip{font-size:10.5px;font-weight:700;color:#fff;border-radius:6px;padding:2px 7px;letter-spacing:.2px;}
+  .dayrow .arrow{margin-left:auto;color:#c4cccd;font-size:20px;flex:0 0 auto;}
+
+  /* ---------- day detail (timeline of events) ---------- */
+  .dayhero{position:relative;height:185px;background:#13232a;border-radius:0;overflow:hidden;}
+  .dayhero img{width:100%;height:100%;object-fit:cover;display:block;}
+  .dayhero .grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,28,.82),rgba(10,22,28,0) 55%);}
+  .dayhero .cap{position:absolute;left:16px;right:16px;bottom:12px;color:#fff;}
+  .dayhero .cap .d{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;opacity:.92;}
+  .dayhero .cap h2{margin:2px 0 0;font-size:23px;line-height:1.12;text-shadow:0 1px 6px rgba(0,0,0,.4);}
+  .daysum{font-size:13.5px;line-height:1.5;color:var(--ink);padding:13px 16px 4px;}
+
+  .timeline{padding:6px 14px calc(24px + var(--safe-b));position:relative;}
+  .event{position:relative;padding-left:30px;padding-bottom:14px;}
+  .event::before{content:"";position:absolute;left:9px;top:5px;bottom:-6px;width:2px;background:var(--line);}
+  .event:last-child::before{display:none;}
+  .event .dot{position:absolute;left:2px;top:3px;width:16px;height:16px;border-radius:50%;border:3px solid #fff;
+    box-shadow:0 0 0 1px var(--line);}
+  .event .etime{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
+  .ecard{background:#fff;border-radius:13px;box-shadow:0 2px 8px rgba(0,0,0,.07);overflow:hidden;}
+  .ecard .egal{position:relative;height:170px;background:#13232a;}
+  .ecard .egal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s;pointer-events:none;}
+  .ecard .egal img.active{opacity:1;pointer-events:auto;cursor:zoom-in;}
+  .egal .gnav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.4);color:#fff;border:none;
+    width:30px;height:30px;border-radius:50%;font-size:17px;cursor:pointer;}
+  .egal .gnav.prev{left:7px;} .egal .gnav.next{right:7px;}
+  .egal .gdots{position:absolute;bottom:7px;left:0;right:0;display:flex;gap:5px;justify-content:center;pointer-events:none;}
+  .egal .gdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.6);}
+  .egal .gdot.active{background:#fff;}
+  .egal .gexp{position:absolute;bottom:7px;right:7px;background:rgba(0,0,0,.5);color:#fff;border-radius:6px;font-size:11px;padding:3px 7px;cursor:zoom-in;}
+  .ebody{padding:11px 13px 12px;}
+  .ebody h3{margin:0 0 2px;font-size:15.5px;color:var(--teal);line-height:1.2;display:flex;align-items:center;gap:7px;}
+  .ebody h3 .eic{font-size:16px;}
+  .ebody .edesc{font-size:13px;line-height:1.45;color:var(--ink);margin:5px 0 0;}
+  .erow{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;}
+  .erow a, .erow .bk{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;border-radius:8px;padding:5px 9px;text-decoration:none;}
+  .erow a.map{background:#e9f1f2;color:var(--teal);}
+  .erow .bk{background:#fbf3e7;color:#9a5a12;}
+  .erow .bk.todo{background:#fdeede;color:#b4540f;}
+  .enote{background:#fff7ed;border:1px solid #f3dcc0;color:#7a4a12;border-radius:9px;padding:7px 10px;font-size:12px;line-height:1.4;margin-top:9px;}
+
+  /* ---------- Today ---------- */
+  .todaybanner{background:linear-gradient(135deg,var(--teal),var(--teal2));color:#fff;border-radius:15px;padding:16px 17px;margin-bottom:12px;}
+  .todaybanner .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;opacity:.85;font-weight:700;}
+  .todaybanner h2{margin:4px 0 5px;font-size:24px;}
+  .todaybanner p{margin:0;font-size:13px;opacity:.92;line-height:1.45;}
+  .todaybanner .big{font-size:40px;font-weight:800;letter-spacing:-1px;margin:2px 0;}
+  .dayrow .subttl{font-size:11.5px;color:var(--muted);margin:0 0 4px;}
+  .dayhero .cap .subt{font-size:12.5px;opacity:.92;margin-top:2px;text-shadow:0 1px 5px rgba(0,0,0,.5);}
+  .todoitem{display:flex;gap:9px;padding:8px 0;border-top:1px solid #f3eee2;}
+  .todoitem:first-of-type{border-top:none;}
+  .todoitem .cb{flex:0 0 auto;font-size:17px;color:var(--terra);line-height:1.15;}
+  .todoitem b{color:var(--teal);font-size:13px;}
+  .when{font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.35;}
+
+  /* ---------- Map ---------- */
+  #map{position:absolute;inset:0;}
+  .legend{position:absolute;left:10px;bottom:calc(10px + var(--safe-b));z-index:500;background:rgba(255,255,255,.94);
+    border-radius:10px;padding:7px 10px;font-size:11px;color:var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.2);}
+  .legend .lg{display:inline-block;width:18px;height:0;vertical-align:middle;margin-right:4px;}
+  .legend .lg.car{border-top:3px solid #2E7D32;}
+  .legend .lg.bike{border-top:3px dotted #C1660F;}
+  .legend .lg.boat{border-top:3px dashed #2C7A8C;}
+  .pin{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;width:30px;height:30px;
+    border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.4);border:2px solid #fff;cursor:pointer;}
+  .pin.base{width:34px;height:34px;background:var(--teal)!important;font-size:17px;}
+
+  /* ---------- Info ---------- */
+  .infocard{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:13px 15px;margin-bottom:11px;}
+  .infocard h3{margin:0 0 7px;font-size:13px;color:var(--teal);text-transform:uppercase;letter-spacing:.4px;}
+  .inforow{display:flex;gap:9px;padding:6px 0;font-size:13px;line-height:1.45;border-top:1px solid #f3eee2;}
+  .inforow:first-of-type{border-top:none;}
+  .inforow .ii{flex:0 0 auto;font-size:15px;}
+  .inforow b{color:var(--teal);}
+  .inforow .todo{color:var(--terra);font-weight:600;}
+  .inforow a{color:var(--teal);font-weight:600;}
+  .tiny{font-size:11.5px;color:var(--muted);text-align:center;margin:6px 0 2px;line-height:1.6;}
+  .tiny a{color:var(--muted);}
+
+  /* ---------- lightbox ---------- */
+  .lightbox{position:fixed;inset:0;z-index:1400;background:rgba(8,12,15,.94);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .lightbox.show{opacity:1;pointer-events:auto;}
+  .lb-img{max-width:94vw;max-height:78vh;object-fit:contain;border-radius:8px;box-shadow:0 12px 50px rgba(0,0,0,.6);}
+  .lb-cap{color:#fff;margin-top:14px;font-size:15px;text-align:center;max-width:92vw;padding:0 14px;line-height:1.35;}
+  .lb-cap .lb-count{display:block;font-size:12px;color:rgba(255,255,255,.55);margin-top:5px;letter-spacing:.5px;}
+  .lb-x{position:absolute;top:calc(14px + var(--safe-t));right:16px;width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:20px;cursor:pointer;}
+  .lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:none;
+    background:rgba(255,255,255,.15);color:#fff;font-size:26px;cursor:pointer;}
+  .lb-nav.prev{left:8px;} .lb-nav.next{right:8px;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar" id="topbar">
+    <button class="back" id="backBtn" onclick="goBack()">‹ Days</button>
+    <span class="brand">🏔️🌊 <span id="brandText">Mar i Muntanya</span></span>
+    <span class="ctx">Mallorca · Sep 2027<br>Port de Pollença</span>
+  </div>
+
+  <div id="views">
+    <div class="view" id="view-today"><div class="scrollpad" id="today-body"></div></div>
+    <div class="view" id="view-itinerary"><div class="scrollpad" id="itin-body"></div></div>
+    <div class="view" id="view-map"><div id="map"></div>
+      <div class="legend"><span class="lg car"></span>car&nbsp;&nbsp;<span class="lg bike"></span>e-bike&nbsp;&nbsp;<span class="lg boat"></span>boat</div>
+    </div>
+    <div class="view" id="view-info"><div class="scrollpad" id="info-body"></div></div>
+  </div>
+
+  <div class="tabbar" id="tabbar">
+    <button data-tab="today" onclick="showTab('today')"><span class="ti">🧭</span>Today</button>
+    <button data-tab="itinerary" onclick="showTab('itinerary')"><span class="ti">📋</span>Itinerary</button>
+    <button data-tab="map" onclick="showTab('map')"><span class="ti">🗺️</span>Map</button>
+    <button data-tab="info" onclick="showTab('info')"><span class="ti">ℹ️</span>Info</button>
+  </div>
+</div>
+
+<div id="lightbox" class="lightbox" onclick="lbBackdrop(event)">
+  <button class="lb-x" onclick="closeLb()">✕</button>
+  <button class="lb-nav prev" onclick="lbStep(-1)">‹</button>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <button class="lb-nav next" onclick="lbStep(1)">›</button>
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const BASE=[39.9075,3.0820];
+const CAT={ move:{c:'#6b7a80'}, hike:{c:'#2E7D32'}, bike:{c:'#C1660F'}, water:{c:'#2C7A8C'},
+  food:{c:'#C8902F'}, sight:{c:'#7A5AA8'}, rest:{c:'#1F4E5F'} };
+function P(day,slug){ return `photos/day-${String(day).padStart(2,'0')}/${slug}.jpg`; }
+function mapU(q){ return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q); }
+
+// ---- captions (by path) ----
+const CAPS={};
+function cap(day,slug,text){ CAPS[P(day,slug)]=text; return P(day,slug); }
+
+// ---- the trip: days -> events ----
+const DAYS=[
+ { n:1, nick:"The Long Haul", iso:"2027-09-10", iso2:"2027-09-11", date:"Fri–Sat · Sep 10–11", title:"Fly out & arrive", place:"Eugene → Port de Pollença",
+   ll:BASE, mode:"car", chips:[["Travel","#6b7a80"]],
+   summary:"The long haul. Out of Eugene around midday Friday, two stops (Denver, Frankfurt), and into the hotel in Port de Pollença about 22 hours later — Saturday evening, local. Palma runs 9 hours ahead of Eugene.",
+   events:[
+    { ic:"✈️", cat:"move", time:"Fri 12:47 PM · EUG", title:"Eugene → Denver", place:"Denver (DEN)", mapq:"Denver International Airport",
+      desc:"United UA1057 · 2h40. Land Denver 4:27 PM, 1h13 layover.", book:[["Flights","Example routing below — add your real confirmation once booked"]] },
+    { ic:"🛫", cat:"move", time:"Fri 5:40 PM · DEN", title:"Denver → Frankfurt (overnight)", place:"Frankfurt (FRA)", mapq:"Frankfurt Airport",
+      desc:"Lufthansa LH447 · 9h35 overnight. Land Frankfurt 11:15 AM Saturday, 3h05 layover. You lose the night to the +9 hr jump." },
+    { ic:"🛫", cat:"move", time:"Sat 2:20 PM · FRA", title:"Frankfurt → Palma", place:"Palma (PMI)", mapq:"Palma de Mallorca Airport",
+      desc:"Discover 4Y518 · 2h05. Touch down Palma 4:25 PM Saturday." },
+    { ic:"🚗", cat:"move", time:"Sat ~5 PM", title:"Pick up car & drive north", place:"PMI → Port de Pollença", mapq:"Port de Pollença, Mallorca",
+      desc:"Collect the rental car and drive ~1 hr north — at the hotel around 6 PM Saturday (≈9 AM back in Eugene).",
+      book:[["Rental car","Add confirmation"],["Stay","Add accommodation + check-in"]],
+      note:"Door-to-door ≈ 22 hrs. Palma is 9 hrs ahead of Eugene — push through to a local bedtime Saturday and the jet lag fades much faster." },
+    { ic:"🏊", cat:"water", time:"Sat evening", title:"First swim + the Pine Walk", place:"Passeig Voramar", mapq:"Passeig Voramar Port de Pollensa",
+      desc:"If there's any gas left — a dip off the bay and a slow stroll down the pine-lined seafront.",
+      photos:[cap(1,"portpollensa-bay","Port de Pollença bay"), cap(1,"pine-walk","The Pine Walk (Passeig Voramar)")] },
+    { ic:"🍽️", cat:"food", time:"Sat evening", title:"Easy dinner, then sleep", place:"Port de Pollença", mapq:"Port de Pollença",
+      desc:"Low-key first dinner in town.", photos:[cap(1,"pollensa-evening","Port de Pollença seafront")] } ] },
+
+ { n:2, nick:"Easing In", iso:"2027-09-12", date:"Sun · Sep 12", title:"Vall de Bóquer & first swim", place:"Bóquer valley",
+   ll:[39.9180,3.0900], mode:"bike", chips:[["Hike","#2E7D32"],["Swim","#2C7A8C"]],
+   summary:"Ease in with the gentle Bóquer valley walk out to a quiet cove, then sort the e-bikes and lock in the week's bookings.",
+   events:[
+    { ic:"🥾", cat:"hike", time:"Morning", title:"Vall de Bóquer walk", place:"Bóquer valley", mapq:"Vall de Boquer Pollensa",
+      desc:"A gentle ~5 km valley walk between the ridges — wild goats, birdlife, no shade (start earlyish).",
+      photos:[cap(2,"boquer-valley","Vall de Bóquer — trail map"), cap(2,"boquer-goats","Wild goats in the Bóquer valley")] },
+    { ic:"🏊", cat:"water", time:"Midday", title:"Swim at Cala Bóquer", place:"Cala Bóquer", mapq:"Cala Boquer",
+      desc:"Quiet rocky cove at the end of the valley.", photos:[cap(2,"cala-boquer","Cala Bóquer")] },
+    { ic:"🚲", cat:"bike", time:"Afternoon", title:"Reserve the e-bikes", place:"Port de Pollença", mapq:"Port de Pollença bike rental",
+      desc:"E-bikes are how you'll commute to the nearby spots (Formentor, Cala Sant Vicenç, Alcúdia). Book 3+ days ahead.",
+      book:[["E-bikes","CCT Bike or 2GoCycling — ~€48/day (~$52) e-MTB"]] },
+    { ic:"📞", cat:"move", time:"Afternoon", title:"Confirm the week's activities", place:"",
+      desc:"Lock the sail + snorkel, the sea-kayak day, and coasteering." } ] },
+
+ { n:3, nick:"The Lighthouse Ride", iso:"2027-09-13", date:"Mon · Sep 13", title:"E-bike Cap de Formentor", place:"Formentor peninsula",
+   ll:[39.9619,3.2106], mode:"bike", chips:[["E-bike","#C1660F"]],
+   summary:"Cars are banned on the Formentor road in September, so e-bike is the way — the island's most famous ride to the lighthouse, with cliff miradors and a swim at the end.",
+   events:[
+    { ic:"🚴", cat:"bike", time:"Morning", title:"E-bike out the peninsula", place:"Port de Pollença → Formentor", mapq:"Cap de Formentor",
+      desc:"The classic ride; e-bikes flatten the climbs.", photos:[cap(3,"formentor-cyclist","The Formentor road")],
+      note:"⚠️ Formentor road closed to cars 10am–10pm (Jun–Oct). E-bike, bus 334, or boat — or drive before 10am. Re-check 2027 hours." },
+    { ic:"👀", cat:"sight", time:"En route", title:"Mirador des Colomer", place:"Mirador des Colomer", mapq:"Mirador es Colomer Formentor",
+      desc:"Cliffs plunging straight into the sea.", photos:[cap(3,"mirador-colomer","Mirador des Colomer")] },
+    { ic:"🗼", cat:"sight", time:"Optional", title:"Talaia d'Albercutx watchtower", place:"Talaia d'Albercutx", mapq:"Talaia d'Albercutx",
+      desc:"Short walk up to the old watchtower for the best Formentor view." },
+    { ic:"🏖️", cat:"water", time:"Midday", title:"Lighthouse & swim at Platja de Formentor", place:"Cap de Formentor", mapq:"Far de Formentor",
+      desc:"Ride to the lighthouse, then a swim at the pine-backed beach.", photos:[cap(3,"formentor-lighthouse","Cap de Formentor lighthouse")] } ] },
+
+ { n:4, nick:"Out on the Water", iso:"2027-09-14", date:"Tue · Sep 14", title:"Sail + snorkel", place:"Pollença bay",
+   ll:[39.8990,3.0950], mode:"boat", chips:[["Water","#2C7A8C"]],
+   summary:"A half-day skippered sail around Pollença bay and the Formentor coves — snorkel the clear water, paddle the SUP, snacks aboard. Easy afternoon on the beach.",
+   events:[
+    { ic:"⛵", cat:"water", time:"10:00", title:"Skippered sail from the marina", place:"Port de Pollença marina", mapq:"Port de Pollensa marina",
+      desc:"Half-day on the water to coves you can't reach by land.", photos:[cap(4,"sailboat-bay","Sailboats in a cove")],
+      book:[["Sail + snorkel","NoFrills Excursions — ~€89pp (~$96), gear + snacks. Book ahead"]] },
+    { ic:"🤿", cat:"water", time:"On the water", title:"Snorkel the coves", place:"", desc:"Toward Formentor & Cala Sant Vicenç.", photos:[cap(4,"snorkeling","Snorkeling the clear water")] },
+    { ic:"🏄", cat:"water", time:"On the water", title:"SUP & swim stops", place:"", desc:"Paddleboards and swims; snacks & drinks aboard.", photos:[cap(4,"sup-cove","Paddleboarding a cove")] },
+    { ic:"🏖️", cat:"rest", time:"Afternoon", title:"Lazy afternoon in town", place:"Port de Pollença", desc:"Beach and a wander." } ] },
+
+ { n:5, nick:"Into the Gorge", iso:"2027-09-15", date:"Wed · Sep 15", title:"Sa Calobra & Torrent de Pareis", place:"Sa Calobra",
+   ll:[39.8517,2.8003], mode:"car", chips:[["Big day","#C1660F"],["Hike","#2E7D32"]],
+   summary:"The big one. Drive the legendary serpentine road down to Sa Calobra, walk into the Torrent de Pareis where the gorge meets the sea, and swim in the cove. Cala Tuent and Lluc on the way back.",
+   events:[
+    { ic:"🚗", cat:"move", time:"~07:30", title:"Drive the serpentine MA-2141", place:"Sa Calobra", mapq:"Sa Calobra parking",
+      desc:"The famous 'Nus de sa Corbata' tie-knot loop. Go very early to beat the tour coaches (~1h15).",
+      photos:[cap(5,"serpentine-road","The Sa Calobra serpentine")] },
+    { ic:"🏞️", cat:"hike", time:"Morning", title:"Walk into the Torrent de Pareis", place:"Torrent de Pareis", mapq:"Torrent de Pareis",
+      desc:"Into the gorge mouth where the canyon meets the sea (full scramble optional).",
+      photos:[cap(5,"torrent-pareis","Torrent de Pareis gorge")],
+      note:"⚠️ Check the weather — it's a flash-flood canyon; never enter if rain is about. Strong boots." },
+    { ic:"🏊", cat:"water", time:"Midday", title:"Swim in the cove", place:"Sa Calobra", desc:"Between the cliffs.", photos:[cap(5,"sacalobra-cove","Sa Calobra cove")] },
+    { ic:"🌄", cat:"sight", time:"Afternoon", title:"Cala Tuent + Lluc on the way back", place:"Santuari de Lluc", mapq:"Santuari de Lluc",
+      desc:"A quieter cove and the mountain monastery, with MA-10 ridge views." } ] },
+
+ { n:6, nick:"Slow Day", iso:"2027-09-16", date:"Thu · Sep 16", title:"Recovery — coves & old town", place:"Cala Sant Vicenç",
+   ll:[39.9230,3.0560], mode:"bike", chips:[["Easy day","#1F4E5F"]],
+   summary:"Sleep in. Float around the Cala Sant Vicenç coves, then a gentle climb to the Puig de Maria hermitage for sunset, and a wander through Pollença's old town and Calvari steps.",
+   events:[
+    { ic:"🏊", cat:"water", time:"Morning", title:"Cala Sant Vicenç coves", place:"Cala Sant Vicenç", mapq:"Cala Sant Vicenc Mallorca",
+      desc:"Four little coves, easy swimming — ~10 min by car or an easy e-bike from town.", photos:[cap(6,"cala-sant-vicenc","Cala Sant Vicenç")] },
+    { ic:"🥾", cat:"hike", time:"Optional", title:"Puig de Maria hermitage", place:"Puig de Maria", mapq:"Puig de Maria Pollensa",
+      desc:"Short steep climb to a hermitage with huge views over the bay.", photos:[cap(6,"puig-de-maria","Above Pollença from Puig de Maria")] },
+    { ic:"🪜", cat:"sight", time:"Evening", title:"Pollença old town & Calvari steps", place:"Pollença", mapq:"Calvari Pollensa",
+      desc:"The 365 cypress-lined steps and Plaça Major.", photos:[cap(6,"pollensa-calvari","The Calvari steps, Pollença")] } ] },
+
+ { n:7, nick:"Caves by Kayak", iso:"2027-09-17", date:"Fri · Sep 17", title:"Sea-kayak & sea caves", place:"La Victòria, Alcúdia",
+   ll:[39.8760,3.1700], mode:"bike", chips:[["Water","#2C7A8C"]],
+   summary:"Paddle the cliffs and sea caves on the Alcúdia peninsula (beginner-friendly, with a snorkel stop), then explore Alcúdia's old town or hike to the wild Coll Baix beach.",
+   events:[
+    { ic:"🛶", cat:"water", time:"Morning", title:"Guided sea-kayak", place:"La Victòria, Alcúdia", mapq:"Ermita de la Victoria Alcudia",
+      desc:"~2 hr along the cliffs and into sea caves — beginner-friendly.", photos:[cap(7,"kayak-cliffs","Sea-kayaking the cliffs")],
+      book:[["Sea-kayak tour","~€65pp (~$70), ~2 hr. Book ahead"]] },
+    { ic:"🤿", cat:"water", time:"On the water", title:"Snorkel a hidden cove", place:"", desc:"Into a sea cave and a snorkel stop.", photos:[cap(7,"sea-cave","Into a sea cave")] },
+    { ic:"🏛️", cat:"sight", time:"Afternoon", title:"Alcúdia old town & Roman walls", place:"Alcúdia", mapq:"Alcudia old town",
+      desc:"Walk the medieval walls and the old streets.", photos:[cap(7,"alcudia-walls","Alcúdia old town")] } ] },
+
+ { n:8, nick:"Wild-Card Day", iso:"2027-09-18", date:"Sat · Sep 18", title:"Free day — beach & buffer", place:"Port de Pollença",
+   ll:BASE, mode:"none", chips:[["Easy day","#1F4E5F"],["Buffer","#C8902F"]],
+   summary:"A deliberate open day — rest before tomorrow's big Massanella hike, revisit a favorite cove, or hold it as weather / contingency buffer. Nothing booked.",
+   events:[
+    { ic:"🏖️", cat:"rest", time:"All day", title:"Beach & wander", place:"Port de Pollença / nearby coves", mapq:"Port de Pollença",
+      desc:"Sleep in, swim, read, wander the old town — or go back to the best cove of the week so far." },
+    { ic:"🚲", cat:"bike", time:"Optional", title:"Easy e-bike spin", place:"Around the bay to Alcúdia", mapq:"Alcudia bay path",
+      desc:"A flat loop along the bay if you want gentle movement." },
+    { ic:"🛒", cat:"sight", time:"Evening", title:"Provision for the mountain", place:"Port de Pollença", mapq:"Port de Pollença supermarket",
+      desc:"Stock up — water, snacks — for the big Massanella day tomorrow." } ] },
+
+ { n:9, nick:"Top of the Island", iso:"2027-09-19", date:"Sun · Sep 19", title:"Puig de Massanella", place:"Tramuntana (near Lluc)",
+   ll:[39.8180,2.8570], mode:"car", chips:[["Big day","#C1660F"],["Hike","#2E7D32"]],
+   summary:"The big mountain day: Puig de Massanella, the highest walkable peak in Mallorca, deep in the Tramuntana. All-day, with one short scrambly bit, and a reward swim back near the coast.",
+   events:[
+    { ic:"🛒", cat:"sight", time:"Early", title:"Pollença Sunday market", place:"Plaça Major", mapq:"Placa Major Pollensa",
+      desc:"Sunday market in the square before you drive up." },
+    { ic:"🚗", cat:"move", time:"Morning", title:"Drive to the trailhead", place:"Coll de sa Batalla", mapq:"Coll de sa Batalla Mallorca",
+      desc:"~1 hr to the Lluc area trailhead.", photos:[cap(9,"tramuntana-trail","The hike — trail map"), cap(9,"lluc-monastery","Santuari de Lluc")] },
+    { ic:"⛰️", cat:"hike", time:"All day", title:"Summit Puig de Massanella (1,367 m)", place:"Puig de Massanella", mapq:"Puig de Massanella",
+      desc:"Long climb with one short unprotected scramble near the top.", photos:[cap(9,"massanella-summit","Puig de Massanella")],
+      note:"Start early, carry lots of water, proper boots. Skip the final scramble if it feels exposed — the views are huge regardless." },
+    { ic:"🏊", cat:"water", time:"Late afternoon", title:"Reward swim near base", place:"", desc:"Back down for a dip." } ] },
+
+ { n:10, nick:"Cliffs & Jumps", iso:"2027-09-20", date:"Mon · Sep 20", title:"Coasteering (or a chill day)", place:"Bonaire, Alcúdia",
+   ll:[39.8660,3.1450], mode:"bike", chips:[["Water","#2C7A8C"],["Flex","#C8902F"]],
+   summary:"Guided coasteering on the north cliffs — scrambling, swimming through sea caves, and supervised jumps into the sea, all with a guide, helmet and wetsuit. Not feeling it? Swap for a chill SUP-and-beach day.",
+   events:[
+    { ic:"🪨", cat:"water", time:"Morning", title:"Guided coasteering", place:"Bonaire / Alcúdia", mapq:"Mon d'Aventura Pollensa",
+      desc:"~3.5 hr of cliff scrambles, sea caves and supervised jumps.", photos:[cap(10,"coasteering-jump","Coasteering — the jump"), cap(10,"sea-cave-swim","Through a sea cave")],
+      book:[["Coasteering","Mon d'Aventura — ~€65pp (~$70), full safety gear & guide. Book ahead"]],
+      note:"Only as a guided trip — never DIY the cliffs." },
+    { ic:"🌊", cat:"water", time:"Alternative", title:"Or: a SUP + beach day", place:"", desc:"Swap in a relaxed paddle-and-swim day if you'd rather.", photos:[cap(10,"north-cliffs","North-coast cliffs")] },
+    { ic:"🍤", cat:"food", time:"Evening", title:"Seaside dinner", place:"", desc:"" } ] },
+
+ { n:11, nick:"The Old Train", iso:"2027-09-21", date:"Tue · Sep 21", title:"Flex day — Sóller & the train", place:"Sóller (or your pick)",
+   ll:[39.7667,2.7150], mode:"car", chips:[["Flex","#C8902F"]],
+   summary:"Last full day, flexible. Suggested: drive the scenic MA-10 to Sóller for the vintage wooden train and seaside tram, with Deià and Valldemossa on the way. Or repeat a favorite cove, or an easy e-bike. Last big dinner.",
+   events:[
+    { ic:"🚗", cat:"move", time:"Morning", title:"Drive the MA-10 to Sóller", place:"Sóller", mapq:"Soller Mallorca",
+      desc:"Scenic mountain drive, with Deià and Valldemossa en route.", photos:[cap(11,"deia-village","Deià")] },
+    { ic:"🚋", cat:"sight", time:"Midday", title:"Vintage train & seaside tram", place:"Sóller / Port de Sóller", mapq:"Estacio Soller",
+      desc:"The 1912 wooden train through the mountains, then the open-air tram to the port.",
+      photos:[cap(11,"soller-train","The Sóller wooden train"), cap(11,"port-soller-tram","Port de Sóller tram")] },
+    { ic:"🏊", cat:"water", time:"Alternative", title:"Or: favorite cove / easy e-bike", place:"", desc:"Stay local and repeat the best of the week." },
+    { ic:"🥂", cat:"food", time:"Evening", title:"Last big dinner", place:"Port de Pollença", desc:"Send-off in town." } ] },
+
+ { n:12, nick:"Homeward", iso:"2027-09-22", date:"Wed · Sep 22", title:"Fly home", place:"Palma → Eugene",
+   ll:[39.5517,2.7388], mode:"car", chips:[["Travel","#6b7a80"]],
+   summary:"Up early, return the car at Palma and fly home — Palma → Newark → San Francisco → Eugene. Flying west you gain the day: leave Palma mid-morning and touch down in Eugene the same evening (~8:30 PM, Wed Sep 22).",
+   events:[
+    { ic:"🚗", cat:"move", time:"Wed early", title:"Drive to Palma & return the car", place:"Palma Airport (PMI)", mapq:"Palma de Mallorca Airport",
+      desc:"~1 hr south; allow buffer for the drop-off.", photos:[cap(12,"coast-aerial","The Mallorca coast")], book:[["Car drop-off","Palma airport — allow buffer"]] },
+    { ic:"✈️", cat:"move", time:"Wed 10:00 AM · PMI", title:"Palma → Newark", place:"Newark (EWR)", mapq:"Newark Liberty International Airport",
+      desc:"United UA237 · 9h10. Land Newark 1:10 PM, 1h35 layover.", book:[["Return flight","Example routing — add your real confirmation"]] },
+    { ic:"🛫", cat:"move", time:"Wed 2:45 PM · EWR", title:"Newark → San Francisco", place:"San Francisco (SFO)", mapq:"San Francisco International Airport",
+      desc:"United UA2328 · 6h03. Land SFO 5:48 PM, 57 min layover." },
+    { ic:"🛬", cat:"move", time:"Wed 6:45 PM · SFO", title:"San Francisco → Eugene", place:"Eugene (EUG)", mapq:"Eugene Airport",
+      desc:"United UA4742 (SkyWest). Touch down Eugene 8:29 PM, Wednesday Sep 22.", photos:[cap(12,"palma-skyline","Palma from the air"), cap(12,"plane-window","From the plane window")] },
+    { ic:"🛋️", cat:"rest", time:"After", title:"Home", place:"", desc:"Recovery days before back to work. 🎉" } ] },
+];
+
+/* ===== all photos (for whole-trip lightbox) ===== */
+const ALL_PHOTOS=[];
+DAYS.forEach(d=>d.events.forEach(e=>(e.photos||[]).forEach(src=>ALL_PHOTOS.push({src, n:d.n}))));
+
+/* ===== view + tab state ===== */
+let curTab='itinerary', openDayIdx=null;
+function showTab(tab){
+  curTab=tab;
+  document.querySelectorAll('#views .view').forEach(v=>v.classList.toggle('active', v.id==='view-'+tab));
+  document.querySelectorAll('#tabbar button').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  const tb=document.getElementById('topbar');
+  // back button only in itinerary detail
+  tb.classList.toggle('has-back', tab==='itinerary' && openDayIdx!==null);
+  if(tab==='today') renderToday();
+  if(tab==='itinerary') openDayIdx===null ? renderDayList() : renderDayDetail('itin-body', openDayIdx);
+  if(tab==='info') renderInfo();
+  if(tab==='map'){ setTimeout(()=>{ map.invalidateSize(); fitMap(); },80); }
+}
+function goBack(){ openDayIdx=null; document.getElementById('topbar').classList.remove('has-back'); renderDayList(); }
+
+/* ===== Itinerary: day list ===== */
+function chipsHTML(d){ return `<div class="chips">${d.chips.map(c=>`<span class="chip" style="background:${c[1]}">${c[0]}</span>`).join('')}</div>`; }
+function firstPhoto(d){ for(const e of d.events){ if(e.photos&&e.photos.length) return e.photos[0]; } return null; }
+function heroOf(d){ return 'photos/day-'+String(d.n).padStart(2,'0')+'/header.jpg'; }
+function renderDayList(){
+  document.getElementById('topbar').classList.remove('has-back');
+  document.getElementById('itin-body').classList.add('scrollpad');
+  document.getElementById('itin-body').innerHTML =
+    `<div class="listhead">The 12 days</div>` +
+    DAYS.map((d,i)=>{
+      const ph=heroOf(d);
+      return `<div class="dayrow" onclick="openDay(${i})">
+        ${ph?`<img class="thumb" src="${ph}" alt="" onerror="this.style.visibility='hidden'">`:`<div class="thumb"></div>`}
+        <div class="meta"><div class="dnum">Day ${d.n} · ${d.date}</div><h3>${d.nick||d.title}</h3><div class="subttl">${d.title}</div>${chipsHTML(d)}</div>
+        <span class="arrow">›</span></div>`;
+    }).join('');
+}
+function openDay(i){ openDayIdx=i; curTab='itinerary'; showTab('itinerary'); document.getElementById('view-itinerary').scrollTop=0; }
+
+/* ===== day detail: event timeline ===== */
+function galHTML(photos){
+  if(!photos||!photos.length) return '';
+  const multi=photos.length>1;
+  const imgs=photos.map((src,j)=>`<img class="${j===0?'active':''}" src="${src}" alt="" loading="lazy" onerror="this.remove()" onclick="openLb(this)">`).join('');
+  const dots=multi?`<div class="gdots">${photos.map((_,j)=>`<span class="gdot ${j===0?'active':''}"></span>`).join('')}</div>`:'';
+  const nav=multi?`<button class="gnav prev" onclick="galShift(this,-1)">‹</button><button class="gnav next" onclick="galShift(this,1)">›</button>`:'';
+  return `<div class="egal">${imgs}${nav}<span class="gexp" onclick="openLb(this)">⤢</span>${dots}</div>`;
+}
+function eventHTML(e){
+  const map = e.mapq ? `<a class="map" href="${mapU(e.mapq)}" target="_blank" rel="noopener">📍 ${e.place||'Map'}</a>` : (e.place?`<span class="bk" style="background:#eef3f4;color:#1F4E5F">📍 ${e.place}</span>`:'');
+  const book = (e.book||[]).map(b=>`<span class="bk ${/add /i.test(b[1])?'todo':''}">📋 ${b[0]}: ${b[1]}</span>`).join('');
+  const note = e.note?`<div class="enote">${e.note}</div>`:'';
+  const rows = (map||book)?`<div class="erow">${map}${book}</div>`:'';
+  return `<div class="event"><span class="dot" style="background:${CAT[e.cat].c}"></span>
+    <div class="etime">${e.time||''}</div>
+    <div class="ecard">${galHTML(e.photos)}<div class="ebody">
+      <h3><span class="eic">${e.ic}</span>${e.title}</h3>
+      ${e.desc?`<div class="edesc">${e.desc}</div>`:''}${rows}${note}
+    </div></div></div>`;
+}
+function renderDayDetail(target, i){
+  const d=DAYS[i]; const hero=heroOf(d);
+  if(target==='itin-body') document.getElementById('itin-body').classList.remove('scrollpad');
+  document.getElementById('topbar').classList.toggle('has-back', curTab==='itinerary');
+  document.getElementById(target).innerHTML =
+    (hero?`<div class="dayhero"><img src="${hero}" alt=""><div class="grad"></div><div class="cap"><div class="d">Day ${d.n} · ${d.date}</div><h2>${d.nick||d.title}</h2><div class="subt">${d.title}</div></div></div>`:`<div class="listhead" style="margin-top:4px">Day ${d.n} · ${d.date} — ${d.title}</div>`) +
+    `<div class="daysum">${d.summary}</div>` +
+    `<div class="timeline">${d.events.map(eventHTML).join('')}</div>`;
+}
+
+/* the detail views use a non-padded container, so swap scrollpad off when showing a hero */
+function renderDayDetailWrap(){ const b=document.getElementById('itin-body'); b.classList.remove('scrollpad'); renderDayDetail('itin-body', openDayIdx); }
+
+/* ===== gallery shift ===== */
+function galShift(btn,dir){ const g=btn.closest('.egal'); const im=[...g.querySelectorAll('img')]; const dt=[...g.querySelectorAll('.gdot')];
+  let i=im.findIndex(x=>x.classList.contains('active')); im[i].classList.remove('active'); if(dt[i])dt[i].classList.remove('active');
+  i=(i+dir+im.length)%im.length; im[i].classList.add('active'); if(dt[i])dt[i].classList.add('active'); }
+
+/* ===== Today ===== */
+function localISO(dt){ const p=n=>String(n).padStart(2,'0'); return dt.getFullYear()+'-'+p(dt.getMonth()+1)+'-'+p(dt.getDate()); }
+const TODOS=[
+ {t:"Book the flights", w:"EUG ⇄ PMI · book ~10–12 months out for the best fares"},
+ {t:"Reserve the accommodation", w:"Port de Pollença, 11 nights · lock in early — the good places go fast"},
+ {t:"Reserve the rental car", w:"Palma airport pickup · book ahead for September"},
+ {t:"Reserve e-bikes", w:"CCT Bike / 2GoCycling · 3+ days ahead; reserve once dates are firm"},
+ {t:"Book the sail + snorkel", w:"NoFrills Excursions · a few weeks ahead"},
+ {t:"Book the sea-kayak tour", w:"La Victòria, Alcúdia · a few weeks ahead"},
+ {t:"Book coasteering", w:"Mon d'Aventura · a few weeks ahead"},
+ {t:"Check Formentor 2027 car-ban dates", w:"Confirm e-bike / shuttle access nearer the trip"},
+];
+function fitMap(){ map.fitBounds(L.latLngBounds([BASE,...DAYS.map(d=>d.ll)]).pad(0.12)); }
+function dayCardsHTML(){ return DAYS.map((d,i)=>{ const ph=heroOf(d); return `<div class="dayrow" onclick="openDay(${i})">${ph?`<img class="thumb" src="${ph}" alt="" onerror="this.style.visibility='hidden'">`:`<div class="thumb"></div>`}<div class="meta"><div class="dnum">Day ${d.n} · ${d.date}</div><h3>${d.nick||d.title}</h3><div class="subttl">${d.title}</div>${chipsHTML(d)}</div><span class="arrow">›</span></div>`; }).join(''); }
+function renderToday(){
+  const today=localISO(new Date());
+  const idx=DAYS.findIndex(d=>d.iso===today||d.iso2===today);
+  const body=document.getElementById('today-body');
+  if(idx>=0){
+    body.classList.remove('scrollpad');
+    body.innerHTML=`<div style="padding:12px 14px 0"><div class="todaybanner"><div class="lbl">Today · Day ${DAYS[idx].n}</div><h2>${DAYS[idx].nick||DAYS[idx].title}</h2><p>${DAYS[idx].title} · 📍 ${DAYS[idx].place}</p></div></div>`;
+    const tmp=document.createElement('div'); tmp.id='today-detail-inner'; body.appendChild(tmp);
+    renderDayDetail('today-detail-inner', idx);
+    return;
+  }
+  body.classList.add('scrollpad');
+  const start=new Date('2027-09-10T00:00:00'); const now=new Date();
+  const diff=Math.ceil((start-now)/86400000);
+  if(diff>0){
+    const todos=`<div class="infocard"><h3>Before you go — to book &amp; reserve</h3>${TODOS.map(td=>`<div class="todoitem"><span class="cb">▢</span><div><b>${td.t}</b><div class="when">${td.w}</div></div></div>`).join('')}<div class="when" style="padding-top:8px">These drop off as you book them and send me the details.</div></div>`;
+    body.innerHTML=`<div class="todaybanner"><div class="lbl">Countdown to Mallorca</div><div class="big">${diff}</div><p>days until you fly out to Mallorca.</p></div>${todos}<div class="listhead">The 12 days</div>${dayCardsHTML()}`;
+  } else {
+    body.innerHTML=`<div class="todaybanner"><div class="lbl">Mar i Muntanya</div><h2>Hope it was epic ✨</h2><p>The trip's a wrap — flip through the days to relive it.</p></div><div class="listhead">The 12 days</div>${dayCardsHTML()}`;
+  }
+}
+
+/* ===== Info ===== */
+function renderInfo(){
+  document.getElementById('info-body').innerHTML=`
+   <div class="infocard"><h3>Trip at a glance</h3>
+     <div class="inforow"><span class="ii">📅</span><div><b>Dates:</b> Fri Sep 10 → Wed Sep 22, 2027 (11 nights)</div></div>
+     <div class="inforow"><span class="ii">🏠</span><div><b>Base:</b> Port de Pollença (one home base, day-trips out)</div></div>
+     <div class="inforow"><span class="ii">✈️</span><div><b>Flights:</b> Eugene (EUG) ⇄ Palma (PMI), 2 connections each way · <span class="todo">add confirmation</span></div></div>
+     <div class="inforow"><span class="ii">🚗</span><div><b>Getting around:</b> rental car for the far hikes; e-bikes for the nearby spots</div></div>
+   </div>
+   <div class="infocard"><h3>Key addresses & bookings</h3>
+     <div class="inforow"><span class="ii">🛏️</span><div><b>Accommodation:</b> <span class="todo">add name, address, check-in</span></div></div>
+     <div class="inforow"><span class="ii">🚗</span><div><b>Rental car:</b> <span class="todo">add company + confirmation</span></div></div>
+     <div class="inforow"><span class="ii">🚲</span><div><b>E-bikes:</b> CCT Bike / 2GoCycling, Port de Pollença · <span class="todo">reserve</span></div></div>
+     <div class="inforow"><span class="ii">⛵</span><div><b>Activities:</b> sail (NoFrills), kayak, coasteering (Mon d'Aventura) · <span class="todo">book</span></div></div>
+   </div>
+   <div class="infocard"><h3>Practical & emergency</h3>
+     <div class="inforow"><span class="ii">🚨</span><div><b>Emergency (EU):</b> <a href="tel:112">112</a></div></div>
+     <div class="inforow"><span class="ii">🏛️</span><div><b>US Consular Agency, Palma:</b> <span class="todo">add current number</span></div></div>
+     <div class="inforow"><span class="ii">📞</span><div><b>Accommodation phone:</b> <span class="todo">add</span></div></div>
+     <div class="inforow"><span class="ii">🅿️</span><div><b>Driving notes:</b> Sa Calobra serpentine is slow — go early. Formentor closed to cars 10am–10pm.</div></div>
+   </div>
+   <div class="infocard"><h3>Budget (for two)</h3>
+     <div class="inforow"><span class="ii">💶</span><div>Rough plan ~$8–10k all-in. Flights ~$1,740. Big spends: lodging, car, e-bikes, the sail / kayak / coasteering days. <span class="todo">track as you book</span></div></div>
+   </div>
+   <div class="infocard"><h3>Spanish / Catalan, just in case</h3>
+     <div class="inforow"><span class="ii">🗣️</span><div><b>Hola / Adéu</b> — hi / bye &nbsp;·&nbsp; <b>Gràcies</b> — thanks &nbsp;·&nbsp; <b>Una cervesa, si us plau</b> — a beer, please &nbsp;·&nbsp; <b>On és…?</b> — where is…?</div></div>
+   </div>
+   <p class="tiny">Earlier in the planning we mapped four whole trips before choosing Mallorca.<br><a href="options.html">↗ Revisit the pre-planning options</a></p>`;
+}
+
+const ROUTES = {
+  1:{mode:"car", pts:[[39.55196,2.73935],[39.5488,2.74165],[39.55744,2.75992],[39.55566,2.76529],[39.53898,2.73074],[39.53978,2.72506],[39.53486,2.73575],[39.54744,2.70386],[39.597,2.71672],[39.60974,2.71306],[39.61664,2.70271],[39.62912,2.72045],[39.6386,2.77623],[39.67203,2.82974],[39.71476,2.92312],[39.76411,2.96689],[39.79386,3.02175],[39.85231,3.0344],[39.86832,3.01341],[39.87568,3.02169],[39.88436,3.02256],[39.90798,3.08184]]},
+  2:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.90974,3.08519],[39.91039,3.08613],[39.91056,3.08596],[39.91078,3.08618],[39.91248,3.08462],[39.91273,3.08452],[39.91281,3.08431],[39.91278,3.08408],[39.91322,3.0837],[39.91333,3.08373],[39.91356,3.08441],[39.91363,3.08441],[39.91376,3.08423],[39.91379,3.08467],[39.91408,3.08557],[39.91415,3.08612],[39.91434,3.09]]},
+  3:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.91039,3.08613],[39.91263,3.08457],[39.91343,3.0871],[39.91378,3.09516],[39.91226,3.10212],[39.9149,3.10448],[39.91155,3.10433],[39.91376,3.10513],[39.91629,3.10792],[39.91724,3.10695],[39.91738,3.10563],[39.91963,3.10697],[39.92444,3.10751],[39.92592,3.10934],[39.92851,3.11005],[39.92888,3.11069],[39.92952,3.11447],[39.9304,3.11546],[39.93065,3.11689],[39.93036,3.1196],[39.93111,3.12203],[39.9303,3.12288],[39.93025,3.12468],[39.93067,3.12316],[39.93154,3.12306],[39.93222,3.12504],[39.93364,3.12559],[39.93215,3.12873],[39.93311,3.13076],[39.93104,3.12946],[39.92989,3.13041],[39.92914,3.13364],[39.93329,3.1358],[39.93351,3.1375],[39.9352,3.14075],[39.93858,3.14425],[39.94761,3.16025],[39.94753,3.1622],[39.94836,3.16322],[39.9493,3.16864],[39.94912,3.17115],[39.94816,3.1717],[39.94894,3.17238],[39.94969,3.17632],[39.94937,3.17793],[39.95077,3.18312],[39.95276,3.18637],[39.95304,3.18876],[39.95411,3.1894],[39.95273,3.1915],[39.95286,3.19237],[39.95109,3.19358],[39.95143,3.19452],[39.95077,3.19517],[39.9509,3.19642],[39.95154,3.19817],[39.953,3.19866],[39.95275,3.2],[39.95351,3.20279],[39.95387,3.20194],[39.95543,3.20103],[39.95546,3.20268],[39.95363,3.20598],[39.95378,3.20731],[39.95516,3.20825],[39.957,3.20831],[39.95741,3.2073],[39.95786,3.20803],[39.95533,3.21185],[39.95883,3.21116],[39.96,3.2099],[39.96063,3.21118],[39.96037,3.21212],[39.96108,3.21132]]},
+  4:{mode:"boat", pts:[[39.9075,3.082],[39.899,3.095]]},
+  5:{mode:"car", pts:[[39.90798,3.08184],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.9093,3.07865],[39.90426,3.07458],[39.8922,3.0358],[39.88746,3.02917],[39.88493,3.02337],[39.88289,3.00838],[39.87498,2.9935],[39.8693,2.97942],[39.86761,2.97199],[39.86985,2.96239],[39.86833,2.9533],[39.86941,2.9461],[39.86581,2.93891],[39.86973,2.94335],[39.86928,2.94105],[39.86731,2.93933],[39.8666,2.93555],[39.86732,2.93262],[39.86596,2.93072],[39.86732,2.9276],[39.86837,2.92854],[39.86938,2.92536],[39.86639,2.92427],[39.866,2.92095],[39.86412,2.91761],[39.85676,2.91356],[39.85848,2.91074],[39.85422,2.90751],[39.85615,2.90248],[39.85365,2.89779],[39.84595,2.89486],[39.8374,2.89736],[39.83149,2.8956],[39.82576,2.89996],[39.82073,2.89451],[39.82074,2.8924],[39.8177,2.89249],[39.81581,2.89631],[39.81334,2.88947],[39.81598,2.8866],[39.81532,2.88488],[39.81601,2.87851],[39.81977,2.87629],[39.82064,2.8744],[39.82205,2.86467],[39.82479,2.85914],[39.82243,2.85583],[39.82249,2.85398],[39.82614,2.84742],[39.82585,2.83945],[39.82865,2.83731],[39.82775,2.83153],[39.82326,2.82753],[39.82172,2.82768],[39.82032,2.83001],[39.81791,2.82873],[39.81628,2.8298],[39.81487,2.82596],[39.81622,2.82397],[39.81515,2.82247],[39.81739,2.82084],[39.81881,2.81518],[39.82009,2.8161],[39.82186,2.81522],[39.82061,2.81428],[39.82323,2.81585],[39.82494,2.8147],[39.82533,2.81663],[39.82732,2.81802],[39.83247,2.8161],[39.82921,2.81456],[39.82992,2.8135],[39.8297,2.81466],[39.83035,2.81358],[39.83247,2.8144],[39.83354,2.81199],[39.83168,2.8138],[39.83268,2.81261],[39.83091,2.8101],[39.831,2.80659],[39.82925,2.80298],[39.83076,2.80522],[39.8355,2.80259],[39.83387,2.80619],[39.83469,2.80682],[39.84127,2.80536],[39.84342,2.80365],[39.84522,2.80435],[39.8452,2.79965],[39.83804,2.79886],[39.84028,2.7955],[39.84282,2.79585],[39.8446,2.79404],[39.84552,2.79678],[39.85015,2.79991],[39.85098,2.79922]]},
+  6:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.9093,3.07865],[39.90855,3.07846],[39.90492,3.07558],[39.90426,3.07458],[39.8963,3.04801],[39.89274,3.03754],[39.89278,3.03696],[39.89624,3.03392],[39.89697,3.03374],[39.89963,3.03466],[39.90137,3.03672],[39.90341,3.03683],[39.90493,3.03783],[39.90617,3.03758],[39.91196,3.04076],[39.9137,3.04376],[39.91534,3.0458],[39.91573,3.04719],[39.91741,3.0507],[39.92074,3.05413],[39.92045,3.05524],[39.92057,3.05498],[39.92132,3.05542]]},
+  7:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.90928,3.07861],[39.90455,3.07493],[39.89977,3.07348],[39.89604,3.07342],[39.89032,3.07346],[39.8849,3.07481],[39.88379,3.07633],[39.88307,3.08008],[39.87291,3.08498],[39.86543,3.09082],[39.86133,3.09706],[39.85892,3.09921],[39.85773,3.10371],[39.85462,3.11092],[39.85155,3.11515],[39.85305,3.11844],[39.8511,3.12068],[39.85186,3.12522],[39.85352,3.13022],[39.86167,3.13995],[39.86322,3.14307],[39.86469,3.14391],[39.86729,3.14932],[39.8705,3.15288],[39.87132,3.15304],[39.87058,3.15724],[39.87333,3.16359],[39.87301,3.16489],[39.87441,3.16534],[39.87517,3.16959]]},
+  9:{mode:"car", pts:[[39.90798,3.08184],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.9093,3.07865],[39.90426,3.07458],[39.8922,3.0358],[39.88746,3.02917],[39.88493,3.02337],[39.88289,3.00838],[39.87498,2.9935],[39.8693,2.97942],[39.86761,2.97199],[39.86985,2.96239],[39.86833,2.9533],[39.86941,2.9461],[39.86581,2.93891],[39.86973,2.94335],[39.86928,2.94105],[39.86731,2.93933],[39.8666,2.93555],[39.86732,2.93262],[39.86596,2.93072],[39.86732,2.9276],[39.86837,2.92854],[39.86938,2.92536],[39.86639,2.92427],[39.866,2.92095],[39.86412,2.91761],[39.85676,2.91356],[39.85848,2.91074],[39.85422,2.90751],[39.85613,2.9022],[39.85327,2.89758],[39.84595,2.89486],[39.8374,2.89736],[39.83149,2.8956],[39.82576,2.89996],[39.82073,2.89451],[39.82026,2.89229],[39.8177,2.89249],[39.81572,2.89621],[39.81334,2.88947],[39.81598,2.8866],[39.81532,2.88488],[39.81601,2.87851],[39.81977,2.87629],[39.82064,2.8744],[39.82271,2.86358],[39.82259,2.85817],[39.81966,2.86015],[39.81882,2.85878]]},
+  10:{mode:"bike", pts:[[39.90798,3.08184],[39.90862,3.08252],[39.90806,3.08348],[39.90847,3.08389],[39.91001,3.08135],[39.90848,3.07974],[39.90928,3.07861],[39.90455,3.07493],[39.89977,3.07348],[39.89032,3.07346],[39.88544,3.07456],[39.88387,3.07609],[39.88316,3.08001],[39.87783,3.08223],[39.87013,3.08671],[39.86543,3.09082],[39.86133,3.09706],[39.85892,3.09921],[39.85773,3.10371],[39.85462,3.11092],[39.85155,3.11515],[39.85305,3.11844],[39.8511,3.12068],[39.85186,3.12522],[39.85357,3.13032],[39.86167,3.13995],[39.86322,3.14307],[39.86469,3.14391],[39.86595,3.14604],[39.86629,3.14519]]},
+  11:{mode:"car", pts:[[39.90798,3.08184],[39.90847,3.08389],[39.9093,3.07865],[39.90426,3.07458],[39.89158,3.03439],[39.8847,3.02225],[39.87818,3.0229],[39.87005,3.0135],[39.8654,3.01493],[39.85253,3.0344],[39.84046,3.02931],[39.82427,3.02856],[39.80974,3.02566],[39.80135,3.02045],[39.79374,3.02031],[39.76419,2.96666],[39.75177,2.95947],[39.73208,2.93614],[39.71347,2.92081],[39.69004,2.86512],[39.68301,2.8553],[39.67252,2.83022],[39.65996,2.80794],[39.6417,2.78265],[39.6371,2.771],[39.63733,2.75472],[39.6306,2.74092],[39.63214,2.73506],[39.64616,2.72254],[39.66647,2.71371],[39.66764,2.70529],[39.66566,2.69206],[39.66842,2.6768],[39.69759,2.6884],[39.74583,2.69765],[39.75791,2.71109],[39.76673,2.708],[39.76817,2.71137],[39.76649,2.71473]]},
+  12:{mode:"car", pts:[[39.55196,2.73935],[39.5488,2.74165],[39.55744,2.75992],[39.55566,2.76529],[39.53898,2.73074],[39.53978,2.72506],[39.53486,2.73575],[39.54744,2.70386],[39.597,2.71672],[39.60974,2.71306],[39.61664,2.70271],[39.62912,2.72045],[39.6386,2.77623],[39.67203,2.82974],[39.71476,2.92312],[39.76411,2.96689],[39.79386,3.02175],[39.85231,3.0344],[39.86832,3.01341],[39.87568,3.02169],[39.88436,3.02256],[39.90798,3.08184]]},
+};
+
+/* ===== Map ===== */
+const mapTiles=L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:18});
+const sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Imagery &copy; Esri',maxZoom:18});
+const satL=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18});
+const map=L.map('map',{scrollWheelZoom:true,layers:[mapTiles]});
+L.control.layers({"🗺️ Map":mapTiles,"🛰️ Satellite":L.layerGroup([sat,satL])},null,{position:'topright'}).addTo(map);
+const LINE={car:{color:'#2E7D32',weight:4,opacity:.85},bike:{color:'#C1660F',weight:3.5,opacity:.9,dashArray:'1,8',lineCap:'round'},boat:{color:'#2C7A8C',weight:3,opacity:.85,dashArray:'8,8'}};
+L.marker(BASE,{icon:L.divIcon({className:'',html:`<div class="pin base">🏠</div>`,iconSize:[34,34],iconAnchor:[17,17]})}).addTo(map).bindTooltip("Home base · Port de Pollença",{direction:'top'});
+DAYS.forEach((d,i)=>{
+  if(ROUTES[d.n]){ const r=ROUTES[d.n]; L.polyline(r.pts,LINE[r.mode]).addTo(map).on('click',()=>openDay(i)); }
+});
+DAYS.forEach((d,i)=>{
+  if(d.ll===BASE) return;
+  const m=L.marker(d.ll,{icon:L.divIcon({className:'',html:`<div class="pin" data-i="${i}" style="background:${chipColor(d)}">${d.n}</div>`,iconSize:[30,30],iconAnchor:[15,15]})}).addTo(map);
+  m.on('click',()=>openDay(i)); m.bindTooltip(`Day ${d.n}: ${d.title}`,{direction:'top'});
+});
+function chipColor(d){ return d.chips&&d.chips[0]?d.chips[0][1]:'#1F4E5F'; }
+map.fitBounds(L.latLngBounds([BASE,...DAYS.map(d=>d.ll)]).pad(0.12));
+
+/* ===== lightbox (whole trip) ===== */
+let lbIdx=0;
+function activeSrc(el){ const g=el.closest('.egal'); const a=g.querySelector('img.active'); return (a||g.querySelector('img'))?.getAttribute('src'); }
+function openLb(el){ const src=activeSrc(el); const gi=ALL_PHOTOS.findIndex(p=>p.src===src); lbIdx=gi<0?0:gi; renderLb(); document.getElementById('lightbox').classList.add('show'); }
+function renderLb(){ const it=ALL_PHOTOS[lbIdx]; if(!it)return; document.getElementById('lbImg').src=it.src; const c=CAPS[it.src]||''; document.getElementById('lbCap').innerHTML=`Day ${it.n} · ${c}<span class="lb-count">${lbIdx+1} / ${ALL_PHOTOS.length}</span>`; }
+function lbStep(d){ const n=ALL_PHOTOS.length; lbIdx=(lbIdx+d+n)%n; renderLb(); }
+function closeLb(){ document.getElementById('lightbox').classList.remove('show'); }
+function lbBackdrop(e){ if(e.target.id==='lightbox') closeLb(); }
+document.addEventListener('keydown',e=>{ const lb=document.getElementById('lightbox'); if(lb.classList.contains('show')){ if(e.key==='ArrowRight')lbStep(1); else if(e.key==='ArrowLeft')lbStep(-1); else if(e.key==='Escape')closeLb(); } });
+
+/* ===== init ===== */
+// detail containers shouldn't have the list padding; handle via CSS classes already (timeline/daysum have their own padding)
+document.getElementById('itin-body').classList.remove('scrollpad');
+document.getElementById('today-body').classList.remove('scrollpad');
+const _today=localISO(new Date());
+showTab('today');
+// ensure itinerary list renders first paint
+if(curTab==='itinerary' && openDayIdx===null) renderDayList();
+
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
+</script>
+</body>
+</html>

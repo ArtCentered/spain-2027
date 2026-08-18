@@ -1,30 +1,24 @@
-# Spain 2027 — Day-by-Day Map (Four Itineraries)
+# Sol y Norte — Spain 2027 trip companion
 
-An interactive day-by-day map and itinerary for our September 2027 trip. All four
-options are drawn on the map at once (colour-coded); use the toggle at the top, or
-click any pin, to switch between them:
+Travis & Mike's installable, offline-friendly companion for the 2027 trip: **the total solar eclipse of Mon 2 Aug from Fuengirola (base: Málaga) → Iryo + Alvia north → San Sebastián & Bilbao.**
 
-- **Option A — Andalucía (The South):** Málaga → Granada → Córdoba → Seville.
-- **Option B — Castile (Toledo & the Center):** Madrid · Segovia · Cuenca · Toledo — a rail-based trip built around Toledo, with the Prado/Guernica, the Guadarrama and Ciudad Encantada hikes, and the Tajo gorge. Round-trip Madrid, ~$8–10k for two.
-- **Option C — Green Spain (The North):** Bilbao · San Sebastián · Oviedo · Cangas de Onís — the Basque Country and Asturias, with the Guggenheim, pintxos, Gaztelugatxe and the Flysch coast, plus big Picos de Europa hikes (Covadonga lakes, Ruta del Cares). Open-jaw (in to Bilbao, home from Asturias), ~$8–10k for two.
-- **Option D — Mallorca (The Islands):** Palma · Serra de Tramuntana · the calas · Cabrera — an outdoor island loop: Tramuntana hiking, turquoise coves, the vintage Sóller train, Sa Calobra, Cap de Formentor, sea-kayaking, and a boat to Cabrera National Park. Needs a rental car; the priciest option but still ~$8–10k for two.
+- **Live app:** https://artcentered.github.io/spain-2027/ — on iPhone: open in Safari → Share → *Add to Home Screen*.
+- **Overview page (big map, shareable):** https://artcentered.github.io/spain-2027/eclipse/
+- **Earlier plans:** `mallorca.html` (the "Mar i Muntanya" Mallorca companion), `options.html` (pre-planning options).
 
-Tap a numbered pin for that day's plan, or step through the trip with the ‹ › buttons. Toggle Map / Satellite, top-right.
-
-## View it
-- **Live site:** https://artcentered.github.io/spain-2027/
-- **Local:** open `index.html` in any browser.
+## Tabs
+- **Today** — countdown to departure, a live countdown-to-totality clock (Fuengirola times), the book-before-you-go list, and the day list. On trip days it shows that day's plan; on 2 Aug the eclipse clock ticks through the contacts.
+- **Days** — 12 day cards (0–11) → each opens a timeline of events with map links, booking notes and photo galleries.
+- **Map** — route lines (flights dashed, trains, bus, the C-1 eclipse ride), the totality centreline/limit, base pins, day pins (tap → that day).
+- **Stays** — shortlists for Málaga / San Sebastián / Bilbao with **Website ↗** (hotel's own site) and **Map ↗** buttons.
+- **Info** — flights/trains summary, key bookings (placeholders), getting around, transit cards, emergency, phrases.
 
 ## Files
-- `index.html` — the interactive map + itinerary (this is the site)
-- `photos/` — the images used by the map
+- `index.html` — the whole app (data + UI). Trip content lives in `DAYS`, `STAYS`, `TODOS`, `ECL`.
+- `sw.js` — service worker (offline cache `solynorte-v1`; bump when you change assets).
+- `manifest.json`, `icons/` — PWA bits (icons still the Mallorca set — regenerate when you have an eclipse graphic).
+- `photos/trip/day-NN/` — **drop photos here**; see `photos/trip/README.md` for the exact filenames. `photos/*.jpg` at the top level belong to the Mallorca app.
+- `eclipse/` — the published copy of `01_Itinerary/Eclipse_Trip.html` from the planning folder.
 
-## Deploy to GitHub Pages (free hosting → one link to share)
-1. Create a new GitHub repo (e.g. `spain-2027`) and push this folder to it.
-2. In the repo: **Settings → Pages → Build and deployment → Source: "Deploy from a branch"**, pick your default branch (`main` or `master`) and folder `/ (root)`, Save.
-3. Wait ~1 minute; your link appears at the top of the Pages settings. Share that with Mike.
-
-## Iterating on the itinerary
-All the trip content lives in the `<script>` block in `index.html`, inside the `itineraries` object — one entry per option (`andalucia`, `castile`), each with its `stops` (map pins), `routes` (map lines), and `days` array. Each day has a title, date, activity list (`acts`), tag, and either `imgs` (photo gallery) or a `hero` emoji (used for a designed gradient card when there's no photo yet). Edit text there and re-commit; the site updates automatically after each push.
-
-_Note: map background tiles load from the internet, so view it online or on wifi/data (not airplane mode). The photos themselves load from `photos/`._
+## Deploy
+Push to `main`; GitHub Pages serves the root. Credentials are in the macOS Keychain (plain `git push` works).
