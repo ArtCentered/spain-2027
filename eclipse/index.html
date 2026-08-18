@@ -83,6 +83,10 @@
   .stay p{margin:3px 0 0;font-size:12.5px;line-height:1.4;color:#3a4a52;}
   .band{float:right;font-size:12px;font-weight:800;color:var(--terra);}
   .st{display:inline-block;font-size:10.5px;font-weight:700;border-radius:6px;padding:1px 6px;margin-top:4px;}
+  .links{margin-top:7px;display:flex;flex-wrap:wrap;gap:6px;}
+  .links a{display:inline-block;background:var(--teal);color:#fff;text-decoration:none;font-size:11.5px;font-weight:700;border-radius:7px;padding:5px 9px;}
+  .links a.alt{background:#eef0f1;color:var(--teal);}
+  .links a:active{opacity:.8;}
   .st.hot{background:#fdeeea;color:#c0392b;} .st.ok{background:#e9f5ea;color:#2E7D32;} .st.unk{background:#eef0f1;color:#5b6b71;} .st.pick{background:#efeafa;color:var(--eclipse);}
 
   /* logistics table */
@@ -318,36 +322,36 @@ const stays = [
  { city:"Málaga · Sun 1 → Tue 3 Aug (3 nights) — the eclipse base", key:"mal-base", ll:[36.7213,-4.4214],
    why:"DECIDED. Land, taxi to a Soho/old-town hotel, stay put for three nights, walk to the 08:09 train on Wednesday. Eclipse morning is a 45-min Cercanías C-1 ride to Fuengirola (3 m 10 s). Stay near Centro-Alameda station / Soho so the train, the old town and María Zambrano are all walkable. Málaga hotels are surging for eclipse week (Hotel Larios double seen at €7,592) but the city has thousands of rooms — book NOW with free cancellation, then re-shop as prices settle.",
    list:[
-    {name:"Soho Boutique Equitativa", area:"Alameda Principal, Soho — 300 m to Atarazanas, 1.5 km to station", band:"~€110 normal", ll:[36.7178,-4.4225], photo:"stay-soho-equitativa", st:"pick", stt:"Top pick", why:"Between station and old town; the C-1 to Fuengirola leaves from Centro-Alameda, 3 min away."},
-    {name:"Room Mate Valeria", area:"Soho / Muelle Uno edge, rooftop pool", band:"~€125–200 normal", ll:[36.7175,-4.4185], photo:"stay-room-mate-valeria", st:"pick", stt:"Fun pick", why:"Port views from the roof for the partial phases."},
-    {name:"Only YOU Hotel Málaga", area:"Alameda Principal", band:"~€285 normal", ll:[36.7185,-4.4235], photo:"stay-only-you", st:"unk", stt:"Splurge", why:"Rooftop pool; 15 min walk to station."},
-    {name:"Molina Lario / Vincci Larios Diez / H10 Croma", area:"Old town", band:"~€200–250 normal", ll:[36.7205,-4.4195], photo:"stay-molina-lario", st:"unk", stt:"Old-town options", why:"Rooftop pools with cathedral views; 25 min walk to the station."},
-    {name:"Barceló Málaga (in the station) / Soho Boutique Málaga", area:"María Zambrano", band:"~€120–180 normal", ll:[36.7115,-4.4319], photo:"stay-barcelo-station", st:"unk", stt:"Station option", why:"Zero-stress 08:09 departure Wednesday; C-1 to Fuengirola from the same building."},
-    {name:"Or sleep on the coast: Fuengirola / Marbella", area:"Costa del Sol, 3 m 10 – 3 m 16 s", band:"varies", ll:[36.5400,-4.6250], photo:"stay-fuengirola", st:"unk", stt:"Variant", why:"Fuengirola is on the Cercanías (45 min to Málaga station); Marbella is bus/taxi. Longer totality, still easy Wednesday train."},
+    {name:"Soho Boutique Equitativa", url:"https://www.sohohoteles.com/en/hotel-soho-boutique-equitativa-4-en-2/", area:"Alameda Principal, Soho — 300 m to Atarazanas, 1.5 km to station", band:"~€110 normal", ll:[36.7178,-4.4225], photo:"stay-soho-equitativa", st:"pick", stt:"Top pick", why:"Between station and old town; the C-1 to Fuengirola leaves from Centro-Alameda, 3 min away."},
+    {name:"Room Mate Valeria", url:"https://room-matehotels.com/en/valeria/", area:"Soho / Muelle Uno edge, rooftop pool", band:"~€125–200 normal", ll:[36.7175,-4.4185], photo:"stay-room-mate-valeria", st:"pick", stt:"Fun pick", why:"Port views from the roof for the partial phases."},
+    {name:"Only YOU Hotel Málaga", url:"https://www.onlyyouhotels.com/en/hotels/only-you-hotel-malaga/", area:"Alameda Principal", band:"~€285 normal", ll:[36.7185,-4.4235], photo:"stay-only-you", st:"unk", stt:"Splurge", why:"Rooftop pool; 15 min walk to station."},
+    {name:"Molina Lario / Vincci Larios Diez / H10 Croma", url:"https://www.cataloniahotels.com/en/hotel/catalonia-molina-lario", links:[["Vincci","https://www.vinccihoteles.com/en/hotels/malaga/vincci-larios-diez/"],["H10","https://www.h10hotels.com/en/malaga-hotels/h10-croma-malaga"]], area:"Old town", band:"~€200–250 normal", ll:[36.7205,-4.4195], photo:"stay-molina-lario", st:"unk", stt:"Old-town options", why:"Rooftop pools with cathedral views; 25 min walk to the station."},
+    {name:"Barceló Málaga (in the station) / Soho Boutique Málaga", url:"https://www.barcelo.com/en-us/barcelo-malaga/", links:[["Soho Boutique Málaga","https://www.sohohoteles.com/en/hotel-soho-boutique-malaga-3-en/"]], area:"María Zambrano", band:"~€120–180 normal", ll:[36.7115,-4.4319], photo:"stay-barcelo-station", st:"unk", stt:"Station option", why:"Zero-stress 08:09 departure Wednesday; C-1 to Fuengirola from the same building."},
+    {name:"Or sleep on the coast: Fuengirola / Marbella", url:"https://www.google.com/maps/search/?api=1&query=hotels+Fuengirola+beach", area:"Costa del Sol, 3 m 10 – 3 m 16 s", band:"varies", ll:[36.5400,-4.6250], photo:"stay-fuengirola", st:"unk", stt:"Variant", why:"Fuengirola is on the Cercanías (45 min to Málaga station); Marbella is bus/taxi. Longer totality, still easy Wednesday train."},
    ]},
  { city:"San Sebastián · Wed 4 → Sun 8 Aug (4 nights)", key:"ss", ll:[43.3245,-1.9755],
    why:"Gros is the answer for you two: surf-y, cosmopolitan, Zurriola beach, Tabakalera next door, Thursday pintxo-pote, lots of foreign residents — and still a real neighborhood. Aug is peak but you're the week BEFORE Semana Grande (14–21 Aug). Book by Feb–Mar 2027. Expect €150–250 for good 3*, €250–350 for 4* boutique.",
    list:[
-    {name:"One Shot Tabakalera House", area:"Egia/Gros edge, inside Tabakalera", band:"€150–260", ll:[43.3170,-1.9765], photo:"stay-tabakalera-house", st:"pick", stt:"Top pick (art angle)", why:"Ex-tobacco factory, industrial-chic, art centre + cinema downstairs; 8 min to Zurriola, 3 min to the train station."},
-    {name:"Hotel Arrizul Gros", area:"Gros, 2 blocks from Zurriola", band:"€150–230", ll:[43.3250,-1.9740], photo:"stay-arrizul-gros", st:"pick", stt:"Top pick (neighborhood)", why:"Modern 3*, quiet, in the 'living' neighborhood; sister apartments available."},
-    {name:"Pensión Aida / Pensión Kursaal", area:"Gros, by the Kursaal", band:"€110–170", ll:[43.3255,-1.9775], photo:"stay-pension-aida", st:"ok", stt:"Value", why:"Well-reviewed family pensiones a block from Zurriola."},
-    {name:"Hotel Arbaso", area:"Centro, by Buen Pastor cathedral", band:"€220–320", ll:[43.3165,-1.9815], photo:"stay-arbaso", st:"unk", stt:"Design splurge", why:"Sleek design, Narru restaurant downstairs, 5 min to Concha & Parte Vieja."},
-    {name:"Zinema7 Hotel", area:"Centro (Calle Prim)", band:"€130–200", ll:[43.3150,-1.9800], photo:"stay-zinema7", st:"ok", stt:"Value", why:"Former cinema, film-themed; 8 min to La Concha."},
-    {name:"Legazpi Doce Rooms & Suites", area:"Centro, C/Legazpi", band:"€150–250", ll:[43.3200,-1.9830], photo:"stay-legazpi-doce", st:"unk", stt:"Boutique", why:"Design pensión-hotel between Concha and Parte Vieja."},
-    {name:"Villa Soro", area:"Ategorrieta / Gros east", band:"€250–350", ll:[43.3225,-1.9650], photo:"stay-villa-soro", st:"unk", stt:"Quiet splurge", why:"19th-c. villa with garden; 'residential SS'."},
-    {name:"Apart-hotel (Sansebay / Feelfree / Apartamentos Zinema)", area:"Gros / Centro", band:"€150–280", ll:[43.3235,-1.9760], photo:"stay-ss-apartment", st:"unk", stt:"Live-here test", why:"A kitchen for La Bretxa market cooking."},
+    {name:"One Shot Tabakalera House", url:"https://www.oneshothotels.com/en/hotels/san-sebastian/tabakalera-house/", area:"Egia/Gros edge, inside Tabakalera", band:"€150–260", ll:[43.3170,-1.9765], photo:"stay-tabakalera-house", st:"pick", stt:"Top pick (art angle)", why:"Ex-tobacco factory, industrial-chic, art centre + cinema downstairs; 8 min to Zurriola, 3 min to the train station."},
+    {name:"Hotel Arrizul Congress (Gros)", url:"https://www.hotelarrizulcongress.com/en/", area:"Gros, 2 blocks from Zurriola", band:"€150–230", ll:[43.3250,-1.9740], photo:"stay-arrizul-gros", st:"pick", stt:"Top pick (neighborhood)", why:"Modern 3* by the Kursaal, in the 'living' neighborhood (the group's Gros property; the old Arrizul Gros site is gone). Sister apartments available."},
+    {name:"Pensión Aida / Pensión Kursaal", url:"https://www.aidapension.com/en/", links:[["Kursaal","https://www.pensionkursaal.com/"]], area:"Gros, by the Kursaal", band:"€110–170", ll:[43.3255,-1.9775], photo:"stay-pension-aida", st:"ok", stt:"Value", why:"Well-reviewed family pensiones a block from Zurriola."},
+    {name:"Hotel Arbaso", url:"https://www.hotelarbaso.com/en/", area:"Centro, by Buen Pastor cathedral", band:"€220–320", ll:[43.3165,-1.9815], photo:"stay-arbaso", st:"unk", stt:"Design splurge", why:"Sleek design, Narru restaurant downstairs, 5 min to Concha & Parte Vieja."},
+    {name:"Zinema7 Hotel", url:"https://www.zinema7hotel.com/en", area:"Centro (Calle Prim)", band:"€130–200", ll:[43.3150,-1.9800], photo:"stay-zinema7", st:"ok", stt:"Value", why:"Former cinema, film-themed; 8 min to La Concha."},
+    {name:"Legazpi Doce Rooms & Suites", url:"https://legazpidoce.com/en/", area:"Centro, C/Legazpi", band:"€150–250", ll:[43.3200,-1.9830], photo:"stay-legazpi-doce", st:"unk", stt:"Boutique", why:"Design pensión-hotel between Concha and Parte Vieja."},
+    {name:"Villa Soro", url:"https://www.hotelvillasoro.com/en/", area:"Ategorrieta / Gros east", band:"€250–350", ll:[43.3225,-1.9650], photo:"stay-villa-soro", st:"unk", stt:"Quiet splurge", why:"19th-c. villa with garden; 'residential SS'."},
+    {name:"Apart-hotel (Sansebay / Feelfree Rentals)", url:"https://sansebayhotel.com/apartments/?lang=en", links:[["Feelfree","https://feelfreerentals.com/en/apartments/san-sebastian"]], area:"Gros / Centro", band:"€150–280", ll:[43.3235,-1.9760], photo:"stay-ss-apartment", st:"unk", stt:"Live-here test", why:"A kitchen for La Bretxa market cooking."},
    ]},
  { city:"Bilbao · Sun 8 → Wed 11 Aug (3 nights)", key:"bilbao", ll:[43.2620,-2.9330],
    why:"Abando/Indautxu for the living-feel (Guggenheim + Fine Arts + Ledesma pintxos walkable, Casco Viejo 10 min); Casco Viejo if you prioritise pintxos + the Euskotren E4 day trips. You're before Aste Nagusia (21–29 Aug).",
    list:[
-    {name:"Vincci Consulado de Bilbao", area:"Abando / Ensanche", band:"€140–230", ll:[43.2605,-2.9330], photo:"stay-vincci-consulado", st:"pick", stt:"Top pick", why:"#2/57 on TripAdvisor, rooftop terrace, 10 min to Guggenheim and Casco Viejo."},
-    {name:"Hotel Tayko", area:"Casco Viejo riverfront, next to the market", band:"€160–260", ll:[43.2557,-2.9245], photo:"stay-tayko", st:"pick", stt:"Top pick (old town)", why:"Ex-warehouse design hotel + rooftop; Ribera market and Plaza Nueva 3 min."},
-    {name:"Hotel Miró", area:"Abando, opposite the Guggenheim", band:"€170–280", ll:[43.2675,-2.9320], photo:"stay-miro", st:"unk", stt:"Design", why:"Antonio Miró interiors, small spa; Fine Arts 3 min."},
-    {name:"Iturrienea Ostatua", area:"Casco Viejo, Santa María 14", band:"€110–150", ll:[43.2565,-2.9235], photo:"stay-iturrienea", st:"ok", stt:"Value / charm", why:"Antique-filled pensión in an old stone building."},
-    {name:"Pensión Basque Boutique", area:"Casco Viejo", band:"€100–160", ll:[43.2570,-2.9225], photo:"stay-basque-boutique", st:"ok", stt:"Value", why:"Individually decorated rooms near metro/tram."},
-    {name:"Gran Hotel Domine", area:"Facing the Guggenheim", band:"€250–380", ll:[43.2680,-2.9335], photo:"stay-domine", st:"unk", stt:"Art splurge", why:"Mariscal interiors, rooftop breakfast overlooking Puppy."},
-    {name:"Hotel Ercilla (Autograph) / Radisson Collection Gran Vía", area:"Indautxu / Abando", band:"€180–300", ll:[43.2620,-2.9385], photo:"stay-ercilla", st:"unk", stt:"Full-service", why:"Rooftop bars in the Ensanche 'living' grid."},
-    {name:"Getxo option · Hotel Igeretxe", area:"Ereaga beach, Getxo (metro 25 min)", band:"€140–220", ll:[43.3400,-3.0100], photo:"stay-igeretxe", st:"unk", stt:"Suburb test-drive", why:"Beachfront suburb living, at the cost of a metro ride to the pintxos."},
+    {name:"Vincci Consulado de Bilbao", url:"https://www.vinccihoteles.com/en/hotels/bilbao/vincci-consulado-de-bilbao/", area:"Abando / Ensanche", band:"€140–230", ll:[43.2605,-2.9330], photo:"stay-vincci-consulado", st:"pick", stt:"Top pick", why:"#2/57 on TripAdvisor, rooftop terrace, 10 min to Guggenheim and Casco Viejo."},
+    {name:"Hotel Tayko", url:"https://taykohotels.com/en/bilbao/", area:"Casco Viejo riverfront, next to the market", band:"€160–260", ll:[43.2557,-2.9245], photo:"stay-tayko", st:"pick", stt:"Top pick (old town)", why:"Ex-warehouse design hotel + rooftop; Ribera market and Plaza Nueva 3 min."},
+    {name:"Hotel Miró", url:"https://www.mirohotelbilbao.com/en/", area:"Abando, opposite the Guggenheim", band:"€170–280", ll:[43.2675,-2.9320], photo:"stay-miro", st:"unk", stt:"Design", why:"Antonio Miró interiors, small spa; Fine Arts 3 min."},
+    {name:"Iturrienea Ostatua", url:"https://iturrieneaostatua.com/en-gb/", area:"Casco Viejo, Santa María 14", band:"€110–150", ll:[43.2565,-2.9235], photo:"stay-iturrienea", st:"ok", stt:"Value / charm", why:"Antique-filled pensión in an old stone building."},
+    {name:"Pensión Basque Boutique", url:"https://www.basqueboutique.es/", area:"Casco Viejo", band:"€100–160", ll:[43.2570,-2.9225], photo:"stay-basque-boutique", st:"ok", stt:"Value", why:"Individually decorated rooms near metro/tram."},
+    {name:"Gran Hotel Domine", url:"https://www.hoteldominebilbao.com/", area:"Facing the Guggenheim", band:"€250–380", ll:[43.2680,-2.9335], photo:"stay-domine", st:"unk", stt:"Art splurge", why:"Mariscal interiors, rooftop breakfast overlooking Puppy."},
+    {name:"Hotel Ercilla (Autograph) / Radisson Collection Gran Vía", url:"https://www.marriott.com/en-us/hotels/bioak-hotel-ercilla-de-bilbao-autograph-collection/overview/", links:[["Radisson","https://www.radissonhotels.com/en-us/hotels/radisson-collection-gran-via-bilbao"]], area:"Indautxu / Abando", band:"€180–300", ll:[43.2620,-2.9385], photo:"stay-ercilla", st:"unk", stt:"Full-service", why:"Rooftop bars in the Ensanche 'living' grid."},
+    {name:"Getxo option · Hotel Igeretxe", url:"https://www.hotel-igeretxe.com/", area:"Ereaga beach, Getxo (metro 25 min)", band:"€140–220", ll:[43.3400,-3.0100], photo:"stay-igeretxe", st:"unk", stt:"Suburb test-drive", why:"Beachfront suburb living, at the cost of a metro ride to the pintxos."},
    ]},
 ];
 
@@ -437,12 +441,13 @@ function pick(key, ll){ selectMarker(key); if(window.innerWidth<=860){ document.
 
 function renderStays(){
   const v=document.getElementById('v-stays');
-  let h=`<div class="note">Bands are indicative <b>normal-season</b> rates from 2026 research; nothing here is booked. Tap a card to see it on the map. Status tags reflect what was visible in Aug 2026 — re-check before booking. Full notes: <code>04_Planning/Research/</code>.</div>`;
+  let h=`<div class="note">Bands are indicative <b>normal-season</b> rates from 2026 research; nothing here is booked. <b>Website ↗</b> goes to the hotel's own site (book 1:1, skip the OTAs). Tap a card to see it on the map. Status tags reflect what was visible in Aug 2026 — re-check before booking. Full notes: <code>04_Planning/Research/</code>.</div>`;
   stays.forEach(g=>{
     h+=`<div class="stayblock"><h3>${g.city}</h3><p class="why">${g.why}</p>`;
     g.list.forEach((s,i)=>{
       h+=`<div class="stay" onclick="pickStay('${g.key}',${i})">${photoBox(s.photo,'🛏')}
-        <div class="b"><span class="band">${s.band}</span><h4>${s.name}</h4><div class="area">${s.area}</div><p>${s.why}</p><span class="st ${s.st}">${s.stt}</span></div></div>`;
+        <div class="b"><span class="band">${s.band}</span><h4>${s.name}</h4><div class="area">${s.area}</div><p>${s.why}</p><span class="st ${s.st}">${s.stt}</span>
+        <div class="links" onclick="event.stopPropagation()">${s.url?`<a href="${s.url}" target="_blank" rel="noopener">Website ↗</a>`:''}${(s.links||[]).map(l=>`<a class="alt" href="${l[1]}" target="_blank" rel="noopener">${l[0]} ↗</a>`).join('')}<a class="alt" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(s.name.replace(/^(BACKUP|Getxo option) · /,'').split(' / ')[0]+' '+g.city.split(' ·')[0])}" target="_blank" rel="noopener">Map ↗</a></div></div></div>`;
     });
     h+=`</div>`;
   });
