@@ -162,9 +162,9 @@ const days = [
     {t:"~12:00", ic:"🛬", title:"Land Málaga (AGP)", place:"Málaga–Costa del Sol Airport", ll:[36.6749,-4.4991], photo:"malaga-airport",
      desc:"BA from LHR (~11:00–14:00) or KLM from AMS (12:35). The Cercanías platform is under the terminal."},
     {t:"~13:00", ic:"🚆", title:"Cercanías C-1 airport → Fuengirola", place:"Aeropuerto → Torreblanca / Los Boliches / Fuengirola, 33 min, every 20 min", ll:[36.6300,-4.5100], photo:"c1-train", cost:"~€2.70",
-     desc:"Buy/load a Cercanías card at the machine — you'll use it again tomorrow. Taxi alternative ~€40, 25 min. Get off at Los Boliches (10 min walk to the Paseo Marítimo hotels) or the Fuengirola terminus (port end)."},
-    {t:"~14:00", ic:"🏨", title:"Check in — beachfront, Los Boliches promenade", place:"Paseo Marítimo Rey de España", ll:[36.5450,-4.6150], photo:"fuengirola-hotel",
-     desc:"Yaramar / Ángela / ILUNION / Villa de Laredo — see Places to stay. Ask for a sea-facing balcony: the Sun at totality is ESE, ~38° up, straight out to sea."},
+     desc:"Buy/load a Cercanías card at the machine — you'll use it again tomorrow. Ride to the END of the line: the Fuengirola terminus is ~5 min from Hotel Reyesol. Taxi alternative ~€40, 25 min."},
+    {t:"~14:00", ic:"🏨", title:"Check in — Hotel Reyesol ✅ (or a seafront upgrade)", place:"C/ Marbella 41, Fuengirola — 200 m from the beach, 5 min from the terminus", ll:[36.5373,-4.6255], photo:"fuengirola-hotel",
+     desc:"Booked as a free-cancellation hold (to 30 Jul 2027): Double/Twin, B&B, €285 pay at hotel, check-in 14:00. Upgrade target: a sea-facing balcony at Yaramar / Ángela if one opens up — see Places to stay."},
     {t:"16:00", ic:"🏖", title:"Scout the spot + swim", place:"Playa de los Boliches → Castillo Sohail", ll:[36.5420,-4.6200], photo:"fuengirola-beach",
      desc:"Walk the promenade, pick your patch of sand (south toward the castle is quieter), note where the shade and cafés are. Then a swim — you've earned it."},
     {t:"20:00", ic:"🍤", title:"Espetos + early bed", place:"A chiringuito on the promenade", ll:[36.5450,-4.6150], photo:"espetos",
@@ -173,8 +173,8 @@ const days = [
  { n:2, date:"Mon 2 Aug", title:"🌘 TOTAL SOLAR ECLIPSE — Fuengirola → Málaga", base:"Málaga (Soho / old town)", color:C.tarifa, ic:"🌘",
    sum:"Walk out of the hotel onto the beach: partial 09:41:43 · TOTALITY 10:47:03 → 10:50:13 · 3 m 10 s · partial ends 12:02:09. Sun ~38° up in the ESE, over the sea. Espetos after; then the C-1 to Málaga (45 min) and check in for two nights. Celebration dinner in the old town.",
    items:[
-    {t:"07:30", ic:"⏰", title:"Slow start — you're already here", place:"Hotel", ll:[36.5450,-4.6150], photo:"eclipse-morning",
-     desc:"Water 2–3 L each, hats, shade, eclipse glasses ×4, iPad in a sand-proof bag. Leave the bags packed at reception. The Costa del Sol is the sheltered side of the path — marine fog is rare; a Levante just means clear and breezy."},
+    {t:"07:30", ic:"⏰", title:"Breakfast at Reyesol (08:00), then 3 min to the sand", place:"Hotel Reyesol", ll:[36.5373,-4.6255], photo:"eclipse-morning",
+     desc:"Water 2–3 L each, hats, shade, eclipse glasses ×4, iPad in a sand-proof bag. Leave the bags packed at reception (late checkout requested). The Costa del Sol is the sheltered side of the path — marine fog is rare; a Levante just means clear and breezy."},
     {t:"08:30", ic:"🏖", title:"Onto the sand", place:"Playa de los Boliches / Playa de Fuengirola — or your balcony", ll:[36.5420,-4.6200], photo:"fuengirola-beach",
      desc:"7 km of straight beach facing SE — the Sun will be over the water, ~38° up. Walk south toward Castillo Sohail for a quieter stretch and a foreground; the promenade has cafés and shade for the 2-hour partial phase."},
     {t:"09:41:43", ic:"🌗", title:"First contact — partial begins", place:"Fuengirola", ll:[36.5397,-4.6242], photo:"partial-phase",
@@ -320,8 +320,9 @@ const days = [
 
 const stays = [
  { city:"Fuengirola / Los Boliches · Sun 1 Aug (1 night) — the eclipse night", key:"fue", ll:[36.5450,-4.6150],
-   why:"DECIDED: sleep on the beach the night before so eclipse morning is a walk, not a train. The whole Paseo Marítimo Rey de España faces SE — exactly where the Sun sits at 10:47. Ask for a frontal sea-view balcony. Hoteliers say no eclipse surcharge yet because August is already peak rate — book NOW at normal rack rates with free cancellation. All are 8–12 min walk from a Cercanías station (Los Boliches or the Fuengirola terminus).",
+   why:"✅ BOOKED (hold): Hotel Reyesol — first card. Sleeping in Fuengirola means eclipse morning is a 3-minute walk to the sand. The rest are UPGRADE TARGETS — seafront hotels with sea-facing balconies on the Paseo Marítimo (which faces SE, exactly where the Sun sits at 10:47). Email Yaramar / Ángela to ask them to hold 1 Aug 2027 even if their engines show nothing; re-check the OTAs for cancellations. If one lands, cancel Reyesol free before 30 Jul 2027.",
    list:[
+    {name:"✅ Hotel Reyesol — BOOKED (hold)", area:"C/ Marbella 41, central Fuengirola · 200 m to Playa de Fuengirola · ~5 min to the Cercanías terminus", band:"€285 · pay at hotel", ll:[36.5373,-4.6255], photo:"stay-reyesol", st:"ok", stt:"Held · free cancellation to 30 Jul 2027 23:59", why:"Double/Twin, bed & breakfast, flexible rate. 2*, French balcony, no sea view — the safety net for eclipse night. Check-in 14:00, check-out 12:00 (late checkout requested). Tel +34 952 473 704 · info@hotelreyesol.com. PDF in 02_Reservations/Hotels.", url:"https://www.hotelreyesol.com/en"},
     {name:"Hotel Yaramar", area:"Paseo Marítimo 64, across the promenade from Playa de los Boliches", band:"€180–260 Aug", ll:[36.5455,-4.6135], photo:"stay-yaramar", st:"pick", stt:"Top pick", why:"4*, adults-oriented, every room has a balcony, many frontal sea view. Los Boliches station ~8–10 min.", url:"https://www.hotelyaramar.es/en/"},
     {name:"Hotel Ángela", area:"Paseo Marítimo, seafront, infinity pool", band:"€170–250 Aug", ll:[36.5440,-4.6165], photo:"stay-angela", st:"pick", stt:"Top pick", why:"Sister of Yaramar; sea-view rooms and balconies. Los Boliches ~10 min.", url:"https://www.hotel-angela.com/en/"},
     {name:"ILUNION Fuengirola", area:"Paseo Marítimo, seafront on Los Boliches beach", band:"€200–300 Aug", ll:[36.5470,-4.6110], photo:"stay-ilunion", st:"unk", stt:"Design 4*", why:"Sea-facing balconies, outdoor pool. Los Boliches ~10 min.", url:"https://www.ilunionhotels.com/en/hotels/ilunion-fuengirola"},
@@ -429,7 +430,7 @@ function photoBox(slug, ic, cls){
 function renderItin(){
   const v=document.getElementById('v-itin');
   let h=`<div class="note purple"><b>Fixed point:</b> Mon 2 Aug, Fuengirola beach — totality <b>10:47:03 → 10:50:13</b> CEST (3 m 10 s), Sun ~38° up in the ESE over the sea. We sleep on that beach the night before (Sun 1 Aug), walk out for the eclipse, then ride the Cercanías to Málaga for two nights. Everything else bends around that. Tap a day to expand; tap an item to jump the map. Photos slot in automatically once dropped into <code>photos/eclipse/</code>.</div>`;
-  h+=`<div class="note red"><b>Book first:</b> the Fuengirola beachfront hotel for Sun 1 Aug (Yaramar / Ángela / ILUNION / Villa de Laredo — normal August rates still apply, free cancellation) and the Málaga hotel for Mon 2–Tue 3 — now — then flights (Alaska/Delta load 31 Jul 2027 ~3 Sep 2026; BA/Iberia/KLM already open).</div>`;
+  h+=`<div class="note red"><b>Booked ✅:</b> Fuengirola, Sun 1 Aug — Hotel Reyesol (hold, free cancel to 30 Jul 2027). <b>Book next:</b> the Málaga hotel for Mon 2–Tue 3, then flights (Alaska/Delta load 31 Jul 2027 ~3 Sep 2026; BA/Iberia/KLM already open).</div>`;
   days.forEach(d=>{
     h+=`<div class="day" id="day-${d.n}"><div class="dayhead" onclick="toggleDay(${d.n})">
       <div class="num" style="background:${d.color}">${d.n}</div>
@@ -537,7 +538,7 @@ function renderLogi(){
   <tr><td>Cards</td><td><b>Mugi</b> (Gipuzkoa: Euskotren, Lurraldebus, Dbus) · <b>Barik</b> (Bizkaia: metro, tram, Bizkaibus, E4, funicular, airport bus)</td><td>€5 / €3 + load</td></tr></table>
   <h2 class="sec">Booking calendar</h2>
   <table><tr><th>When</th><th>What</th></tr>
-  <tr><td><b>Now (Aug 2026)</b></td><td>Fuengirola beachfront hotel ×1 (Sun 1 Aug) + Málaga hotel ×2 (Mon 2–Tue 3), free cancellation — re-shop later as eclipse pricing settles. Google Flights alerts. Passports valid ≥6 mo past Aug 2027.</td></tr>
+  <tr><td><b>Now (Aug 2026)</b></td><td>✅ Fuengirola ×1 booked (Reyesol, hold). Málaga hotel ×2 (Mon 2–Tue 3), free cancellation — re-shop later as eclipse pricing settles. Google Flights alerts. Passports valid ≥6 mo past Aug 2027.</td></tr>
   <tr><td>~10 Aug 2026</td><td>BA opens 31 Jul 2027 (SEA–LHR–AGP/GIB).</td></tr>
   <tr><td><b>3–4 Sep 2026</b></td><td>Alaska/AA/Delta/United open 31 Jul 2027 — book outbound. Return opens ~14 Sep.</td></tr>
   <tr><td>Dec 2026 – Feb 2027</td><td>Málaga–Madrid train tickets (Iryo/Renfe/Ouigo). SS + Bilbao hotels. Caminito del Rey tickets when 2027 dates open.</td></tr>
