@@ -185,28 +185,28 @@ const DAYS=[
     { ic:"✈️", cat:"move", time:"Sat AM · EUG", title:"Eugene → Seattle (or Portland)", place:"Eugene Airport", mapq:"Eugene Airport", desc:"Alaska to SEA (~8/day). Everything else is one ticket from here.", book:[["Flights","add confirmation once booked (Alaska/Delta load 31 Jul ~3 Sep 2026)"]], photos:[cap(0,'eugene',"Leaving Eugene")] },
     { ic:"🌍", cat:"move", time:"Sat 13:30 · SEA", title:"Transatlantic overnight", place:"SEA → LHR (BA52) or PDX → AMS (KLM)", mapq:"London Heathrow", desc:"BA52 lands LHR 06:45 Sun; KL616 lands AMS 07:55 Sun. This is the sleep that protects Sunday — premium economy is worth pricing (~$2.3–3.5k pp peak)." },
    ]},
- { n:1, nick:"Touchdown Málaga", iso:"2027-08-01", date:"Sun 1 Aug", title:"Land & settle in", place:"Málaga · Soho / old town", ll:MAL, chips:[["Málaga","#C1660F"],["Travel","#6b7a80"]],
-   summary:"Land ~11:00–14:00, taxi (15 min) or Cercanías C-1 (12 min) to the hotel. Easy afternoon in Soho and along the port. Scout tomorrow's train at Centro-Alameda. Early tapas, early bed — jet lag makes the alarm easy.",
+ { n:1, nick:"Beach before the shadow", iso:"2027-08-01", date:"Sun 1 Aug", title:"Land Málaga → Fuengirola beachfront", place:"Fuengirola · Los Boliches promenade", ll:[36.5450,-4.6150], chips:[["Eclipse eve","#4b2a8a"],["Travel","#6b7a80"]],
+   summary:"Land ~11:00–14:00 and ride the Cercanías C-1 straight from under the terminal to Fuengirola (33 min) — the airport is on the eclipse line. Check into a beachfront hotel on the Los Boliches promenade, stand on the sand and look ESE: that's tomorrow's spot, no train needed. Swim, espetos, early bed.",
    events:[
-    { ic:"🛬", cat:"move", time:"~12:00", title:"Land Málaga (AGP)", place:"Málaga–Costa del Sol Airport", mapq:"Málaga Airport", desc:"BA from LHR (~11:00–14:00) or KLM from AMS (12:35). No onward transfer to organise — that's the point of this base.", photos:[cap(1,'airport',"Málaga airport")] },
-    { ic:"🚕", cat:"move", time:"~13:00", title:"Taxi or Cercanías C-1 to the hotel", place:"Airport → Soho, 12–15 min", mapq:"Estación Centro-Alameda Málaga", desc:"The C-1 platform is under the terminal (every 20 min, ~€2). Taxi ~€25. Check in; the same line is tomorrow's eclipse train.", book:[["Hotel","add name + confirmation (3 nights, Sun 1 – Tue 3 Aug)"]] },
-    { ic:"🎨", cat:"sight", time:"16:00", title:"Soho street art → Atarazanas → the sea", place:"Soho · Mercado de Atarazanas · Muelle Uno", mapq:"Mercado de Atarazanas Málaga", desc:"Obey/D*Face murals; the market's 14th-c. Moorish gate (inside closes ~15:00 Sun — save the full visit for Tue). Then the port and the Pompidou cube.", photos:[cap(1,'soho',"Soho murals"),cap(1,'muelle-uno',"Muelle Uno")] },
-    { ic:"🚉", cat:"train", time:"18:30", title:"Scout: Centro-Alameda + the C-1 timetable", place:"Cercanías Centro-Alameda", mapq:"Estación Centro-Alameda Málaga", desc:"Find the entrance, buy/load a Cercanías card, note first trains (~05:30–06:00) and the every-20-min pattern. Tomorrow you want to be on a train by ~07:40." },
-    { ic:"🍽", cat:"food", time:"20:30", title:"Early tapas, early bed", place:"El Tapeo de Cervantes (book) or Casa Lola", mapq:"El Tapeo de Cervantes Málaga", desc:"Small, book ahead. Casa Lola on Calle Granada is the walk-in fallback.", book:[["Dinner","reserve El Tapeo de Cervantes"]] },
+    { ic:"🛬", cat:"move", time:"~12:00", title:"Land Málaga (AGP)", place:"Málaga–Costa del Sol Airport", mapq:"Málaga Airport", desc:"BA from LHR (~11:00–14:00) or KLM from AMS (12:35). The Cercanías platform is under the terminal.", photos:[cap(1,'airport',"Málaga airport")] },
+    { ic:"🚆", cat:"train", time:"~13:00", title:"Cercanías C-1 airport → Fuengirola", place:"Aeropuerto → Los Boliches / Fuengirola, 33 min, every 20 min", mapq:"Estación de Los Boliches Fuengirola", desc:"~€2.70. Buy/load a Cercanías card at the machine — you'll use it again tomorrow. Taxi alternative ~€40, 25 min. Los Boliches station is 10 min from the promenade hotels; the Fuengirola terminus serves the port end.", photos:[cap(1,'c1',"The C-1")] },
+    { ic:"🏨", cat:"rest", time:"~14:00", title:"Check in — beachfront, Los Boliches promenade", place:"Paseo Marítimo Rey de España", mapq:"Paseo Marítimo Rey de España Fuengirola", desc:"Yaramar / Ángela / ILUNION / Villa de Laredo — see Stays. Ask for a sea-facing balcony: the Sun at totality is ESE, ~38° up, straight out to sea.", book:[["Hotel","add name + confirmation (1 night, Sun 1 Aug)"]] },
+    { ic:"🏖", cat:"sight", time:"16:00", title:"Scout the spot + swim", place:"Playa de los Boliches → Castillo Sohail", mapq:"Playa de los Boliches Fuengirola", desc:"Walk the promenade, pick your patch of sand (south toward the castle is quieter), note the shade and cafés. Then a swim — you've earned it.", photos:[cap(1,'beach',"Los Boliches beach")] },
+    { ic:"🍤", cat:"food", time:"20:00", title:"Espetos + early bed", place:"A chiringuito on the promenade", mapq:"chiringuito Los Boliches Fuengirola", desc:"Grilled sardines on the beach, a caña, bed by 22:00. Jet lag makes tomorrow's start easy.", photos:[cap(1,'espetos',"Espetos")] },
    ]},
- { n:2, nick:"TOTALITY", iso:"2027-08-02", date:"Mon 2 Aug", title:"🌘 Total solar eclipse — Fuengirola", place:"Fuengirola beach (from Málaga)", ll:FUE, chips:[["Eclipse","#4b2a8a"],["Train","#1F4E5F"]],
-   summary:"Cercanías C-1 west to Fuengirola (45 min) for 3 m 10 s of totality on the beach: partial 09:41:43 · TOTALITY 10:47:03 → 10:50:13 · partial ends 12:02:09. Sun ~38° up in the ESE, over the sea. Staying in Málaga city would give only 1 m 49 s — the train nearly doubles it.",
+ { n:2, nick:"TOTALITY", iso:"2027-08-02", date:"Mon 2 Aug", title:"🌘 Total solar eclipse — Fuengirola → Málaga", place:"Fuengirola beach → Málaga", ll:FUE, chips:[["Eclipse","#4b2a8a"],["Train","#1F4E5F"]],
+   summary:"Walk out of the hotel onto the beach: partial 09:41:43 · TOTALITY 10:47:03 → 10:50:13 · 3 m 10 s · partial ends 12:02:09. Sun ~38° up in the ESE, over the sea. Espetos after; then the C-1 to Málaga (45 min) and check in for two nights. Celebration dinner in the old town.",
    events:[
-    { ic:"⏰", cat:"rest", time:"06:30", title:"Up, packed, glasses in the bag", place:"Hotel", desc:"Water 2–3 L each, hats, shade, eclipse glasses ×4, iPad in a sand-proof bag, snacks. The Costa del Sol is the sheltered side of the path — marine fog is rare; a Levante just means clear and breezy." },
-    { ic:"🚆", cat:"train", time:"07:20–07:40", title:"Cercanías C-1 → Fuengirola", place:"Centro-Alameda → Fuengirola, 45 min", mapq:"Estación de Fuengirola", desc:"Every 20 min, no reservation, ~€3.60. Later trains will be jammed with everyone who had the same idea. If Fuengirola station is mobbed, get off one stop early at Los Boliches (same beach, ~3 m 05 s).", photos:[cap(2,'c1-train',"The C-1 west")] },
-    { ic:"🏖", cat:"eclipse", time:"08:15", title:"Pick the spot on Fuengirola beach", place:"Playa de los Boliches / Playa de Fuengirola", mapq:"Playa de los Boliches Fuengirola", desc:"7 km of straight beach facing SE — the Sun will be over the water, ~38° up. Walk south toward Castillo Sohail for a quieter stretch and a foreground; the promenade has cafés and shade for the 2-hour partial phase.", photos:[cap(2,'beach',"Fuengirola beach, morning")] },
+    { ic:"⏰", cat:"rest", time:"07:30", title:"Slow start — you're already here", place:"Hotel", desc:"Water 2–3 L each, hats, shade, eclipse glasses ×4, iPad in a sand-proof bag. Leave the bags packed at reception. The Costa del Sol is the sheltered side of the path — marine fog is rare; a Levante just means clear and breezy." },
+    { ic:"🏖", cat:"eclipse", time:"08:30", title:"Onto the sand (or the balcony)", place:"Playa de los Boliches / Playa de Fuengirola", mapq:"Playa de los Boliches Fuengirola", desc:"7 km of straight beach facing SE — the Sun will be over the water, ~38° up. South toward Castillo Sohail is quieter with a foreground; the promenade has cafés and shade for the 2-hour partial phase.", photos:[cap(2,'beach',"Fuengirola beach, morning")] },
     { ic:"🌗", cat:"eclipse", time:"09:41:43", title:"First contact — partial begins", place:"Fuengirola", desc:"Glasses on. Watch shadows sharpen and the light go strange over the next hour." },
-    { ic:"🌑", cat:"eclipse", time:"10:47:03 → 10:50:13", title:"TOTALITY — 3 min 10 s", place:"Look ESE, ~38° up, over the sea", desc:"Glasses off only during totality. Corona, prominences, the 360° sunset, Venus. Glasses back on at 10:50:13 (diamond ring). Just watch — the iPad can wait 3 minutes.", note:"Málaga city times, if you ever needed them: 10:48:02 → 10:49:51 (1 m 49 s).", photos:[cap(2,'totality',"Totality")] },
-    { ic:"🍤", cat:"food", time:"12:02", title:"Last contact → espetos on the beach", place:"A chiringuito on the promenade", mapq:"chiringuito Los Boliches Fuengirola", desc:"Grilled sardines on a stick, a caña, and the replay in your heads. Let the crowd thin before heading back.", photos:[cap(2,'espetos',"Espetos")] },
-    { ic:"🚆", cat:"train", time:"~15:00", title:"C-1 back to Málaga (or linger)", place:"Fuengirola → Centro-Alameda", desc:"Or stay for Castillo Sohail, the Bioparc, a swim. Alternative for the day: bus to Marbella (3 m 16 s) — but the train beats the road today." },
+    { ic:"🌑", cat:"eclipse", time:"10:47:03 → 10:50:13", title:"TOTALITY — 3 min 10 s", place:"Look ESE, ~38° up, over the sea", desc:"Glasses off only during totality. Corona, prominences, the 360° sunset, Venus. Glasses back on at 10:50:13 (diamond ring). Just watch — the iPad can wait 3 minutes.", note:"Málaga city times, for reference: 10:48:02 → 10:49:51 (1 m 49 s).", photos:[cap(2,'totality',"Totality")] },
+    { ic:"🍤", cat:"food", time:"12:02", title:"Last contact → espetos on the beach", place:"A chiringuito on the promenade", mapq:"chiringuito Los Boliches Fuengirola", desc:"Grilled sardines, a caña, and the replay in your heads. Let the crowd thin — trains toward Málaga will be busy for an hour or two.", photos:[cap(2,'espetos',"Espetos")] },
+    { ic:"🚆", cat:"train", time:"~15:00", title:"Cercanías C-1 → Málaga", place:"Los Boliches / Fuengirola → Centro-Alameda, 45–50 min", mapq:"Estación Centro-Alameda Málaga", desc:"~€3.60, every 20 min till ~23:30. Or linger for Castillo Sohail and a swim, then a later train.", photos:[cap(2,'c1-train',"The C-1 to Málaga")] },
+    { ic:"🏨", cat:"rest", time:"~16:00", title:"Check in — Málaga, Soho / old town (2 nights)", place:"Soho, near Centro-Alameda", mapq:"Soho Málaga", desc:"Soho Boutique Equitativa / Room Mate Valeria / Only YOU — see Stays. Then the Soho murals and Muelle Uno at golden hour.", book:[["Hotel","add name + confirmation (2 nights, Mon 2 – Tue 3 Aug)"]] },
     { ic:"🥂", cat:"food", time:"20:00", title:"Celebration dinner", place:"La Cosmopolita (book) · El Pimpi terrace · Los Patios de Beatas", mapq:"La Cosmopolita Málaga", desc:"Alcazaba ramparts for the sunset light on the way if there's energy.", book:[["Dinner","reserve La Cosmopolita"]] },
    ]},
- { n:3, nick:"Mike's Málaga", iso:"2027-08-03", date:"Tue 3 Aug", title:"Málaga day (or Caminito del Rey)", place:"Málaga old town", ll:[36.7213,-4.4155], chips:[["Málaga","#C1660F"],["Sights","#7A5AA8"]],
+ { n:3, nick:"Mike's Málaga", iso:"2027-08-03", date:"Tue 3 Aug", title:"Málaga day (or Caminito del Rey)", place:"Málaga old town · 2nd Málaga night", ll:[36.7213,-4.4155], chips:[["Málaga","#C1660F"],["Sights","#7A5AA8"]],
    summary:"A whole unhurried Málaga day: Atarazanas at its best in the morning, Picasso, Roman Theatre + Alcazaba, El Pimpi, Muelle Uno at sunset. Or trade the morning for the Caminito del Rey (Cercanías C-2 to El Chorro — book ahead). Bags ready for the 08:09 train.",
    events:[
     { ic:"🐟", cat:"food", time:"09:00", title:"Mercado de Atarazanas (morning is the time)", place:"Soho / Alameda", mapq:"Mercado de Atarazanas Málaga", desc:"14th-c. Moorish gate, stained glass, fish hall; tapas + a beer at the bar counters before noon.", photos:[cap(3,'atarazanas',"Atarazanas market")] },
@@ -291,8 +291,21 @@ const ALL_PHOTOS=[]; DAYS.forEach(d=>d.events.forEach(e=>(e.photos||[]).forEach(
 
 /* ---------- Stays ---------- */
 const STAYS=[
- { city:"Málaga", when:"Sun 1 → Tue 3 Aug · 3 nights", key:"malaga", ll:MAL,
-   why:"The eclipse base (decided). Stay near Centro-Alameda station / Soho so the C-1 to Fuengirola, the old town and María Zambrano are all walkable. Book NOW with free cancellation — eclipse-week pricing is inflated and will settle; re-shop later.",
+ { city:"Fuengirola / Los Boliches", when:"Sun 1 Aug · 1 night — the eclipse night", key:"fue", ll:[36.5450,-4.6150],
+   why:"Sleep on the beach the night before so eclipse morning is a walk, not a train. The whole Paseo Marítimo faces SE — exactly where the Sun sits at 10:47. Ask for a frontal sea-view balcony. Hoteliers say no eclipse surcharge yet because August is already peak — book NOW at normal rack rates, free cancellation. All are 8–12 min from a Cercanías station.",
+   list:[
+    {name:"Hotel Yaramar", area:"Paseo Marítimo 64, across the promenade from Playa de los Boliches", band:"€180–260 Aug", st:"pick", stt:"Top pick", why:"4*, adults-oriented, every room has a balcony, many frontal sea view. Los Boliches station ~8–10 min.", url:"https://www.hotelyaramar.es/en/", ll:[36.5455,-4.6135]},
+    {name:"Hotel Ángela", area:"Paseo Marítimo, seafront, infinity pool", band:"€170–250 Aug", st:"pick", stt:"Top pick", why:"Sister of Yaramar; sea-view rooms and balconies. Los Boliches ~10 min.", url:"https://www.hotel-angela.com/en/", ll:[36.5440,-4.6165]},
+    {name:"ILUNION Fuengirola", area:"Paseo Marítimo, seafront on Los Boliches beach", band:"€200–300 Aug", st:"unk", stt:"Design 4*", why:"Sea-facing balconies, outdoor pool. Los Boliches ~10 min.", url:"https://www.ilunionhotels.com/en/hotels/ilunion-fuengirola", ll:[36.5470,-4.6110]},
+    {name:"Hotel Villa de Laredo", area:"Paseo Marítimo 42, seafront, rooftop pool", band:"€150–220 Aug", st:"ok", stt:"Value 4*", why:"Sea-view rooms; rooftop for the partial phases.", url:"https://www.hotelvilladelaredo.es/en/", ll:[36.5430,-4.6180]},
+    {name:"Leonardo Hotel Fuengirola (ex-Florida Spa)", area:"Port end, 50 m from Playa San Francisco", band:"€170–260 Aug", st:"unk", stt:"Spa 4*", why:"Most rooms face the sea; 10 min to the Fuengirola terminus.", url:"https://www.leonardo-hotels.com/costa-del-sol-malaga/leonardo-hotel-fuengirola-costa-del-sol", ll:[36.5395,-4.6250]},
+    {name:"Las Palmeras (FERGUS)", area:"Paseo Marítimo 1, over the marina", band:"€160–240 Aug", st:"unk", stt:"4*", why:"Sea/harbour-view rooms; Fuengirola terminus ~8 min.", url:"https://www.fergushotels.com/en/las-palmeras-affiliated-by-fergus", ll:[36.5405,-4.6260]},
+    {name:"Hotel El Puerto (Pierre & Vacances)", area:"Paseo Marítimo 32, 50 m from beach, rooftop pool", band:"€130–200 Aug", st:"ok", stt:"Value 3*", why:"Rooftop with panoramic views; Fuengirola terminus ~8–10 min.", url:"https://hotel-elpuerto.com/welcome/", ll:[36.5410,-4.6235]},
+    {name:"Occidental Fuengirola (Barceló)", area:"One block behind the Paseo, near the port", band:"€180–280 Aug", st:"unk", stt:"Big 4*", why:"Freshly refurbished; partial sea view upper floors; already a base for eclipse tour groups.", url:"https://www.barcelo.com/en-ww/occidental-fuengirola/", ll:[36.5400,-4.6230]},
+    {name:"Hotel Monarque Torreblanca", area:"Torreblanca beach, 100 m from sand and from Torreblanca station", band:"€150–220 Aug", st:"ok", stt:"Closest to a station", why:"Some sea-view rooms; 2 min to the C-1. Torreblanca beach ~3 m 05 s.", url:"https://www.monarquehotels.com/en/", ll:[36.5545,-4.5960]},
+   ]},
+ { city:"Málaga", when:"Mon 2 → Tue 3 Aug · 2 nights", key:"malaga", ll:MAL,
+   why:"Two nights after the eclipse: arrive by C-1 Monday afternoon, Mike's Málaga day Tuesday, walk to Wednesday's 08:09 train. Stay in Soho near Centro-Alameda. Book NOW with free cancellation — eclipse-week pricing is inflated and will settle; re-shop later.",
    list:[
     {name:"Soho Boutique Equitativa", area:"Alameda Principal, Soho — 300 m to Atarazanas", band:"~€110 normal", st:"pick", stt:"Top pick", why:"Between station and old town; the C-1 leaves from Centro-Alameda, 3 min away.", url:"https://www.sohohoteles.com/en/hotel-soho-boutique-equitativa-4-en-2/", ll:[36.7178,-4.4225]},
     {name:"Room Mate Valeria", area:"Soho / Muelle Uno edge, rooftop pool", band:"~€125–200 normal", st:"pick", stt:"Fun pick", why:"Port views from the roof for the partial phases.", url:"https://room-matehotels.com/en/valeria/", ll:[36.7175,-4.4185]},
@@ -404,7 +417,8 @@ function galShift(btn,dir){ const g=btn.closest('.egal'); const im=[...g.querySe
 /* ---------- Today ---------- */
 function localISO(dt){ const p=n=>String(n).padStart(2,'0'); return dt.getFullYear()+'-'+p(dt.getMonth()+1)+'-'+p(dt.getDate()); }
 const TODOS=[
- {t:"Book the Málaga hotel", w:"3 nights, Sun 1 – Tue 3 Aug · NOW, free cancellation · re-shop later"},
+ {t:"Book the Fuengirola beachfront hotel", w:"1 night, Sun 1 Aug · Yaramar / Ángela / ILUNION / Villa de Laredo · NOW, free cancellation"},
+ {t:"Book the Málaga hotel", w:"2 nights, Mon 2 – Tue 3 Aug · NOW, free cancellation · re-shop later"},
  {t:"Book the flights", w:"EUG → Málaga (31 Jul) / Bilbao → EUG (11 Aug) · Alaska/Delta load ~3 Sep 2026; BA/Iberia/KLM already open"},
  {t:"Order eclipse glasses ×4", w:"ISO 12312-2 · from the US"},
  {t:"San Sebastián + Bilbao hotels", w:"4 + 3 nights · book by Feb–Mar 2027"},
@@ -450,19 +464,20 @@ function renderInfo(){
   document.getElementById('info-body').innerHTML=`
    <div class="infocard"><h3>Trip at a glance</h3>
      <div class="inforow"><span class="ii">📅</span><div><b>Dates:</b> Sat 31 Jul → Wed 11 Aug 2027 (10 nights on the ground)</div></div>
-     <div class="inforow"><span class="ii">🌘</span><div><b>The eclipse:</b> Mon 2 Aug · Fuengirola beach · totality 10:47:03–10:50:13 CEST (3 m 10 s) · Cercanías C-1 from Málaga, 45 min</div></div>
-     <div class="inforow"><span class="ii">🏠</span><div><b>Bases:</b> Málaga ×3 (Soho) → San Sebastián ×4 (Gros) → Bilbao ×3 (Abando / Casco Viejo)</div></div>
+     <div class="inforow"><span class="ii">🌘</span><div><b>The eclipse:</b> Mon 2 Aug · Fuengirola beach, right outside the hotel · totality 10:47:03–10:50:13 CEST (3 m 10 s)</div></div>
+     <div class="inforow"><span class="ii">🏠</span><div><b>Bases:</b> Fuengirola ×1 (beachfront, eclipse eve) → Málaga ×2 (Soho) → San Sebastián ×4 (Gros) → Bilbao ×3 (Abando / Casco Viejo)</div></div>
      <div class="inforow"><span class="ii">✈️</span><div><b>Flights:</b> EUG → Málaga (via SEA–LHR on Alaska/BA, or PDX–AMS on KLM) · Bilbao → EUG (KLM via AMS–PDX, or LH via FRA–SEA) · <span class="todo">add confirmations</span></div></div>
      <div class="inforow"><span class="ii">🚄</span><div><b>Trains:</b> Iryo Málaga 08:09 → Madrid Atocha 10:56 · Cercanías to Chamartín · Alvia ~14:00 → Donostia ~19:15 · <span class="todo">book Dec 2026–May 2027</span></div></div>
    </div>
    <div class="infocard"><h3>Key bookings</h3>
-     <div class="inforow"><span class="ii">🛏️</span><div><b>Málaga hotel:</b> <span class="todo">add name, address, phone, confirmation</span></div></div>
+     <div class="inforow"><span class="ii">🛏️</span><div><b>Fuengirola hotel (Sun 1):</b> <span class="todo">add name, address, phone, confirmation</span></div></div>
+     <div class="inforow"><span class="ii">🛏️</span><div><b>Málaga hotel (Mon 2–Tue 3):</b> <span class="todo">add</span></div></div>
      <div class="inforow"><span class="ii">🛏️</span><div><b>San Sebastián hotel:</b> <span class="todo">add</span></div></div>
      <div class="inforow"><span class="ii">🛏️</span><div><b>Bilbao hotel:</b> <span class="todo">add</span></div></div>
      <div class="inforow"><span class="ii">🎟️</span><div><b>Timed things:</b> Gaztelugatxe (free reservation), Guggenheim, Chillida-Leku, Elkano, Caminito del Rey (optional) · <span class="todo">book per the list on Today</span></div></div>
    </div>
    <div class="infocard"><h3>Getting around</h3>
-     <div class="inforow"><span class="ii">🚆</span><div><b>Málaga Cercanías C-1:</b> airport ↔ Centro-Alameda ↔ Fuengirola, every 20 min, ~€2–3.60; buy a Cercanías card at the machine.</div></div>
+     <div class="inforow"><span class="ii">🚆</span><div><b>Málaga Cercanías C-1:</b> airport → Fuengirola 33 min · Fuengirola → Centro-Alameda 45–50 min · every 20 min ~05:20–23:30, ~€2–3.60; buy a Cercanías card at the machine. Fuengirola stations: Carvajal, Torreblanca (100 m from beach), Los Boliches (10 min to promenade), Fuengirola terminus (port end).</div></div>
      <div class="inforow"><span class="ii">💳</span><div><b>Basque transit cards:</b> <b>Mugi</b> (Gipuzkoa — Euskotren, Lurraldebus, Dbus; €5 at tobacconists/Euskotren) · <b>Barik</b> (Bizkaia — metro, tram, Bizkaibus, Euskotren E4, Artxanda funicular, airport bus; €3 at metro machines).</div></div>
      <div class="inforow"><span class="ii">🚌</span><div><b>SS ↔ Bilbao:</b> PESA/ALSA bus 1h15, ~hourly, Geltokia ↔ Bilbao Intermodal. <b>Airport bus:</b> Bizkaibus A3247 from Moyua/Intermodal every 15 min (~25 min).</div></div>
      <div class="inforow"><span class="ii">🧭</span><div><b>Day trips:</b> Euskotren from Amara to Zarautz (30 min)/Zumaia (50 min); Lurraldebus UK09/10 to Getaria; BU05 to Chillida-Leku; E21 to Hondarribia; Euskotren E4 from Casco Viejo to Gernika/Mundaka/Bermeo; Bizkaibus A3518 to Bakio for Gaztelugatxe.</div></div>
@@ -488,7 +503,8 @@ const map=L.map('map',{scrollWheelZoom:true,layers:[mapTiles]});
 L.control.layers({"🗺️ Map":mapTiles,"🛰️ Satellite":sat},null,{position:'topright'}).addTo(map);
 const ROUTES=[
  {pts:[EUG,[47.45,-122.31],[51.47,-0.46],[36.675,-4.499]], style:{color:'#6b7a80',weight:3,opacity:.75,dashArray:'6 8'}, label:"Flights out"},
- {pts:[[36.7186,-4.4230],[36.6749,-4.4991],[36.62,-4.50],[36.60,-4.53],FUE], style:{color:'#4b2a8a',weight:4,opacity:.9}, label:"Eclipse morning: Cercanías C-1 → Fuengirola"},
+ {pts:[[36.6749,-4.4991],[36.62,-4.50],[36.60,-4.53],[36.5450,-4.6150]], style:{color:'#4b2a8a',weight:4,opacity:.9}, label:"Sun: Cercanías C-1 airport → Fuengirola"},
+ {pts:[[36.5450,-4.6150],[36.60,-4.53],[36.62,-4.50],[36.6749,-4.4991],MAL], style:{color:'#C1660F',weight:4,opacity:.85}, label:"Mon pm: Cercanías C-1 Fuengirola → Málaga"},
  {pts:[[36.7115,-4.4319],[37.0,-4.55],[37.89,-4.79],[38.98,-3.93],[40.4066,-3.6895]], style:{color:'#1F4E5F',weight:4,opacity:.85}, label:"Iryo Málaga → Madrid"},
  {pts:[[40.4722,-3.6825],[40.95,-4.11],[41.65,-4.73],[42.34,-3.70],[42.69,-2.94],[42.85,-2.67],[42.90,-2.17],[43.09,-2.31],[43.13,-2.08],[43.3183,-1.9812]], style:{color:'#1F4E5F',weight:4,opacity:.85}, label:"Alvia Madrid → Donostia"},
  {pts:[[43.3183,-1.9812],[43.20,-2.50],[43.2620,-2.9490]], style:{color:'#2E7D32',weight:4,opacity:.85}, label:"Bus SS → Bilbao"},
@@ -498,7 +514,7 @@ ROUTES.forEach(r=>L.polyline(r.pts,r.style).addTo(map).bindTooltip(r.label));
 L.polyline([[37.05,-7.6],[36.78,-5.32],[36.55,-3.6],[36.35,-2.0]],{color:'#4b2a8a',weight:2,dashArray:'3 6',opacity:.8}).addTo(map).bindTooltip('≈ Northern limit of totality');
 L.polyline([[36.05,-7.6],[35.72,-5.60],[35.55,-3.6],[35.35,-2.0]],{color:'#4b2a8a',weight:3,opacity:.9}).addTo(map).bindTooltip('≈ Centreline of totality');
 function chipColor(d){ return d.chips&&d.chips[0]?d.chips[0][1]:'#1F4E5F'; }
-[["Málaga · nights 1–3",MAL,'#C1660F',"🏠"],["San Sebastián · nights 4–7",SS,'#2C7A8C',"🏠"],["Bilbao · nights 8–10",BIO,'#2E7D32',"🏠"]].forEach(b=>
+[["Fuengirola · night 1 (eclipse eve)",[36.5450,-4.6150],'#4b2a8a',"🏠"],["Málaga · nights 2–3",MAL,'#C1660F',"🏠"],["San Sebastián · nights 4–7",SS,'#2C7A8C',"🏠"],["Bilbao · nights 8–10",BIO,'#2E7D32',"🏠"]].forEach(b=>
   L.marker(b[1],{icon:L.divIcon({className:'',html:`<div class="pin base" style="background:${b[2]}">${b[3]}</div>`,iconSize:[34,34],iconAnchor:[17,17]})}).addTo(map).bindTooltip(b[0],{direction:'top'}));
 DAYS.forEach((d,i)=>{ if(d.n===0||d.n===11) return;
   const m=L.marker(d.ll,{icon:L.divIcon({className:'',html:`<div class="pin" style="background:${chipColor(d)}">${d.n}</div>`,iconSize:[30,30],iconAnchor:[15,15]})}).addTo(map);

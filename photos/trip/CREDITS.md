@@ -6,10 +6,11 @@ All images below are from Wikimedia Commons under the license shown (click the f
 |---|---|---|---|
 | `day-00/header.jpg` | [British Airways - Boeing 787-8 Dreamliner - G-ZBJB - Flight BAW93 from LHR (9752610832).jpg](https://commons.wikimedia.org/wiki/File:British_Airways_-_Boeing_787-8_Dreamliner_-_G-ZBJB_-_Flight_BAW93_from_LHR_(9752610832).jpg) | Lord of the Wings© from Toronto, Canada | CC BY-SA 2.0 |
 | `day-00/eugene.jpg` | [Aerial view of Eugene Airport, July 2024.JPG](https://commons.wikimedia.org/wiki/File:Aerial_view_of_Eugene_Airport,_July_2024.JPG) | Pi.1415926535 | CC BY-SA 4.0 |
-| `day-01/header.jpg` | [Obey D*Face Malaga.jpg](https://commons.wikimedia.org/wiki/File:Obey_D*Face_Malaga.jpg) | Flickr user Leo Hidalgo | CC BY 2.0 |
+| `day-01/header.jpg` | [Castillo de Sohail, Fuengirola, Málaga, España, 2023-05-18, DD 85.jpg](https://commons.wikimedia.org/wiki/File:Castillo_de_Sohail,_Fuengirola,_M%C3%A1laga,_Espa%C3%B1a,_2023-05-18,_DD_85.jpg) | Diego Delso | CC BY-SA 4.0 |
 | `day-01/airport.jpg` | [Interior de la nueva terminal T3 del aeropuerto de Málaga..jpg](https://commons.wikimedia.org/wiki/File:Interior_de_la_nueva_terminal_T3_del_aeropuerto_de_M%C3%A1laga..jpg) | Pop9000 | CC BY-SA 4.0 |
-| `day-01/soho.jpg` | [Obey D*Face Malaga.jpg](https://commons.wikimedia.org/wiki/File:Obey_D*Face_Malaga.jpg) | Flickr user Leo Hidalgo | CC BY 2.0 |
-| `day-01/muelle-uno.jpg` | [Málaga - Paseo del Muelle Uno 6.jpg](https://commons.wikimedia.org/wiki/File:M%C3%A1laga_-_Paseo_del_Muelle_Uno_6.jpg) | Zarateman | CC0 |
+| `day-01/c1.jpg` | [Estación de Aeropuerto, Cercanías Málaga 13.JPG](https://commons.wikimedia.org/wiki/File:Estaci%C3%B3n_de_Aeropuerto,_Cercan%C3%ADas_M%C3%A1laga_13.JPG) | Tyk | CC BY-SA 3.0 |
+| `day-01/beach.jpg` | [Playa de San Francisco, Fuengirola 01.jpg](https://commons.wikimedia.org/wiki/File:Playa_de_San_Francisco,_Fuengirola_01.jpg) | Tyk | CC BY-SA 3.0 |
+| `day-01/espetos.jpg` | [Pescado al espeto, playa de la Malagueta, Málaga, España, 2023-05-20, DD 68.jpg](https://commons.wikimedia.org/wiki/File:Pescado_al_espeto,_playa_de_la_Malagueta,_M%C3%A1laga,_Espa%C3%B1a,_2023-05-20,_DD_68.jpg) | Diego Delso | CC BY-SA 4.0 |
 | `day-02/header.jpg` | [2024 Total Solar Eclipse (NHQ202404080032).jpg](https://commons.wikimedia.org/wiki/File:2024_Total_Solar_Eclipse_(NHQ202404080032).jpg) | NASA Headquarters / NASA/Aubrey Gemignani | Public domain |
 | `day-02/c1-train.jpg` | [Estación de Aeropuerto, Cercanías Málaga 13.JPG](https://commons.wikimedia.org/wiki/File:Estaci%C3%B3n_de_Aeropuerto,_Cercan%C3%ADas_M%C3%A1laga_13.JPG) | Tyk | CC BY-SA 3.0 |
 | `day-02/beach.jpg` | [Playa de San Francisco, Fuengirola 01.jpg](https://commons.wikimedia.org/wiki/File:Playa_de_San_Francisco,_Fuengirola_01.jpg) | Tyk | CC BY-SA 3.0 |
