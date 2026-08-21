@@ -39,7 +39,7 @@
 
   .listhead{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin:2px 2px 10px;}
   .dayrow{display:flex;gap:12px;align-items:center;background:#fff;border-radius:14px;padding:9px;margin-bottom:9px;box-shadow:0 2px 8px rgba(0,0,0,.06);cursor:pointer;}
-  .dayrow .thumb{width:74px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:#dfe6e6;display:flex;align-items:center;justify-content:center;font-size:28px;}
+  .dayrow .thumb{width:96px;height:76px;border-radius:11px;object-fit:cover;flex:0 0 auto;background:#dfe6e6;display:flex;align-items:center;justify-content:center;font-size:30px;}
   .dayrow .meta{min-width:0;flex:1;}
   .dayrow .dnum{font-size:11px;color:var(--terra);font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
   .dayrow h3{margin:1px 0 3px;font-size:15.5px;color:var(--teal);line-height:1.15;}
@@ -48,7 +48,7 @@
   .chip{font-size:10.5px;font-weight:700;color:#fff;border-radius:6px;padding:2px 7px;letter-spacing:.2px;}
   .dayrow .arrow{margin-left:auto;color:#c4cccd;font-size:20px;flex:0 0 auto;}
 
-  .dayhero{position:relative;height:185px;background:#13232a;overflow:hidden;}
+  .dayhero{position:relative;height:230px;background:#13232a;overflow:hidden;}
   .dayhero img{width:100%;height:100%;object-fit:cover;display:block;}
   .dayhero .grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,28,.85),rgba(10,22,28,.15) 60%);}
   .dayhero .cap{position:absolute;left:16px;right:16px;bottom:12px;color:#fff;}
@@ -63,7 +63,7 @@
   .event .dot{position:absolute;left:2px;top:3px;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line);}
   .event .etime{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
   .ecard{background:#fff;border-radius:13px;box-shadow:0 2px 8px rgba(0,0,0,.07);overflow:hidden;}
-  .ecard .egal{position:relative;height:170px;background:#13232a;}
+  .ecard .egal{position:relative;height:215px;background:#13232a;}
   .ecard .egal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s;pointer-events:none;}
   .ecard .egal img.active{opacity:1;pointer-events:auto;cursor:zoom-in;}
   .egal .gnav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.4);color:#fff;border:none;width:30px;height:30px;border-radius:50%;font-size:17px;cursor:pointer;}
@@ -112,7 +112,7 @@
   .stayblock h3{margin:14px 2px 4px;font-size:15px;color:var(--teal);}
   .stayblock .why{font-size:12.5px;color:#3a4a52;margin:0 2px 8px;line-height:1.45;}
   .stay{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;}
-  .stay .ph{width:64px;height:56px;border-radius:8px;flex:0 0 auto;background:linear-gradient(135deg,#efe6d6,#dccdb4);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;}
+  .stay .ph{width:84px;height:70px;border-radius:8px;flex:0 0 auto;background:linear-gradient(135deg,#efe6d6,#dccdb4);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;}
   .stay .ph img{width:100%;height:100%;object-fit:cover;}
   .stay .b{flex:1;min-width:0;} .stay h4{margin:0;font-size:14px;} .stay .area{font-size:12px;color:var(--teal2);font-weight:600;}
   .stay p{margin:3px 0 0;font-size:12.5px;line-height:1.4;color:#3a4a52;} .band{float:right;font-size:12px;font-weight:800;color:var(--terra);}
@@ -194,7 +194,7 @@ const DAYS=[
     { ic:"🏖", cat:"sight", time:"16:00", title:"Scout the spot + swim", place:"Playa de los Boliches → Castillo Sohail", mapq:"Playa de los Boliches Fuengirola", desc:"Walk the promenade, pick your patch of sand (south toward the castle is quieter), note the shade and cafés. Then a swim — you've earned it.", photos:[cap(1,'beach',"Los Boliches beach")] },
     { ic:"🍤", cat:"food", time:"20:00", title:"Espetos + early bed", place:"A chiringuito on the promenade", mapq:"chiringuito Los Boliches Fuengirola", desc:"Grilled sardines on the beach, a caña, bed by 22:00. Jet lag makes tomorrow's start easy.", photos:[cap(1,'espetos',"Espetos")] },
    ]},
- { n:2, nick:"TOTALITY", iso:"2027-08-02", date:"Mon 2 Aug", title:"🌘 Total solar eclipse — Fuengirola → Málaga", place:"Fuengirola beach → Málaga", ll:FUE, chips:[["Eclipse","#4b2a8a"],["Train","#1F4E5F"]],
+ { n:2, nick:"TOTALITY", iso:"2027-08-02", date:"Mon 2 Aug", title:"🌘 Total solar eclipse — Fuengirola → Málaga", place:"Fuengirola beach → Catalonia Puerta del Mar", ll:FUE, chips:[["Eclipse","#4b2a8a"],["Train","#1F4E5F"]],
    summary:"Walk out of the hotel onto the beach: partial 09:41:43 · TOTALITY 10:47:03 → 10:50:13 · 3 m 10 s · partial ends 12:02:09. Sun ~38° up in the ESE, over the sea. Espetos after; then the C-1 to Málaga (45 min) and check in for two nights. Celebration dinner in the old town.",
    events:[
     { ic:"⏰", cat:"rest", time:"07:30", title:"Breakfast at Reyesol (08:00), then 3 min to the sand", place:"Hotel Reyesol", desc:"Water 2–3 L each, hats, shade, eclipse glasses ×4, iPad in a sand-proof bag. Leave the bags packed at reception (late checkout requested). The Costa del Sol is the sheltered side of the path — marine fog is rare; a Levante just means clear and breezy." },
@@ -203,7 +203,7 @@ const DAYS=[
     { ic:"🌑", cat:"eclipse", time:"10:47:03 → 10:50:13", title:"TOTALITY — 3 min 10 s", place:"Look ESE, ~38° up, over the sea", desc:"Glasses off only during totality. Corona, prominences, the 360° sunset, Venus. Glasses back on at 10:50:13 (diamond ring). Just watch — the iPad can wait 3 minutes.", note:"Málaga city times, for reference: 10:48:02 → 10:49:51 (1 m 49 s).", photos:[cap(2,'totality',"Totality")] },
     { ic:"🍤", cat:"food", time:"12:02", title:"Last contact → espetos on the beach", place:"A chiringuito on the promenade", mapq:"chiringuito Los Boliches Fuengirola", desc:"Grilled sardines, a caña, and the replay in your heads. Let the crowd thin — trains toward Málaga will be busy for an hour or two.", photos:[cap(2,'espetos',"Espetos")] },
     { ic:"🚆", cat:"train", time:"~15:00", title:"Cercanías C-1 → Málaga", place:"Los Boliches / Fuengirola → Centro-Alameda, 45–50 min", mapq:"Estación Centro-Alameda Málaga", desc:"~€3.60, every 20 min till ~23:30. Or linger for Castillo Sohail and a swim, then a later train.", photos:[cap(2,'c1-train',"The C-1 to Málaga")] },
-    { ic:"🏨", cat:"rest", time:"~16:00", title:"Check in — Málaga, Soho / old town (2 nights)", place:"Soho, near Centro-Alameda", mapq:"Soho Málaga", desc:"Soho Boutique Equitativa / Room Mate Valeria / Only YOU — see Stays. Then the Soho murals and Muelle Uno at golden hour.", book:[["Hotel","add name + confirmation (2 nights, Mon 2 – Tue 3 Aug)"]] },
+    { ic:"🏨", cat:"rest", time:"~16:00", title:"Check in — Catalonia Puerta del Mar ✅ (2 nights)", place:"Puerta del Mar 5 — 350 m from Centro-Alameda station", mapq:"Catalonia Puerta del Mar Málaga", desc:"Booked & paid: 4*, Superior room, breakfast included. Off the train, 5 minutes on foot. Then the Soho murals and Muelle Uno at golden hour.", book:[["Hotel","✅ booked · ref C…319124 · paid"]] },
     { ic:"🥂", cat:"food", time:"20:00", title:"Celebration dinner", place:"La Cosmopolita (book) · El Pimpi terrace · Los Patios de Beatas", mapq:"La Cosmopolita Málaga", desc:"Alcazaba ramparts for the sunset light on the way if there's energy.", book:[["Dinner","reserve La Cosmopolita"]] },
    ]},
  { n:3, nick:"Mike's Málaga", iso:"2027-08-03", date:"Tue 3 Aug", title:"Málaga day (or Caminito del Rey)", place:"Málaga old town · 2nd Málaga night", ll:[36.7213,-4.4155], chips:[["Málaga","#C1660F"],["Sights","#7A5AA8"]],
@@ -214,7 +214,7 @@ const DAYS=[
     { ic:"🖼", cat:"art", time:"11:00", title:"Museo Picasso Málaga", place:"Calle San Agustín", mapq:"Museo Picasso Málaga", desc:"10–20 daily, €13. Then Calle Larios / Plaza de la Constitución / the Cathedral.", photos:[cap(3,'picasso',"Picasso Museum")] },
     { ic:"🏰", cat:"sight", time:"17:00", title:"Roman Theatre + Alcazaba", place:"Calle Alcazabilla", mapq:"Alcazaba de Málaga", desc:"To 20:00 (last entry 19:00), €3.50 (€5.50 with Gibralfaro). Roman-on-Moorish stacked; evening light on the ramparts.", photos:[cap(3,'alcazaba',"Alcazaba")] },
     { ic:"🍷", cat:"food", time:"19:30", title:"El Pimpi → Muelle Uno sunset", place:"Calle Granada → port", mapq:"El Pimpi Málaga", desc:"The bodega institution, terrace facing the Roman theatre; then the waterfront." },
-    { ic:"🎒", cat:"rest", time:"21:00", title:"Dinner + pack", place:"Whichever of Cervantes / Cosmopolita you haven't done", desc:"Iryo tomorrow at 08:09 from María Zambrano — 20 min walk from Soho or a 5-min taxi." },
+    { ic:"🎒", cat:"rest", time:"21:00", title:"Dinner + pack", place:"Whichever of Cervantes / Cosmopolita you haven't done", desc:"Iryo tomorrow at 08:09 from María Zambrano — 17 min walk from Puerta del Mar or a 5-min taxi. Breakfast is included but starts late for a train day — grab the Atarazanas counters or a café if needed." },
    ]},
  { n:4, nick:"The big train day", iso:"2027-08-04", date:"Wed 4 Aug", title:"🚄 Málaga → Madrid → San Sebastián", place:"Iryo + Alvia · arrive Gros", ll:SS, chips:[["Train","#1F4E5F"],["Travel","#6b7a80"]],
    summary:"Iryo 08:09 Málaga → Madrid Atocha 10:56 (car 3, all tables — the iPad-painting car), Cercanías to Chamartín, Alvia ~14:00 → Donostia ~19:15 through the green Oria valley. Verify in spring 2027 that the Alvia reaches Donostia (2026 had track works).",
@@ -305,14 +305,10 @@ const STAYS=[
     {name:"Occidental Fuengirola (Barceló)", area:"One block behind the Paseo, near the port", band:"€180–280 Aug", st:"unk", stt:"Big 4*", why:"Freshly refurbished; partial sea view upper floors; already a base for eclipse tour groups.", url:"https://www.barcelo.com/en-ww/occidental-fuengirola/", ll:[36.5400,-4.6230]},
     {name:"Hotel Monarque Torreblanca", area:"Torreblanca beach, 100 m from sand and from Torreblanca station", band:"€150–220 Aug", st:"ok", stt:"Closest to a station", why:"Some sea-view rooms; 2 min to the C-1. Torreblanca beach ~3 m 05 s.", url:"https://www.monarquehotels.com/en/", ll:[36.5545,-4.5960]},
    ]},
- { city:"Málaga", when:"Mon 2 → Tue 3 Aug · 2 nights", key:"malaga", ll:MAL,
-   why:"Two nights after the eclipse: arrive by C-1 Monday afternoon, Mike's Málaga day Tuesday, walk to Wednesday's 08:09 train. Stay in Soho near Centro-Alameda. Book NOW with free cancellation — eclipse-week pricing is inflated and will settle; re-shop later.",
+ { city:"Málaga", when:"Mon 2 → Wed 4 Aug · 2 nights", key:"malaga", ll:MAL,
+   why:"✅ BOOKED & PAID: Catalonia Puerta del Mar. The location is ideal for the plan — 3 min from Atarazanas market, ~350 m from Centro-Alameda station (where Monday's train from Fuengirola arrives), and a 17-min walk (or 5-min taxi) to María Zambrano for Wednesday's 08:09 train.",
    list:[
-    {name:"Soho Boutique Equitativa", area:"Alameda Principal, Soho — 300 m to Atarazanas", band:"~€110 normal", st:"pick", stt:"Top pick", why:"Between station and old town; the C-1 leaves from Centro-Alameda, 3 min away.", url:"https://www.sohohoteles.com/en/hotel-soho-boutique-equitativa-4-en-2/", ll:[36.7178,-4.4225]},
-    {name:"Room Mate Valeria", area:"Soho / Muelle Uno edge, rooftop pool", band:"~€125–200 normal", st:"pick", stt:"Fun pick", why:"Port views from the roof for the partial phases.", url:"https://room-matehotels.com/en/valeria/", ll:[36.7175,-4.4185]},
-    {name:"Only YOU Hotel Málaga", area:"Alameda Principal", band:"~€285 normal", st:"unk", stt:"Splurge", why:"Rooftop pool; 15 min walk to station.", url:"https://www.onlyyouhotels.com/en/hotels/only-you-hotel-malaga/", ll:[36.7185,-4.4235]},
-    {name:"Molina Lario / Vincci Larios Diez / H10 Croma", area:"Old town", band:"~€200–250 normal", st:"unk", stt:"Old-town options", why:"Rooftop pools with cathedral views; 25 min walk to the station.", url:"https://www.cataloniahotels.com/en/hotel/catalonia-molina-lario", links:[["Vincci","https://www.vinccihoteles.com/en/hotels/malaga/vincci-larios-diez/"],["H10","https://www.h10hotels.com/en/malaga-hotels/h10-croma-malaga"]], ll:[36.7205,-4.4195]},
-    {name:"Barceló Málaga (in the station) / Soho Boutique Málaga", area:"María Zambrano", band:"~€120–180 normal", st:"unk", stt:"Station option", why:"Zero-stress 08:09 departure Wednesday; C-1 to Fuengirola from the same building.", url:"https://www.barcelo.com/en-us/barcelo-malaga/", links:[["Soho Boutique Málaga","https://www.sohohoteles.com/en/hotel-soho-boutique-malaga-3-en/"]], ll:[36.7115,-4.4319]},
+    {name:"✅ Catalonia Puerta del Mar — BOOKED", area:"Puerta del Mar 5, old town — by Atarazanas / Calle Larios", band:"€1,054.62 paid", st:"booked", stt:"Paid in full · non-refundable · Superior room + breakfast", why:"4*, Superior room for 2, breakfast included, Mon 2 → Wed 4 Aug. Rooftop plunge pool & bar. Arrive Monday ~16:00 off the C-1; check out Wednesday for the 08:09 train.", url:"https://www.cataloniahotels.com/en/hotel/catalonia-puerta-del-mar", ll:[36.7177,-4.4213]},
    ]},
  { city:"San Sebastián", when:"Wed 4 → Sun 8 Aug · 4 nights", key:"ss", ll:SS,
    why:"Gros: surf-y, cosmopolitan, Zurriola beach, Tabakalera next door, Thursday pintxo-pote, lots of foreign residents — and still a real neighborhood. You're the week BEFORE Semana Grande (14–21 Aug). Book by Feb–Mar 2027; €150–250 good 3*, €250–350 4* boutique.",
@@ -419,7 +415,6 @@ function galShift(btn,dir){ const g=btn.closest('.egal'); const im=[...g.querySe
 function localISO(dt){ const p=n=>String(n).padStart(2,'0'); return dt.getFullYear()+'-'+p(dt.getMonth()+1)+'-'+p(dt.getDate()); }
 const TODOS=[
  {t:"(Optional) upgrade the Fuengirola night to seafront", w:"Reyesol is held (free cancel to 30 Jul 2027). Email Yaramar / Ángela to hold 1 Aug; re-check OTAs for cancellations"},
- {t:"Book the Málaga hotel", w:"2 nights, Mon 2 – Tue 3 Aug · NOW, free cancellation · re-shop later"},
  {t:"Book the flights", w:"EUG → Málaga (31 Jul) / Bilbao → EUG (11 Aug) · Alaska/Delta load ~3 Sep 2026; BA/Iberia/KLM already open"},
  {t:"Order eclipse glasses ×4", w:"ISO 12312-2 · from the US"},
  {t:"San Sebastián + Bilbao hotels", w:"4 + 3 nights · book by Feb–Mar 2027"},
@@ -454,7 +449,7 @@ function renderToday(){
 /* ---------- Stays ---------- */
 function renderStays(){
   const b=document.getElementById('stays-body');
-  b.innerHTML=`<div class="infocard" style="font-size:12.5px;line-height:1.5">Bands are indicative <b>normal-season</b> rates; nothing here is booked yet. <b>Website ↗</b> goes to the hotel's own site (book 1:1, skip the OTAs). Once a place is booked, tell me and it becomes the single "booked" card with address, phone and confirmation.</div>`+
+  b.innerHTML=`<div class="infocard" style="font-size:12.5px;line-height:1.5">✅ <b>Booked so far:</b> Fuengirola (Reyesol, held) · Málaga (Catalonia Puerta del Mar, paid). Still to book: San Sebastián ×4 and Bilbao ×3 (by Feb–Mar 2027). Bands are indicative normal-season rates. <b>Website ↗</b> goes to the hotel's own site — book 1:1, skip the OTAs.</div>`+
    STAYS.map(g=>`<div class="stayblock"><h3>${g.city} · <span style="font-weight:600;color:var(--muted)">${g.when}</span></h3><p class="why">${g.why}</p>`+
      g.list.map(s=>`<div class="stay"><div class="ph">🛏</div><div class="b"><span class="band">${s.band}</span><h4>${s.name}</h4><div class="area">${s.area}</div><p>${s.why}</p><span class="st ${s.st}">${s.stt}</span>
        <div class="links"><a href="${s.url}" target="_blank" rel="noopener">Website ↗</a>${(s.links||[]).map(l=>`<a class="alt" href="${l[1]}" target="_blank" rel="noopener">${l[0]} ↗</a>`).join('')}<a class="alt" href="${mapU(s.name.replace(/^Getxo option · /,'').split(' / ')[0]+' '+g.city)}" target="_blank" rel="noopener">Map ↗</a></div></div></div>`).join('')+`</div>`).join('');
@@ -472,7 +467,7 @@ function renderInfo(){
    </div>
    <div class="infocard"><h3>Key bookings</h3>
      <div class="inforow"><span class="ii">🛏️</span><div><b>Fuengirola hotel (Sun 1):</b> ✅ <b>Hotel Reyesol</b>, C/ Marbella 41, Fuengirola · <a href="tel:+34952473704">+34 952 473 704</a> · Double/Twin B&amp;B, €285 pay at hotel · check-in 14:00 · free cancel to 30 Jul 2027 · <a href="https://www.google.com/maps/search/?api=1&query=36.5373,-4.6255" target="_blank" rel="noopener">map</a></div></div>
-     <div class="inforow"><span class="ii">🛏️</span><div><b>Málaga hotel (Mon 2–Tue 3):</b> <span class="todo">add</span></div></div>
+     <div class="inforow"><span class="ii">🛏️</span><div><b>Málaga hotel (Mon 2–Wed 4):</b> ✅ <b>Catalonia Puerta del Mar</b>, Puerta del Mar 5 · Superior + breakfast · paid, non-refundable · <a href="https://www.google.com/maps/search/?api=1&query=Catalonia%20Puerta%20del%20Mar%20M%C3%A1laga" target="_blank" rel="noopener">map</a></div></div>
      <div class="inforow"><span class="ii">🛏️</span><div><b>San Sebastián hotel:</b> <span class="todo">add</span></div></div>
      <div class="inforow"><span class="ii">🛏️</span><div><b>Bilbao hotel:</b> <span class="todo">add</span></div></div>
      <div class="inforow"><span class="ii">🎟️</span><div><b>Timed things:</b> Gaztelugatxe (free reservation), Guggenheim, Chillida-Leku, Elkano, Caminito del Rey (optional) · <span class="todo">book per the list on Today</span></div></div>

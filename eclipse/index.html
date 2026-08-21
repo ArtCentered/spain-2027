@@ -56,7 +56,7 @@
   .daysum{font-size:13.5px;line-height:1.5;margin:0 0 10px;color:#3a4a52;}
   .ev{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line);cursor:pointer;}
   .ev:hover{background:#faf7f0;}
-  .ev .ph{width:76px;height:64px;border-radius:9px;flex:0 0 auto;background:linear-gradient(135deg,#dfe6e6,#c9d6d8);display:flex;align-items:center;justify-content:center;
+  .ev .ph{width:112px;height:84px;border-radius:9px;flex:0 0 auto;background:linear-gradient(135deg,#dfe6e6,#c9d6d8);display:flex;align-items:center;justify-content:center;
     font-size:26px;overflow:hidden;position:relative;}
   .ev .ph img{width:100%;height:100%;object-fit:cover;display:block;}
   .ev .ph .add{position:absolute;inset:auto 0 0 0;background:rgba(31,78,95,.75);color:#fff;font-size:8.5px;text-align:center;padding:2px 3px;line-height:1.1;}
@@ -74,7 +74,7 @@
   .stayblock .why{font-size:12.5px;color:#3a4a52;margin:0 0 8px;line-height:1.45;}
   .stay{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;cursor:pointer;border:1px solid transparent;}
   .stay.sel{border-color:var(--terra);}
-  .stay .ph{width:64px;height:56px;border-radius:8px;flex:0 0 auto;background:linear-gradient(135deg,#efe6d6,#dccdb4);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;position:relative;}
+  .stay .ph{width:88px;height:72px;border-radius:8px;flex:0 0 auto;background:linear-gradient(135deg,#efe6d6,#dccdb4);display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;position:relative;}
   .stay .ph img{width:100%;height:100%;object-fit:cover;}
   .stay .ph .add{position:absolute;inset:auto 0 0 0;background:rgba(31,78,95,.75);color:#fff;font-size:8px;text-align:center;padding:2px;line-height:1.1;}
   .stay .b{flex:1;min-width:0;}
@@ -185,8 +185,8 @@ const days = [
      desc:"Grilled sardines, a caña, and the replay in your heads. Let the crowd thin — the trains toward Málaga will be busy for an hour or two."},
     {t:"~15:00", ic:"🚆", title:"Cercanías C-1 → Málaga", place:"Los Boliches / Fuengirola → Centro-Alameda, 45–50 min", ll:[36.6300,-4.5100], photo:"c1-return", cost:"~€3.60",
      desc:"Or linger: Castillo Sohail, a swim, and a later train. Every 20 min till ~23:30."},
-    {t:"~16:00", ic:"🏨", title:"Check in — Málaga, Soho / old town (2 nights)", place:"Soho, near Centro-Alameda", ll:[36.7178,-4.4225], photo:"malaga-arrival",
-     desc:"Soho Boutique Equitativa / Room Mate Valeria / Only YOU — see Places to stay. Then the Soho murals and Muelle Uno at golden hour."},
+    {t:"~16:00", ic:"🏨", title:"Check in — Catalonia Puerta del Mar ✅ (2 nights)", place:"Puerta del Mar 5 — 350 m from Centro-Alameda station", ll:[36.7177,-4.4213], photo:"malaga-arrival",
+     desc:"Booked & paid: 4*, Superior room, breakfast included, rooftop plunge pool. Off the train, 5 minutes on foot. Then the Soho murals and Muelle Uno at golden hour."},
     {t:"20:00", ic:"🥂", title:"Celebration dinner", place:"La Cosmopolita (book) · El Pimpi terrace · Los Patios de Beatas", ll:[36.7220,-4.4175], photo:"malaga-celebration",
      desc:"Alcazaba ramparts for the sunset light on the way if there's energy."},
     {t:"Plan B", ic:"🏙", title:"If plans slip: eclipse from Málaga itself (1 m 49 s)", place:"La Malagueta beach / Gibralfaro / rooftops", ll:[36.7195,-4.4090], photo:"malaga-plan-b",
@@ -333,15 +333,11 @@ const stays = [
     {name:"Occidental Fuengirola (Barceló, ex-Las Pirámides)", area:"One block behind the Paseo, near the port", band:"€180–280 Aug", ll:[36.5400,-4.6230], photo:"stay-occidental", st:"unk", stt:"Big 4*", why:"Freshly refurbished; partial sea view upper floors; Fuengirola terminus ~7 min. Already used as a base by eclipse tour groups.", url:"https://www.barcelo.com/en-ww/occidental-fuengirola/"},
     {name:"Hotel Monarque Torreblanca", area:"Torreblanca beach, 100 m from sand AND from Torreblanca station", band:"€150–220 Aug", ll:[36.5545,-4.5960], photo:"stay-monarque-torreblanca", st:"ok", stt:"Closest to a station", why:"Some sea-view rooms; 2 min to the C-1. Torreblanca beach: ~3 m 05 s.", url:"https://www.monarquehotels.com/en/"},
    ]},
- { city:"Málaga · Mon 2 → Tue 3 Aug (2 nights)", key:"mal-base", ll:[36.7213,-4.4214],
-   why:"Two nights after the eclipse: arrive by C-1 Monday afternoon, Mike's Málaga day Tuesday, walk to Wednesday's 08:09 train. Stay in Soho near Centro-Alameda so the old town and María Zambrano are both walkable. Málaga hotels are surging for eclipse week (Hotel Larios double seen at €7,592) but the city has thousands of rooms — book NOW with free cancellation, re-shop as prices settle.",
+ { city:"Málaga · Mon 2 → Wed 4 Aug (2 nights) — BOOKED", key:"mal-base", ll:[36.7177,-4.4213],
+   why:"✅ Booked & paid: Catalonia Puerta del Mar. Ideal position — 3 min from Atarazanas, ~350 m from Centro-Alameda station (Monday's train from Fuengirola), 17-min walk or 5-min taxi to María Zambrano for Wednesday's 08:09 train.",
    list:[
-    {name:"Soho Boutique Equitativa", url:"https://www.sohohoteles.com/en/hotel-soho-boutique-equitativa-4-en-2/", area:"Alameda Principal, Soho — 300 m to Atarazanas, 1.5 km to station", band:"~€110 normal", ll:[36.7178,-4.4225], photo:"stay-soho-equitativa", st:"pick", stt:"Top pick", why:"Between station and old town; the C-1 to Fuengirola leaves from Centro-Alameda, 3 min away."},
-    {name:"Room Mate Valeria", url:"https://room-matehotels.com/en/valeria/", area:"Soho / Muelle Uno edge, rooftop pool", band:"~€125–200 normal", ll:[36.7175,-4.4185], photo:"stay-room-mate-valeria", st:"pick", stt:"Fun pick", why:"Port views from the roof for the partial phases."},
-    {name:"Only YOU Hotel Málaga", url:"https://www.onlyyouhotels.com/en/hotels/only-you-hotel-malaga/", area:"Alameda Principal", band:"~€285 normal", ll:[36.7185,-4.4235], photo:"stay-only-you", st:"unk", stt:"Splurge", why:"Rooftop pool; 15 min walk to station."},
-    {name:"Molina Lario / Vincci Larios Diez / H10 Croma", url:"https://www.cataloniahotels.com/en/hotel/catalonia-molina-lario", links:[["Vincci","https://www.vinccihoteles.com/en/hotels/malaga/vincci-larios-diez/"],["H10","https://www.h10hotels.com/en/malaga-hotels/h10-croma-malaga"]], area:"Old town", band:"~€200–250 normal", ll:[36.7205,-4.4195], photo:"stay-molina-lario", st:"unk", stt:"Old-town options", why:"Rooftop pools with cathedral views; 25 min walk to the station."},
-    {name:"Barceló Málaga (in the station) / Soho Boutique Málaga", url:"https://www.barcelo.com/en-us/barcelo-malaga/", links:[["Soho Boutique Málaga","https://www.sohohoteles.com/en/hotel-soho-boutique-malaga-3-en/"]], area:"María Zambrano", band:"~€120–180 normal", ll:[36.7115,-4.4319], photo:"stay-barcelo-station", st:"unk", stt:"Station option", why:"Zero-stress 08:09 departure Wednesday; C-1 to Fuengirola from the same building."},
-       ]},
+    {name:"✅ Catalonia Puerta del Mar — BOOKED", area:"Puerta del Mar 5, old town — by Atarazanas / Calle Larios", band:"paid", ll:[36.7177,-4.4213], photo:"stay-catalonia-puerta-del-mar", st:"ok", stt:"Paid in full · Superior room + breakfast · Mon 2 → Wed 4 Aug", why:"4* with rooftop plunge pool. Arrive Monday ~16:00 off the C-1 (5 min on foot); check out Wednesday for the 08:09 train.", url:"https://www.cataloniahotels.com/en/hotel/catalonia-puerta-del-mar"},
+   ]},
  { city:"San Sebastián · Wed 4 → Sun 8 Aug (4 nights)", key:"ss", ll:[43.3245,-1.9755],
    why:"Gros is the answer for you two: surf-y, cosmopolitan, Zurriola beach, Tabakalera next door, Thursday pintxo-pote, lots of foreign residents — and still a real neighborhood. Aug is peak but you're the week BEFORE Semana Grande (14–21 Aug). Book by Feb–Mar 2027. Expect €150–250 for good 3*, €250–350 for 4* boutique.",
    list:[
@@ -430,7 +426,7 @@ function photoBox(slug, ic, cls){
 function renderItin(){
   const v=document.getElementById('v-itin');
   let h=`<div class="note purple"><b>Fixed point:</b> Mon 2 Aug, Fuengirola beach — totality <b>10:47:03 → 10:50:13</b> CEST (3 m 10 s), Sun ~38° up in the ESE over the sea. We sleep on that beach the night before (Sun 1 Aug), walk out for the eclipse, then ride the Cercanías to Málaga for two nights. Everything else bends around that. Tap a day to expand; tap an item to jump the map. Photos slot in automatically once dropped into <code>photos/eclipse/</code>.</div>`;
-  h+=`<div class="note red"><b>Booked ✅:</b> Fuengirola, Sun 1 Aug — Hotel Reyesol (hold, free cancel to 30 Jul 2027). <b>Book next:</b> the Málaga hotel for Mon 2–Tue 3, then flights (Alaska/Delta load 31 Jul 2027 ~3 Sep 2026; BA/Iberia/KLM already open).</div>`;
+  h+=`<div class="note red"><b>Booked ✅:</b> Fuengirola Sun 1 Aug — Hotel Reyesol (hold) · Málaga Mon 2–Wed 4 — Catalonia Puerta del Mar (paid). <b>Book next:</b> flights (Alaska/Delta load 31 Jul 2027 ~3 Sep 2026; BA/Iberia/KLM already open).</div>`;
   days.forEach(d=>{
     h+=`<div class="day" id="day-${d.n}"><div class="dayhead" onclick="toggleDay(${d.n})">
       <div class="num" style="background:${d.color}">${d.n}</div>
@@ -538,7 +534,7 @@ function renderLogi(){
   <tr><td>Cards</td><td><b>Mugi</b> (Gipuzkoa: Euskotren, Lurraldebus, Dbus) · <b>Barik</b> (Bizkaia: metro, tram, Bizkaibus, E4, funicular, airport bus)</td><td>€5 / €3 + load</td></tr></table>
   <h2 class="sec">Booking calendar</h2>
   <table><tr><th>When</th><th>What</th></tr>
-  <tr><td><b>Now (Aug 2026)</b></td><td>✅ Fuengirola ×1 booked (Reyesol, hold). Málaga hotel ×2 (Mon 2–Tue 3), free cancellation — re-shop later as eclipse pricing settles. Google Flights alerts. Passports valid ≥6 mo past Aug 2027.</td></tr>
+  <tr><td><b>Now (Aug 2026)</b></td><td>✅ Fuengirola booked (Reyesol, hold) · ✅ Málaga booked (Catalonia Puerta del Mar, paid). Google Flights alerts. Passports valid ≥6 mo past Aug 2027.</td></tr>
   <tr><td>~10 Aug 2026</td><td>BA opens 31 Jul 2027 (SEA–LHR–AGP/GIB).</td></tr>
   <tr><td><b>3–4 Sep 2026</b></td><td>Alaska/AA/Delta/United open 31 Jul 2027 — book outbound. Return opens ~14 Sep.</td></tr>
   <tr><td>Dec 2026 – Feb 2027</td><td>Málaga–Madrid train tickets (Iryo/Renfe/Ouigo). SS + Bilbao hotels. Caminito del Rey tickets when 2027 dates open.</td></tr>
@@ -549,7 +545,7 @@ function renderDecide(){
   document.getElementById('v-decide').innerHTML=`
   <div class="card"><h3>✅ 0 · Eclipse base — DECIDED: Fuengirola night 1, then Málaga ×2</h3>Land Sunday, Cercanías straight from the airport to Fuengirola (33 min), sleep beachfront on the Los Boliches promenade, walk out for the eclipse Monday (3 m 10 s), C-1 to Málaga that afternoon for two nights (Mike's Málaga day Tuesday), 08:09 train Wednesday. Considered and set aside: Tarifa (4 m 40 s, sold out a year ahead), Gibraltar (4 m 29 s), Málaga-only with a 07:20 train race.</div>
   <div class="card"><h3>1 · Leave Fri 30 Jul instead of Sat 31?</h3>With a Saturday departure you land Sunday midday, ride 33 min to the beach, and have a whole evening of margin before an eclipse you can watch from the hotel door. Leaving Friday adds a second Fuengirola night as insurance. <b>Sat 31 Jul is fine; Fri 30 Jul if you want belt-and-braces.</b></div>
-  <div class="card"><h3>2 · Hotels — which and how much?</h3><b>Fuengirola (Sun 1):</b> Yaramar or Ángela (frontal sea-view balcony, 8–10 min to Los Boliches station) are the picks; ILUNION for design, Villa de Laredo / El Puerto for value, Monarque Torreblanca if you want to be 2 min from a station. <b>Málaga (Mon 2–Tue 3):</b> Soho Boutique Equitativa / Room Mate Valeria near Centro-Alameda; Only YOU / Molina Lario for rooftop pools; Barceló in the station for a zero-friction Wednesday. What's your ceiling per night?</div>
+  <div class="card"><h3>✅ 2 · South hotels — booked</h3><b>Fuengirola (Sun 1):</b> Hotel Reyesol, held free-cancel to 30 Jul 2027 (seafront upgrade still possible — email Yaramar/Ángela). <b>Málaga (Mon 2–Wed 4):</b> Catalonia Puerta del Mar, paid, Superior + breakfast. Next hotels: San Sebastián ×4 and Bilbao ×3 by Feb–Mar 2027.</div>
   <div class="card"><h3>3 · Tue 3 Aug: Málaga day or Caminito del Rey?</h3>Both are on the card. Caminito is a Cercanías C-2 ride to El Chorro + shuttle, back by mid-afternoon — but it sells out fast (caminitodelrey.info) and eats the Atarazanas/Picasso morning. Decide when tickets open.</div>
   <div class="card"><h3>4 · San Sebastián first, or Bilbao first?</h3>SS-first (as written) ends 25 min from the airport and puts Gernika's Monday market on Mon 9 Aug. Flip only if the Alvia isn't reaching Donostia in Aug 2027 (track works).</div>
   <div class="card"><h3>5 · Any splurge dinner?</h3>Elkano (Getaria) fits Fri 6 Aug naturally. Arzak needs a request 2–3 months out; Mugaritz is a taxi. Nerua (in the Guggenheim) for the last night?</div>
