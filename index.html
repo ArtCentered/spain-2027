@@ -90,6 +90,19 @@
   .todaybanner .big{font-size:40px;font-weight:800;letter-spacing:-1px;margin:2px 0;font-variant-numeric:tabular-nums;}
   .ecl-tl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:12.5px;margin-top:8px;}
   .ecl-tl b{font-variant-numeric:tabular-nums;} .ecl-tl .now{color:#ffd66b;font-weight:800;}
+  .bwrap{background:#fff;border-radius:15px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:13px 15px;margin-bottom:12px;}
+  .bwrap h3{margin:0 0 8px;font-size:13px;color:var(--teal);text-transform:uppercase;letter-spacing:.4px;display:flex;justify-content:space-between;}
+  .bwrap h3 .amt{color:var(--terra);}
+  .bbar{height:14px;border-radius:999px;background:#efe9dc;overflow:hidden;position:relative;}
+  .bbar .proj{position:absolute;inset:0 auto 0 0;background:#e8d9b8;}
+  .bbar .paid{position:absolute;inset:0 auto 0 0;background:var(--terra);}
+  .bleg{display:flex;gap:12px;font-size:11.5px;color:var(--muted);margin-top:7px;flex-wrap:wrap;}
+  .bleg b{color:var(--ink);} .bleg .dotl{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin-right:4px;}
+  .btable{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px;}
+  .btable td{padding:5px 4px;border-top:1px solid #f3eee2;vertical-align:top;}
+  .btable td.r{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .bst{display:inline-block;font-size:9.5px;font-weight:800;border-radius:5px;padding:1px 5px;letter-spacing:.3px;}
+  .bst.paid{background:#e9f5ea;color:#2E7D32;} .bst.estimate{background:#eef0f1;color:#5b6b71;} .bst.booked{background:#fff3d9;color:#9a5a12;}
   .todoitem{display:flex;gap:9px;padding:8px 0;border-top:1px solid #f3eee2;} .todoitem:first-of-type{border-top:none;}
   .todoitem .cb{flex:0 0 auto;font-size:17px;color:var(--terra);line-height:1.15;}
   .todoitem b{color:var(--teal);font-size:13px;} .when{font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.35;}
@@ -165,6 +178,7 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="budget.js"></script>
 <script>
 /* =====================================================================
    Sol y Norte — Spain 2027 trip companion (Travis & Mike)
@@ -411,7 +425,32 @@ function galShift(btn,dir){ const g=btn.closest('.egal'); const im=[...g.querySe
   let i=im.findIndex(x=>x.classList.contains('active')); im[i].classList.remove('active'); if(dt[i])dt[i].classList.remove('active');
   i=(i+dir+im.length)%im.length; im[i].classList.add('active'); if(dt[i])dt[i].classList.add('active'); }
 
-/* ---------- Today ---------- */
+/* ---------- Budget ---------- */
+const fmt$=n=>'$'+Math.round(n).toLocaleString('en-US');
+function budgetBarHTML(){
+  if(!window.budgetCalc) return '';
+  const b=budgetCalc();
+  return `<div class="bwrap"><h3><span>💶 Budget</span><span class="amt">${fmt$(b.projected)} projected of ${fmt$(b.total)}</span></h3>
+    <div class="bbar"><div class="proj" style="width:${b.pctProj}%"></div><div class="paid" style="width:${b.pctPaid}%"></div></div>
+    <div class="bleg"><span><span class="dotl" style="background:var(--terra)"></span>Paid <b>${fmt$(b.paid)}</b></span><span><span class="dotl" style="background:#e8d9b8"></span>Planned <b>${fmt$(b.est+b.committed)}</b></span><span>${b.left>=0?'Headroom':'⚠ Over by'} <b>${fmt$(Math.abs(b.left))}</b></span></div></div>`;
+}
+function budgetCardHTML(){
+  if(!window.budgetCalc) return '';
+  const b=budgetCalc(); const B=window.TRIP_BUDGET;
+  const cats={}; b.rows.forEach(r=>{(cats[r.cat]=cats[r.cat]||[]).push(r)});
+  let rows='';
+  for(const c in cats){
+    const sub=cats[c].reduce((a,r)=>a+r.usdVal,0);
+    rows+=`<tr><td colspan="2" style="border-top:2px solid #e8e0cf"><b>${c}</b> · ${fmt$(sub)}</td></tr>`;
+    rows+=cats[c].map(r=>`<tr><td>${r.name} <span class="bst ${r.status}">${r.status.toUpperCase()}</span></td><td class="r">${r.eur!=null?('€'+r.eur.toLocaleString()+' · '):''}${fmt$(r.usdVal)}</td></tr>`).join('');
+  }
+  return `<div class="bwrap"><h3><span>💶 Budget — full breakdown</span><span class="amt">${fmt$(b.total)} cap</span></h3>
+    ${budgetBarHTML().replace('<div class="bwrap">','<div>').replace(/<h3>.*?<\/h3>/,'')}
+    <table class="btable">${rows}
+    <tr><td style="border-top:2px solid #e8e0cf"><b>Projected total</b></td><td class="r" style="border-top:2px solid #e8e0cf"><b>${fmt$(b.projected)}</b></td></tr>
+    <tr><td><b>${b.left>=0?'Headroom under cap':'Over cap'}</b></td><td class="r"><b>${fmt$(Math.abs(b.left))}</b></td></tr></table>
+    <div class="when" style="padding-top:8px">${B.note} Rate €1 = $${B.eurUsd.toFixed(2)} (edit in budget.js) · updated ${B.updated}. Estimates tighten as bookings land.</div></div>`;
+}
 function localISO(dt){ const p=n=>String(n).padStart(2,'0'); return dt.getFullYear()+'-'+p(dt.getMonth()+1)+'-'+p(dt.getDate()); }
 const TODOS=[
  {t:"Book the flights", w:"EUG → Málaga (31 Jul) / Bilbao → EUG (11 Aug) · Alaska/Delta load ~3 Sep 2026; BA/Iberia/KLM already open"},
@@ -437,7 +476,7 @@ function renderToday(){
   body.classList.add('scrollpad');
   const start=new Date('2027-07-31T00:00:00'); const diff=Math.ceil((start-new Date())/86400000);
   if(diff>0){
-    body.innerHTML=`<div class="todaybanner"><div class="lbl">Countdown to Spain</div><div class="big">${diff}</div><p>days until you fly out of Eugene (Sat 31 Jul 2027).</p></div>`+eclipseCardHTML()+
+    body.innerHTML=`<div class="todaybanner"><div class="lbl">Countdown to Spain</div><div class="big">${diff}</div><p>days until you fly out of Eugene (Sat 31 Jul 2027).</p></div>`+eclipseCardHTML()+budgetBarHTML()+
       `<div class="infocard"><h3>Before you go — to book &amp; reserve</h3>${TODOS.map(td=>`<div class="todoitem"><span class="cb">▢</span><div><b>${td.t}</b><div class="when">${td.w}</div></div></div>`).join('')}<div class="when" style="padding-top:8px">These drop off as you book them and send me the details.</div></div><div class="listhead">The 12 days</div>${dayCardsHTML()}`;
     startEclClock();
   } else {
@@ -457,6 +496,7 @@ function renderStays(){
 /* ---------- Info ---------- */
 function renderInfo(){
   document.getElementById('info-body').innerHTML=`
+   ${budgetCardHTML()}
    <div class="infocard"><h3>Trip at a glance</h3>
      <div class="inforow"><span class="ii">📅</span><div><b>Dates:</b> Sat 31 Jul → Wed 11 Aug 2027 (10 nights on the ground)</div></div>
      <div class="inforow"><span class="ii">🌘</span><div><b>The eclipse:</b> Mon 2 Aug · Fuengirola beach, right outside the hotel · totality 10:47:03–10:50:13 CEST (3 m 10 s)</div></div>

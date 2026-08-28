@@ -121,6 +121,7 @@
       <button data-v="eclipse">Eclipse</button>
       <button data-v="logi">Logistics</button>
       <button data-v="decide">Decisions</button>
+      <button data-v="budget">Budget</button>
     </nav>
   </header>
   <div id="main">
@@ -130,12 +131,14 @@
       <div id="v-eclipse" class="view"></div>
       <div id="v-logi" class="view"></div>
       <div id="v-decide" class="view"></div>
+      <div id="v-budget" class="view"></div>
     </div>
     <div id="right"><div id="map"></div></div>
   </div>
   <button class="mapbtn" id="mapbtn">🗺 Map</button>
 </div>
 
+<script src="../budget.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 // ------------------------------------------------------------------
@@ -541,6 +544,35 @@ function renderLogi(){
   <tr><td>Mar – May 2027</td><td>Alvia Madrid → Donostia tickets; check Adif summer-works notices; Elkano/Arzak reservations; Gaztelugatxe reservation when 2027 slots open.</td></tr>
   <tr><td>Jul 2027</td><td>Guggenheim tickets, Chillida-Leku, Balenciaga, Picasso Museum, Málaga dinner reservations. ETIAS if required.</td></tr></table>`;
 }
+const fmt$=n=>'$'+Math.round(n).toLocaleString('en-US');
+function renderBudget(){
+  if(!window.budgetCalc){document.getElementById('v-budget').innerHTML='<div class="note">budget.js not found.</div>';return;}
+  const b=budgetCalc(); const B=window.TRIP_BUDGET;
+  const cats={}; b.rows.forEach(r=>{(cats[r.cat]=cats[r.cat]||[]).push(r)});
+  let rows='';
+  for(const c in cats){
+    const sub=cats[c].reduce((a,r)=>a+r.usdVal,0);
+    rows+=`<tr><th colspan="2" style="text-align:left">${c} — ${fmt$(sub)}</th></tr>`;
+    rows+=cats[c].map(r=>`<tr><td>${r.name} <span class="st ${r.status==='paid'?'ok':'unk'}" style="font-size:10px">${r.status.toUpperCase()}</span></td><td style="text-align:right;white-space:nowrap">${r.eur!=null?('€'+r.eur.toLocaleString()+' · '):''}${fmt$(r.usdVal)}</td></tr>`).join('');
+  }
+  document.getElementById('v-budget').innerHTML=`
+   <div class="card"><h3>💶 The $${(B.totalUSD/1000)}k plan</h3>
+    <div class="big" style="color:${b.left>=0?'var(--hike)':'#c0392b'}">${fmt$(b.projected)} <span style="font-size:15px;color:var(--muted)">projected of ${fmt$(b.total)}</span></div>
+    <div style="height:16px;border-radius:999px;background:#efe9dc;overflow:hidden;position:relative;margin:8px 0 6px">
+      <div style="position:absolute;inset:0 auto 0 0;width:${b.pctProj}%;background:#e8d9b8"></div>
+      <div style="position:absolute;inset:0 auto 0 0;width:${b.pctPaid}%;background:var(--terra)"></div></div>
+    <div style="font-size:12.5px;color:var(--muted)">🟧 Paid <b style="color:var(--ink)">${fmt$(b.paid)}</b> &nbsp;·&nbsp; 🟨 Planned <b style="color:var(--ink)">${fmt$(b.est+b.committed)}</b> &nbsp;·&nbsp; ${b.left>=0?'Headroom':'⚠ Over by'} <b style="color:var(--ink)">${fmt$(Math.abs(b.left))}</b></div>
+    <p style="margin:8px 0 0;font-size:12.5px">${B.note}</p></div>
+   <div class="card"><h3>Line items</h3><table>${rows}
+     <tr><th>Projected total</th><th style="text-align:right">${fmt$(b.projected)}</th></tr>
+     <tr><th>${b.left>=0?'Headroom under cap':'Over cap'}</th><th style="text-align:right">${fmt$(Math.abs(b.left))}</th></tr></table>
+    <p style="margin:6px 0 0;font-size:11.5px;color:var(--muted)">Rate €1 = $${B.eurUsd.toFixed(2)} · updated ${B.updated} · source: website/budget.js (one file drives this tab and the app). PAID = money spent · ESTIMATE tightens as bookings land.</p></div>
+   <div class="card"><h3>Where the flex is</h3><ul>
+    <li><b>Flights decide the trip.</b> The $3,100 estimate is economy; premium economy on the overnight adds roughly $1,800–2,600 for two — that alone would eat the headroom.</li>
+    <li><b>San Sebastián is the sanctioned splurge:</b> the $1,400 line buys the Convento San Martín tier; dropping to Pensión Aida tier frees ~$500 for food.</li>
+    <li><b>Food is protected, per Mike:</b> $1,850 total ≈ $90/day for two plus the Elkano turbot — realistic for pintxos-forward eating.</li>
+    <li>Everything unbooked stays refundable, so every estimate can still move both ways.</li></ul></div>`;
+}
 function renderDecide(){
   document.getElementById('v-decide').innerHTML=`
   <div class="card"><h3>✅ 0 · Eclipse base — DECIDED: Fuengirola night 1, then Málaga ×2</h3>Land Sunday, Cercanías straight from the airport to Fuengirola (33 min), sleep beachfront on the Los Boliches promenade, walk out for the eclipse Monday (3 m 10 s), C-1 to Málaga that afternoon for two nights (Mike's Málaga day Tuesday), 08:09 train Wednesday. Considered and set aside: Tarifa (4 m 40 s, sold out a year ahead), Gibraltar (4 m 29 s), Málaga-only with a 07:20 train race.</div>
@@ -552,7 +584,7 @@ function renderDecide(){
   <div class="card"><h3>6 · Premium economy on the transatlantic?</h3>~$900–1,500 pp more each way at peak. The outbound overnight is the sleep that protects Sunday's arrival; the return doesn't matter as much.</div>`;
 }
 
-renderItin(); renderStays(); renderEclipse(); renderLogi(); renderDecide();
+renderItin(); renderStays(); renderEclipse(); renderLogi(); renderDecide(); renderBudget();
 document.querySelectorAll('nav.tabs button').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('nav.tabs button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById('v-'+b.dataset.v).classList.add('active');
