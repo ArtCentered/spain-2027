@@ -221,7 +221,7 @@ const days = [
     {t:"~14:00", ic:"🚆", title:"Alvia Chamartín → Donostia/San Sebastián", place:"Madrid-Chamartín-Clara Campoamor → Donostia, ~5 h", ll:[40.4722,-3.6825], photo:"alvia-north", cost:"€28–60",
      desc:"Elige Confort (2+1). Guadarrama tunnel then the Sierra (LEFT); Valladolid, Burgos; Pancorbo gorge; Vitoria; then the descent into the Oria valley (Zumarraga→Tolosa) — the 'we're in the Basque Country' hour."},
     {t:"~19:15", ic:"🏨", title:"Arrive Donostia → Hotel de Londres ✅", place:"Estación → Zubieta 2, on La Concha (15 min walk / 5 min taxi)", ll:[43.3184,-1.9846], photo:"donostia-station",
-     desc:"Buy a Mugi card at the station. Held refundable: Classic city view, 4 nights, strawberries waiting. The bay at dusk from the promenade is the welcome."},
+     desc:"Buy a Mugi card at the station. Held refundable: Classic city view, 4 nights. The bay at dusk from the promenade is the welcome."},
     {t:"20:30", ic:"🍢", title:"First pintxos, Gros side", place:"Bergara Bar · Bodega Donostiarra · Hidalgo 56", ll:[43.3245,-1.9755], photo:"gros-pintxos",
      desc:"The local crawl, one block from Zurriola beach."},
    ]},
@@ -344,7 +344,7 @@ const stays = [
  { city:"San Sebastián · Wed 4 → Sun 8 Aug (4 nights)", key:"ss", ll:[43.3245,-1.9755],
    why:"✅ HELD (refundable): Hotel de Londres y de Inglaterra — the sanctioned splurge, on the La Concha promenade itself. Free cancel until ~28 Jul 2027, pay at reception; September's flight numbers make the final call (keep / sea-view upgrade / drop to the fallback tier below).",
    list:[
-    {name:"✅ Hotel de Londres y de Inglaterra — HELD", area:"Zubieta 2 — directly ON La Concha; 5 min to Parte Vieja", band:"€1,998 · pay at reception", ll:[43.3184,-1.9846], photo:"stay-hotel-londres", st:"ok", stt:"Flexible rate · free cancel/modify to ~28 Jul 2027", why:"The Belle Époque grande dame — 9.2 from 4,500+ reviews, location 9.9. Classic city-view double ×4 nights + strawberries & chocolate. Arrival Wed ~19:30 by train noted in the booking.", url:"https://www.hlondres.com/en/"},
+    {name:"✅ Hotel de Londres y de Inglaterra — HELD", area:"Zubieta 2 — directly ON La Concha; 5 min to Parte Vieja", band:"€1,998 · pay at reception", ll:[43.3184,-1.9846], photo:"stay-hotel-londres", st:"ok", stt:"Flexible rate · free cancel/modify to ~28 Jul 2027", why:"The Belle Époque grande dame — 9.2 from 4,500+ reviews, location 9.9. Classic city-view double ×4 nights. Arrival Wed ~19:30 by train noted in the booking.", url:"https://www.hlondres.com/en/"},
     {name:"One Shot Tabakalera House", url:"https://www.oneshothotels.com/en/hotels/san-sebastian/tabakalera-house/", area:"Egia/Gros edge, inside Tabakalera", band:"€150–260", ll:[43.3170,-1.9765], photo:"stay-tabakalera-house", st:"pick", stt:"Top pick (art angle)", why:"Ex-tobacco factory, industrial-chic, art centre + cinema downstairs; 8 min to Zurriola, 3 min to the train station."},
     {name:"Hotel Arrizul Congress (Gros)", url:"https://www.hotelarrizulcongress.com/en/", area:"Gros, 2 blocks from Zurriola", band:"€150–230", ll:[43.3250,-1.9740], photo:"stay-arrizul-gros", st:"pick", stt:"Top pick (neighborhood)", why:"Modern 3* by the Kursaal, in the 'living' neighborhood (the group's Gros property; the old Arrizul Gros site is gone). Sister apartments available."},
     {name:"Pensión Aida / Pensión Kursaal", url:"https://www.aidapension.com/en/", links:[["Kursaal","https://www.pensionkursaal.com/"]], area:"Gros, by the Kursaal", band:"€110–170", ll:[43.3255,-1.9775], photo:"stay-pension-aida", st:"ok", stt:"Value", why:"Well-reviewed family pensiones a block from Zurriola."},
@@ -550,19 +550,22 @@ function renderBudget(){
   if(!window.budgetCalc){document.getElementById('v-budget').innerHTML='<div class="note">budget.js not found.</div>';return;}
   const b=budgetCalc(); const B=window.TRIP_BUDGET;
   const cats={}; b.rows.forEach(r=>{(cats[r.cat]=cats[r.cat]||[]).push(r)});
+  const stStyle={paid:'background:#e9f5ea;color:#2E7D32',booked:'background:#fdf3dc;color:#9a6a12',estimate:'background:#eef0f1;color:#5b6b71'};
+  const stLabel={paid:'PAID',booked:'BOOKED · PAY LATER',estimate:'ESTIMATE'};
   let rows='';
   for(const c in cats){
     const sub=cats[c].reduce((a,r)=>a+r.usdVal,0);
     rows+=`<tr><th colspan="2" style="text-align:left">${c} — ${fmt$(sub)}</th></tr>`;
-    rows+=cats[c].map(r=>`<tr><td>${r.name} <span class="st ${r.status==='paid'?'ok':'unk'}" style="font-size:10px">${r.status.toUpperCase()}</span></td><td style="text-align:right;white-space:nowrap">${r.eur!=null?('€'+r.eur.toLocaleString()+' · '):''}${fmt$(r.usdVal)}</td></tr>`).join('');
+    rows+=cats[c].map(r=>`<tr><td>${r.name} <span class="st" style="font-size:10px;${stStyle[r.status]}">${stLabel[r.status]}</span></td><td style="text-align:right;white-space:nowrap">${r.eur!=null?('€'+r.eur.toLocaleString()+' · '):''}${fmt$(r.usdVal)}</td></tr>`).join('');
   }
   document.getElementById('v-budget').innerHTML=`
    <div class="card"><h3>💶 The $${(B.totalUSD/1000)}k plan</h3>
     <div class="big" style="color:${b.left>=0?'var(--hike)':'#c0392b'}">${fmt$(b.projected)} <span style="font-size:15px;color:var(--muted)">projected of ${fmt$(b.total)}</span></div>
     <div style="height:16px;border-radius:999px;background:#efe9dc;overflow:hidden;position:relative;margin:8px 0 6px">
       <div style="position:absolute;inset:0 auto 0 0;width:${b.pctProj}%;background:#e8d9b8"></div>
+      <div style="position:absolute;inset:0 auto 0 0;width:${Math.min(100,100*(b.paid+b.committed)/b.total)}%;background:#d9a94e"></div>
       <div style="position:absolute;inset:0 auto 0 0;width:${b.pctPaid}%;background:var(--terra)"></div></div>
-    <div style="font-size:12.5px;color:var(--muted)">🟧 Paid <b style="color:var(--ink)">${fmt$(b.paid)}</b> &nbsp;·&nbsp; 🟨 Planned <b style="color:var(--ink)">${fmt$(b.est+b.committed)}</b> &nbsp;·&nbsp; ${b.left>=0?'Headroom':'⚠ Over by'} <b style="color:var(--ink)">${fmt$(Math.abs(b.left))}</b></div>
+    <div style="font-size:12.5px;color:var(--muted)">🟧 Paid <b style="color:var(--ink)">${fmt$(b.paid)}</b> &nbsp;·&nbsp; 🟡 Booked, pay later <b style="color:var(--ink)">${fmt$(b.committed)}</b> &nbsp;·&nbsp; 🟨 Estimates <b style="color:var(--ink)">${fmt$(b.est)}</b> &nbsp;·&nbsp; ${b.left>=0?'Headroom':'⚠ Over by'} <b style="color:var(--ink)">${fmt$(Math.abs(b.left))}</b></div>
     <p style="margin:8px 0 0;font-size:12.5px">${B.note}</p></div>
    <div class="card"><h3>Line items</h3><table>${rows}
      <tr><th>Projected total</th><th style="text-align:right">${fmt$(b.projected)}</th></tr>
