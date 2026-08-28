@@ -220,8 +220,8 @@ const days = [
      desc:"12 min, every 5–10 min. Free with Renfe ticket code; ~€2 on Iryo. Allow 45–60 min; X-ray at Chamartín. Lunch near Chamartín."},
     {t:"~14:00", ic:"🚆", title:"Alvia Chamartín → Donostia/San Sebastián", place:"Madrid-Chamartín-Clara Campoamor → Donostia, ~5 h", ll:[40.4722,-3.6825], photo:"alvia-north", cost:"€28–60",
      desc:"Elige Confort (2+1). Guadarrama tunnel then the Sierra (LEFT); Valladolid, Burgos; Pancorbo gorge; Vitoria; then the descent into the Oria valley (Zumarraga→Tolosa) — the 'we're in the Basque Country' hour."},
-    {t:"~19:15", ic:"🏨", title:"Arrive Donostia → Gros", place:"Estación del Norte → Gros (10 min walk)", ll:[43.3183,-1.9812], photo:"donostia-station",
-     desc:"Buy a Mugi card. Drop bags in Gros."},
+    {t:"~19:15", ic:"🏨", title:"Arrive Donostia → Hotel de Londres ✅", place:"Estación → Zubieta 2, on La Concha (15 min walk / 5 min taxi)", ll:[43.3184,-1.9846], photo:"donostia-station",
+     desc:"Buy a Mugi card at the station. Held refundable: Classic city view, 4 nights, strawberries waiting. The bay at dusk from the promenade is the welcome."},
     {t:"20:30", ic:"🍢", title:"First pintxos, Gros side", place:"Bergara Bar · Bodega Donostiarra · Hidalgo 56", ll:[43.3245,-1.9755], photo:"gros-pintxos",
      desc:"The local crawl, one block from Zurriola beach."},
    ]},
@@ -342,8 +342,9 @@ const stays = [
     {name:"✅ Catalonia Puerta del Mar — BOOKED", area:"Puerta del Mar 5, old town — by Atarazanas / Calle Larios", band:"paid", ll:[36.7177,-4.4213], photo:"stay-catalonia-puerta-del-mar", st:"ok", stt:"Paid in full · Superior room + breakfast · Mon 2 → Wed 4 Aug", why:"4* with rooftop plunge pool. Arrive Monday ~16:00 off the C-1 (5 min on foot); check out Wednesday for the 08:09 train.", url:"https://www.cataloniahotels.com/en/hotel/catalonia-puerta-del-mar"},
    ]},
  { city:"San Sebastián · Wed 4 → Sun 8 Aug (4 nights)", key:"ss", ll:[43.3245,-1.9755],
-   why:"Gros is the answer for you two: surf-y, cosmopolitan, Zurriola beach, Tabakalera next door, Thursday pintxo-pote, lots of foreign residents — and still a real neighborhood. Aug is peak but you're the week BEFORE Semana Grande (14–21 Aug). Book by Feb–Mar 2027. Expect €150–250 for good 3*, €250–350 for 4* boutique.",
+   why:"✅ HELD (refundable): Hotel de Londres y de Inglaterra — the sanctioned splurge, on the La Concha promenade itself. Free cancel until ~28 Jul 2027, pay at reception; September's flight numbers make the final call (keep / sea-view upgrade / drop to the fallback tier below).",
    list:[
+    {name:"✅ Hotel de Londres y de Inglaterra — HELD", area:"Zubieta 2 — directly ON La Concha; 5 min to Parte Vieja", band:"€1,998 · pay at reception", ll:[43.3184,-1.9846], photo:"stay-hotel-londres", st:"ok", stt:"Flexible rate · free cancel/modify to ~28 Jul 2027", why:"The Belle Époque grande dame — 9.2 from 4,500+ reviews, location 9.9. Classic city-view double ×4 nights + strawberries & chocolate. Arrival Wed ~19:30 by train noted in the booking.", url:"https://www.hlondres.com/en/"},
     {name:"One Shot Tabakalera House", url:"https://www.oneshothotels.com/en/hotels/san-sebastian/tabakalera-house/", area:"Egia/Gros edge, inside Tabakalera", band:"€150–260", ll:[43.3170,-1.9765], photo:"stay-tabakalera-house", st:"pick", stt:"Top pick (art angle)", why:"Ex-tobacco factory, industrial-chic, art centre + cinema downstairs; 8 min to Zurriola, 3 min to the train station."},
     {name:"Hotel Arrizul Congress (Gros)", url:"https://www.hotelarrizulcongress.com/en/", area:"Gros, 2 blocks from Zurriola", band:"€150–230", ll:[43.3250,-1.9740], photo:"stay-arrizul-gros", st:"pick", stt:"Top pick (neighborhood)", why:"Modern 3* by the Kursaal, in the 'living' neighborhood (the group's Gros property; the old Arrizul Gros site is gone). Sister apartments available."},
     {name:"Pensión Aida / Pensión Kursaal", url:"https://www.aidapension.com/en/", links:[["Kursaal","https://www.pensionkursaal.com/"]], area:"Gros, by the Kursaal", band:"€110–170", ll:[43.3255,-1.9775], photo:"stay-pension-aida", st:"ok", stt:"Value", why:"Well-reviewed family pensiones a block from Zurriola."},
@@ -429,7 +430,7 @@ function photoBox(slug, ic, cls){
 function renderItin(){
   const v=document.getElementById('v-itin');
   let h=`<div class="note purple"><b>Fixed point:</b> Mon 2 Aug, Fuengirola beach — totality <b>10:47:03 → 10:50:13</b> CEST (3 m 10 s), Sun ~38° up in the ESE over the sea. We sleep on that beach the night before (Sun 1 Aug), walk out for the eclipse, then ride the Cercanías to Málaga for two nights. Everything else bends around that. Tap a day to expand; tap an item to jump the map. Photos slot in automatically once dropped into <code>photos/eclipse/</code>.</div>`;
-  h+=`<div class="note red"><b>Booked ✅:</b> Fuengirola Sun 1 Aug — Jomarijo Boutique Rooms (paid) · Málaga Mon 2–Wed 4 — Catalonia Puerta del Mar (paid). The south is done. <b>Book next:</b> flights (Alaska/Delta load 31 Jul 2027 ~3 Sep 2026; BA/Iberia/KLM already open).</div>`;
+  h+=`<div class="note red"><b>Booked ✅:</b> Fuengirola — Jomarijo (paid) · Málaga — Catalonia Puerta del Mar (paid) · San Sebastián — Hotel de Londres (held, refundable to ~28 Jul 2027). <b>Book next:</b> flights (Alaska/Delta load 31 Jul 2027 ~3 Sep 2026; BA/Iberia/KLM already open).</div>`;
   days.forEach(d=>{
     h+=`<div class="day" id="day-${d.n}"><div class="dayhead" onclick="toggleDay(${d.n})">
       <div class="num" style="background:${d.color}">${d.n}</div>
