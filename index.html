@@ -194,10 +194,11 @@ const MAL=[36.7186,-4.4230], FUE=[36.5397,-4.6242], SS=[43.3245,-1.9755], BIO=[4
 
 const DAYS=[
  { n:0, nick:"The long haul", iso:"2027-07-31", date:"Sat 31 Jul", title:"Depart Eugene", place:"Eugene → Europe", ll:EUG, chips:[["Travel","#6b7a80"]],
-   summary:"Overnight to Europe. Smoothest single ticket: Alaska EUG→SEA, BA52 SEA 13:30→LHR 06:45, BA LHR→Málaga. Best schedule: KLM PDX 13:05→AMS 07:55, AMS→Málaga 12:35. Málaga runs 9 hours ahead of Eugene.",
+   summary:"✅ BOOKED: one BA ticket, bags through to Málaga, seats chosen together. EUG 10:18 → Seattle → the 787 overnight to Heathrow → Málaga 12:30 Sunday. Málaga runs 9 hours ahead of Eugene.",
    events:[
-    { ic:"✈️", cat:"move", time:"Sat AM · EUG", title:"Eugene → Seattle (or Portland)", place:"Eugene Airport", mapq:"Eugene Airport", desc:"Alaska to SEA (~8/day). Everything else is one ticket from here.", book:[["Flights","add confirmation once booked (Alaska/Delta load 31 Jul ~3 Sep 2026)"]], photos:[cap(0,'eugene',"Leaving Eugene")] },
-    { ic:"🌍", cat:"move", time:"Sat 13:30 · SEA", title:"Transatlantic overnight", place:"SEA → LHR (BA52) or PDX → AMS (KLM)", mapq:"London Heathrow", desc:"BA52 lands LHR 06:45 Sun; KL616 lands AMS 07:55 Sun. This is the sleep that protects Sunday — premium economy is worth pricing (~$2.3–3.5k pp peak)." },
+    { ic:"✈️", cat:"move", time:"10:18", title:"BA 7562 · Eugene → Seattle", place:"lands 11:40 · 1h55 connection", mapq:"Eugene Airport", desc:"Operated by Alaska/Horizon E175. Bags checked through to Málaga. TSA PreCheck works here if the KTN is on the booking.", book:[["Flights","✅ paid · Economy Standard · 1×23 kg each"]], photos:[cap(0,'eugene',"Leaving Eugene")] },
+    { ic:"🌍", cat:"move", time:"13:35", title:"BA 52 · Seattle → London Heathrow", place:"787-10 · lands 06:50 Sunday · T5", mapq:"London Heathrow Terminal 5", desc:"The 9h15 overnight — the sleep that protects Sunday. Seats picked side by side." },
+    { ic:"🛬", cat:"move", time:"Sun 08:40", title:"BA 422 · London → Málaga, lands 12:30", place:"A320 · 1h50 connection inside T5", mapq:"Málaga Airport", desc:"Landing 12:30 puts you on Fuengirola beach by ~14:30 — a full afternoon of slack before eclipse morning." },
    ]},
  { n:1, nick:"Beach before the shadow", iso:"2027-08-01", date:"Sun 1 Aug", title:"Land Málaga → Fuengirola beachfront", place:"Fuengirola · Los Boliches promenade", ll:[36.5450,-4.6150], chips:[["Eclipse eve","#4b2a8a"],["Travel","#6b7a80"]],
    summary:"Land ~11:00–14:00 and ride the Cercanías C-1 straight from under the terminal to Fuengirola (33 min) — the airport is on the eclipse line. Check into a beachfront hotel on the Los Boliches promenade, stand on the sand and look ESE: that's tomorrow's spot, no train needed. Swim, espetos, early bed.",
@@ -455,7 +456,7 @@ function budgetCardHTML(){
 }
 function localISO(dt){ const p=n=>String(n).padStart(2,'0'); return dt.getFullYear()+'-'+p(dt.getMonth()+1)+'-'+p(dt.getDate()); }
 const TODOS=[
- {t:"Book the flights", w:"EUG → Málaga (31 Jul) / Bilbao → EUG (11 Aug) · Alaska/Delta load ~3 Sep 2026; BA/Iberia/KLM already open"},
+ {t:"Book the return flight", w:"Bilbao → EUG, Wed 11 Aug · window opens ~14 Sep 2026 · KLM BIO–AMS–PDX is the target (outbound ✅ booked)"},
  {t:"Order eclipse glasses ×4", w:"ISO 12312-2 · from the US"},
  {t:"Bilbao hotel ×3", w:"Refundable · book by Feb–Mar 2027 (SS is held at Hotel de Londres ✅)"},
  {t:"September: final call on the SS splurge", w:"After flights land — keep Londres / upgrade sea view / rebook non-ref (−$175) / drop tier"},
@@ -504,7 +505,7 @@ function renderInfo(){
      <div class="inforow"><span class="ii">📅</span><div><b>Dates:</b> Sat 31 Jul → Wed 11 Aug 2027 (10 nights on the ground)</div></div>
      <div class="inforow"><span class="ii">🌘</span><div><b>The eclipse:</b> Mon 2 Aug · Fuengirola beach, right outside the hotel · totality 10:47:03–10:50:13 CEST (3 m 10 s)</div></div>
      <div class="inforow"><span class="ii">🏠</span><div><b>Bases:</b> Fuengirola ×1 (beachfront, eclipse eve) → Málaga ×2 (Soho) → San Sebastián ×4 (Gros) → Bilbao ×3 (Abando / Casco Viejo)</div></div>
-     <div class="inforow"><span class="ii">✈️</span><div><b>Flights:</b> EUG → Málaga (via SEA–LHR on Alaska/BA, or PDX–AMS on KLM) · Bilbao → EUG (KLM via AMS–PDX, or LH via FRA–SEA) · <span class="todo">add confirmations</span></div></div>
+     <div class="inforow"><span class="ii">✈️</span><div><b>Flights out ✅:</b> Sat 31 Jul — BA 7562 EUG 10:18 → SEA · BA 52 SEA 13:35 → LHR 06:50+1 · BA 422 LHR 08:40 → Málaga 12:30 · one ticket, bags through, seats together. <b>Return:</b> Bilbao → EUG, book ~mid-Sep 2026 (KLM via AMS–PDX or LH via FRA–SEA) · <span class="todo">to book</span></div></div>
      <div class="inforow"><span class="ii">🚄</span><div><b>Trains:</b> Iryo Málaga 08:09 → Madrid Atocha 10:56 · Cercanías to Chamartín · Alvia ~14:00 → Donostia ~19:15 · <span class="todo">book Dec 2026–May 2027</span></div></div>
    </div>
    <div class="infocard"><h3>Key bookings</h3>

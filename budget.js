@@ -8,14 +8,14 @@
 window.TRIP_BUDGET = {
   totalUSD: 10000,
   eurUsd: 1.10,
-  updated: "2026-08-29",
+  updated: "2026-09-07",
   note: "Splurge zone (Mike-approved, within reason): San Sebastián. Rule for everything still unbooked: refundable rates only.",
   items: [
     { cat:"Lodging",         name:"Jomarijo Boutique Rooms, Fuengirola — Sun 1 Aug (1 nt)",      eur:275,     status:"paid" },
     { cat:"Lodging",         name:"Catalonia Puerta del Mar, Málaga — Mon 2–Wed 4 (2 nts)",      eur:1054.62, status:"paid" },
     { cat:"Lodging",         name:"Hotel de Londres y de Inglaterra, SS ×4 — THE SPLURGE (city view, flexible; free cancel to ~28 Jul 2027)", eur:1998, status:"booked" },
     { cat:"Lodging",         name:"Bilbao ×3 nts",                                               usd:600,     status:"estimate" },
-    { cat:"Flights",         name:"Outbound EUG→Málaga ×2 (Alaska/BA or KLM)",                   usd:1700,    status:"estimate" },
+    { cat:"Flights",         name:"Outbound EUG→Málaga ×2 — BA via SEA & LHR, lands 12:30 Sun",  usd:1605.20, status:"paid" },
     { cat:"Flights",         name:"Return Bilbao→EUG ×2 (KLM via AMS–PDX)",                      usd:1400,    status:"estimate" },
     { cat:"Trains & transit",name:"Iryo Málaga→Madrid ×2 (car 3)",                               usd:120,     status:"estimate" },
     { cat:"Trains & transit",name:"Alvia Madrid→Donostia ×2 (Elige Confort)",                    usd:120,     status:"estimate" },

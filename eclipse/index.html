@@ -151,12 +151,14 @@ const C = { fly:"#5b6b71", tarifa:"#4b2a8a", malaga:"#C1660F", train:"#1F4E5F", 
 
 const days = [
  { n:0, date:"Sat 31 Jul", title:"Depart Eugene", base:"On the plane", color:C.fly, ic:"✈️",
-   sum:"Overnight to Europe. Smoothest single ticket: Alaska EUG→SEA, BA52 SEA 13:30→LHR 06:45, BA LHR→Málaga. Best schedule: KLM PDX 13:05→AMS 07:55, AMS→Málaga 12:35.",
+   sum:"✅ BOOKED: one BA ticket, $1,605 for two, bags through to Málaga, seats chosen together. EUG 10:18 → Seattle → the 787 overnight → Málaga 12:30 Sunday.",
    items:[
-    {t:"Sat AM", ic:"✈️", title:"EUG → SEA (or PDX)", place:"Eugene Airport", ll:[44.1246,-123.2120], photo:"eugene-airport",
-     desc:"Alaska to SEA (~8/day). Everything else is one ticket from here."},
-    {t:"Sat 13:30", ic:"🌍", title:"SEA → LHR (BA52) or PDX → AMS (KLM)", place:"Transatlantic", ll:[47.4502,-122.3088], photo:"transatlantic",
-     desc:"BA52 lands LHR 06:45 Sun; KL616 lands AMS 07:55 Sun. Premium economy is worth pricing (~$2.3–3.5k pp peak) — this is the sleep that protects Sunday."},
+    {t:"10:18", ic:"✈️", title:"BA 7562 · Eugene → Seattle (lands 11:40)", place:"Eugene Airport · 1h55 connection at SEA", ll:[44.1246,-123.2120], photo:"eugene-airport",
+     desc:"Alaska/Horizon E175. Bags checked through to Málaga."},
+    {t:"13:35", ic:"🌍", title:"BA 52 · Seattle → London Heathrow (787-10)", place:"Lands 06:50 Sunday · Terminal 5", ll:[47.4502,-122.3088], photo:"transatlantic",
+     desc:"The 9h15 overnight — the sleep that protects Sunday. Seats side by side."},
+    {t:"Sun 08:40", ic:"🛬", title:"BA 422 · London → Málaga, lands 12:30", place:"1h50 connection inside T5", ll:[36.6749,-4.4991], photo:"malaga-airport",
+     desc:"Landing 12:30 = Fuengirola beach by ~14:30, a full afternoon of slack before eclipse morning."},
    ]},
 
  { n:1, date:"Sun 1 Aug", title:"Land Málaga → Fuengirola beach", base:"Fuengirola / Los Boliches (beachfront)", color:C.malaga, ic:"🛬",
