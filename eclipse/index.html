@@ -104,6 +104,7 @@
   .pin{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.4);border:2px solid #fff;
     width:28px;height:28px;border-radius:50%;font-size:12px;}
   .pin.small{width:20px;height:20px;font-size:10px;opacity:.9;}
+  .pin.seq{width:24px;height:24px;font-size:12px;font-weight:800;text-transform:lowercase;}
   .pin.sel{outline:3px solid var(--terra);outline-offset:1px;}
   .pin.hl{outline:3px solid var(--terra);outline-offset:2px;transform:scale(1.35);box-shadow:0 0 0 6px rgba(193,102,15,.25),0 2px 10px rgba(0,0,0,.5);}
   .leaflet-popup-content{font-size:12.5px;line-height:1.4;} .leaflet-popup-content b{color:var(--teal);}
@@ -388,13 +389,25 @@ function highlightDay(n){
     else { r.layer.setStyle({opacity:.18,weight:3}); }
   });
   Object.entries(markers).forEach(([key,m])=>{
-    const isDay=key.startsWith('d');
-    if(!isDay){ m.setOpacity(n===null?1:.45); return; }
-    const mine=key.startsWith('d'+n+'-');
+    const meta=markerMeta[key];
+    if(!meta){ m.setOpacity(n===null?1:.45); return; }
+    const mine=(meta.day===n);
     m.setOpacity(n===null?0.9:(mine?1:.3));
-    const el=m.getElement(); if(el){ const p=el.querySelector('.pin'); p&&p.classList.toggle('hl', !!mine&&n!==null); }
-    if(mine) m.setZIndexOffset(900);
+    if(mine && n!==null){
+      const letter=String.fromCharCode(97+meta.idx);
+      m.setIcon(L.divIcon({className:'',html:`<div class="pin seq hl" style="background:${meta.color}">${letter}</div>`,iconSize:[24,24],iconAnchor:[12,12]}));
+      m.setZIndexOffset(900);
+    } else {
+      m.setIcon(L.divIcon({className:'',html:`<div class="pin small" style="background:${meta.color}">${meta.day}</div>`,iconSize:[20,20],iconAnchor:[10,10]}));
+      m.setZIndexOffset(0);
+    }
   });
+  if(window._dayPath){ map.removeLayer(window._dayPath); window._dayPath=null; }
+  if(n!==null){ const dd=days.find(x=>x.n===n);
+    if(dd && dd.items.length>1){
+      window._dayPath=L.polyline(dd.items.map(i=>i.ll),{color:dd.color,weight:2,opacity:.75,dashArray:'2 6',lineCap:'round'}).addTo(map);
+    }
+  }
 }
 
 // eclipse path (approx northern limit + centreline through the Strait)
@@ -402,6 +415,7 @@ L.polyline([[37.05,-7.6],[36.78,-5.32],[36.55,-3.6],[36.35,-2.0]],{color:'#4b2a8
 L.polyline([[36.05,-7.6],[35.72,-5.60],[35.55,-3.6],[35.35,-2.0]],{color:'#4b2a8a',weight:2,opacity:.5}).addTo(map).bindTooltip('≈ Centreline of totality');
 
 const markers = {}; // key -> marker
+const markerMeta = {}; // key -> {day, idx, color, n}
 function pin(ll, color, txt, small, popup, key){
   const m = L.marker(ll,{icon:L.divIcon({className:'',html:`<div class="pin ${small?'small':''}" style="background:${color}">${txt}</div>`,iconSize:[small?20:28,small?20:28],iconAnchor:[small?10:14,small?10:14]})}).addTo(map);
   if(popup) m.bindPopup(popup);
@@ -410,7 +424,8 @@ function pin(ll, color, txt, small, popup, key){
 }
 days.forEach(d=>{
   d.items.forEach((it,i)=>{
-    pin(it.ll, d.color, d.n, true, `<b>Day ${d.n} · ${d.date}</b><br>${it.title}<br><span style="color:#6b7a80">${it.place}</span>`, `d${d.n}-${i}`);
+    pin(it.ll, d.color, d.n, true, `<b>Day ${d.n} · ${d.date} — stop ${i+1} of ${d.items.length}</b><br>${it.t} · ${it.title}<br><span style="color:#6b7a80">${it.place}</span>`, `d${d.n}-${i}`);
+    markerMeta[`d${d.n}-${i}`]={day:d.n, idx:i, color:d.color, count:d.items.length};
   });
 });
 stays.forEach(g=>g.list.forEach((s,i)=>pin(s.ll,'#C8902F','🛏',true,`<b>${s.name}</b><br>${s.area}<br>${s.band}`,`s-${g.key}-${i}`)));
