@@ -114,6 +114,7 @@
   .pin{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;width:30px;height:30px;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.4);border:2px solid #fff;cursor:pointer;}
   .pin.base{width:34px;height:34px;font-size:15px;}
   .pin.small{width:20px;height:20px;font-size:10px;opacity:.9;}
+  .pin.hl{outline:3px solid #C1660F;outline-offset:2px;transform:scale(1.28);z-index:1000;box-shadow:0 0 0 6px rgba(193,102,15,.25),0 2px 10px rgba(0,0,0,.5);}
 
   .infocard{background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:13px 15px;margin-bottom:11px;}
   .infocard h3{margin:0 0 7px;font-size:13px;color:var(--teal);text-transform:uppercase;letter-spacing:.4px;}
@@ -156,7 +157,7 @@
     <div class="view" id="view-today"><div class="scrollpad" id="today-body"></div></div>
     <div class="view" id="view-itinerary"><div class="scrollpad" id="itin-body"></div></div>
     <div class="view" id="view-map"><div id="map"></div>
-      <div class="legend"><span class="lg fly"></span>fly&nbsp;&nbsp;<span class="lg train"></span>train&nbsp;&nbsp;<span class="lg bus"></span>bus&nbsp;&nbsp;<span class="lg ecl"></span>eclipse</div>
+      <div class="legend"><span class="lg train"></span>train&nbsp;&nbsp;<span class="lg bus"></span>bus&nbsp;&nbsp;<span class="lg ecl"></span>eclipse band&nbsp;&nbsp;<span class="lg fly"></span>flights <i>(shown when a travel day is open)</i></div>
     </div>
     <div class="view" id="view-stays"><div class="scrollpad" id="stays-body"></div></div>
     <div class="view" id="view-info"><div class="scrollpad" id="info-body"></div></div>
@@ -360,9 +361,9 @@ function showTab(tab){
   if(tab==='itinerary') openDayIdx===null ? renderDayList() : renderDayDetail('itin-body', openDayIdx);
   if(tab==='stays') renderStays();
   if(tab==='info') renderInfo();
-  if(tab==='map'){ setTimeout(()=>{ map.invalidateSize(); fitMap(); },80); }
+  if(tab==='map'){ setTimeout(()=>{ map.invalidateSize(); applyMapHighlight(); if(openDayIdx===null) fitMap(); else { const d=DAYS[openDayIdx]; map.setView(d.ll, 7); } },80); }
 }
-function goBack(){ openDayIdx=null; document.getElementById('topbar').classList.remove('has-back'); renderDayList(); }
+function goBack(){ openDayIdx=null; document.getElementById('topbar').classList.remove('has-back'); renderDayList(); applyMapHighlight(); }
 
 /* ---------- Days list ---------- */
 function chipsHTML(d){ return `<div class="chips">${d.chips.map(c=>`<span class="chip" style="background:${c[1]}">${c[0]}</span>`).join('')}</div>`; }
@@ -374,7 +375,7 @@ function renderDayList(){
   const b=document.getElementById('itin-body'); b.classList.add('scrollpad');
   b.innerHTML=`<div class="listhead">The 12 days</div>`+dayCardsHTML();
 }
-function openDay(i){ openDayIdx=i; curTab='itinerary'; showTab('itinerary'); document.getElementById('view-itinerary').scrollTop=0; }
+function openDay(i){ openDayIdx=i; curTab='itinerary'; showTab('itinerary'); document.getElementById('view-itinerary').scrollTop=0; applyMapHighlight(); }
 
 /* ---------- day detail ---------- */
 function galHTML(photos){
@@ -521,25 +522,52 @@ const sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Worl
 const map=L.map('map',{scrollWheelZoom:true,layers:[mapTiles]});
 L.control.layers({"🗺️ Map":mapTiles,"🛰️ Satellite":sat},null,{position:'topright'}).addTo(map);
 const G=window.TRIP_ROUTES||{};
+function arcPts(a,b){ // curved flight arc (quadratic bezier, bows toward the pole)
+  const n=40, mx=(a[0]+b[0])/2, my=(a[1]+b[1])/2;
+  const dx=b[1]-a[1], dy=b[0]-a[0], d=Math.sqrt(dx*dx+dy*dy)||1;
+  const cx=mx+(Math.abs(dx)>Math.abs(dy)?0.18:0.10)*d, cy=my-0.10*d*(dy/d);
+  const out=[]; for(let i=0;i<=n;i++){ const t=i/n;
+    out.push([(1-t)*(1-t)*a[0]+2*(1-t)*t*cx+t*t*b[0], (1-t)*(1-t)*a[1]+2*(1-t)*t*cy+t*t*b[1]]); }
+  return out;
+}
+function flightArc(stops){ let pts=[]; for(let i=0;i<stops.length-1;i++){ const seg=arcPts(stops[i],stops[i+1]); pts=pts.concat(i?seg.slice(1):seg);} return pts; }
 const ROUTES=[
- {pts:[EUG,[47.45,-122.31],[51.47,-0.46],[36.675,-4.499]], style:{color:'#6b7a80',weight:3,opacity:.75,dashArray:'6 8'}, label:"Flights out"},
- {pts:G.c1_airport_fuengirola, style:{color:'#4b2a8a',weight:4,opacity:.9}, label:"Sun: Cercanías C-1 airport → Fuengirola"},
- {pts:G.c1_fuengirola_malaga, style:{color:'#C1660F',weight:4,opacity:.85}, label:"Mon pm: Cercanías C-1 Fuengirola → Málaga"},
- {pts:G.train_malaga_madrid, style:{color:'#1F4E5F',weight:4,opacity:.85}, label:"Iryo Málaga → Madrid (via Antequera & Córdoba)"},
- {pts:G.train_madrid_ss, style:{color:'#1F4E5F',weight:4,opacity:.85}, label:"Alvia Madrid → Donostia (via Valladolid, Burgos, Vitoria, Tolosa)"},
- {pts:G.bus_ss_bilbao, style:{color:'#2E7D32',weight:4,opacity:.85}, label:"Bus SS → Bilbao (AP-8)"},
- {pts:G.bus_bilbao_airport, style:{color:'#2E7D32',weight:3,opacity:.85}, label:"Bizkaibus A3247 → airport"},
- {pts:[[43.3011,-2.9106],[52.31,4.76],[45.59,-122.60],EUG], style:{color:'#6b7a80',weight:3,opacity:.75,dashArray:'6 8'}, label:"Flights home"},
+ {pts:flightArc([EUG,[47.45,-122.31],[51.47,-0.46],[36.675,-4.499]]), style:{color:'#6b7a80',weight:3,opacity:.8,dashArray:'6 8'}, label:"Flights out", fly:true, days:[0]},
+ {pts:G.c1_airport_fuengirola, style:{color:'#4b2a8a',weight:4,opacity:.85}, label:"Sun: Cercanías C-1 airport → Fuengirola", days:[1]},
+ {pts:G.c1_fuengirola_malaga, style:{color:'#C1660F',weight:4,opacity:.85}, label:"Mon pm: Cercanías C-1 Fuengirola → Málaga", days:[2]},
+ {pts:G.train_malaga_madrid, style:{color:'#1F4E5F',weight:4,opacity:.85}, label:"Iryo Málaga → Madrid (via Antequera & Córdoba)", days:[4]},
+ {pts:G.train_madrid_ss, style:{color:'#1F4E5F',weight:4,opacity:.85}, label:"Alvia Madrid → Donostia (via Valladolid, Burgos, Vitoria, Tolosa)", days:[4]},
+ {pts:G.bus_ss_bilbao, style:{color:'#2E7D32',weight:4,opacity:.85}, label:"Bus SS → Bilbao (AP-8)", days:[8]},
+ {pts:G.bus_bilbao_airport, style:{color:'#2E7D32',weight:3,opacity:.85}, label:"Bizkaibus A3247 → airport", days:[11]},
+ {pts:flightArc([[43.3011,-2.9106],[52.31,4.76],[45.59,-122.60],EUG]), style:{color:'#6b7a80',weight:3,opacity:.8,dashArray:'6 8'}, label:"Flights home", fly:true, days:[11]},
 ].filter(r=>r.pts&&r.pts.length>1);
-ROUTES.forEach(r=>L.polyline(r.pts,r.style).addTo(map).bindTooltip(r.label));
-L.polyline([[37.05,-7.6],[36.78,-5.32],[36.55,-3.6],[36.35,-2.0]],{color:'#4b2a8a',weight:2,dashArray:'3 6',opacity:.8}).addTo(map).bindTooltip('≈ Northern limit of totality');
-L.polyline([[36.05,-7.6],[35.72,-5.60],[35.55,-3.6],[35.35,-2.0]],{color:'#4b2a8a',weight:3,opacity:.9}).addTo(map).bindTooltip('≈ Centreline of totality');
+ROUTES.forEach(r=>{ r.layer=L.polyline(r.pts,r.style).addTo(map).bindTooltip(r.label); });
+const dayPins={};
+function applyMapHighlight(){
+  const n = openDayIdx===null ? null : DAYS[openDayIdx].n;
+  ROUTES.forEach(r=>{
+    if(r.fly){ r.layer.setStyle({opacity: (n!==null&&r.days.includes(n)) ? .9 : 0}); }
+    else if(n===null){ r.layer.setStyle({opacity:r.style.opacity,weight:r.style.weight}); }
+    else if(r.days.includes(n)){ r.layer.setStyle({opacity:.95,weight:r.style.weight+1.5}); r.layer.bringToFront(); }
+    else { r.layer.setStyle({opacity:.18,weight:r.style.weight}); }
+  });
+  Object.entries(dayPins).forEach(([i,m])=>{
+    const el=m.getElement(); if(!el) return; const pinEl=el.querySelector('.pin'); if(!pinEl) return;
+    const sel = openDayIdx!==null && Number(i)===openDayIdx;
+    pinEl.classList.toggle('hl', sel);
+    m.setOpacity(openDayIdx===null||sel ? 1 : .35);
+    if(sel) m.setZIndexOffset(1000); else m.setZIndexOffset(0);
+  });
+}
+L.polyline([[37.05,-7.6],[36.78,-5.32],[36.55,-3.6],[36.35,-2.0]],{color:'#4b2a8a',weight:1.5,dashArray:'3 6',opacity:.45}).addTo(map).bindTooltip('≈ Northern limit of totality');
+L.polyline([[36.05,-7.6],[35.72,-5.60],[35.55,-3.6],[35.35,-2.0]],{color:'#4b2a8a',weight:2,opacity:.5}).addTo(map).bindTooltip('≈ Centreline of totality');
 function chipColor(d){ return d.chips&&d.chips[0]?d.chips[0][1]:'#1F4E5F'; }
 [["Fuengirola · night 1 (eclipse eve)",[36.5450,-4.6150],'#4b2a8a',"🏠"],["Málaga · nights 2–3",MAL,'#C1660F',"🏠"],["San Sebastián · nights 4–7",SS,'#2C7A8C',"🏠"],["Bilbao · nights 8–10",BIO,'#2E7D32',"🏠"]].forEach(b=>
   L.marker(b[1],{icon:L.divIcon({className:'',html:`<div class="pin base" style="background:${b[2]}">${b[3]}</div>`,iconSize:[34,34],iconAnchor:[17,17]})}).addTo(map).bindTooltip(b[0],{direction:'top'}));
 DAYS.forEach((d,i)=>{ if(d.n===0||d.n===11) return;
   const m=L.marker(d.ll,{icon:L.divIcon({className:'',html:`<div class="pin" style="background:${chipColor(d)}">${d.n}</div>`,iconSize:[30,30],iconAnchor:[15,15]})}).addTo(map);
-  m.on('click',()=>openDay(i)); m.bindTooltip(`Day ${d.n}: ${d.title}`,{direction:'top'}); });
+  dayPins[i]=m; m.on('click',()=>openDay(i)); m.bindTooltip(`Day ${d.n}: ${d.title}`,{direction:'top'}); });
+applyMapHighlight();
 function fitMap(){ map.fitBounds(L.latLngBounds([MAL,FUE,SS,BIO,[40.42,-3.70]]).pad(0.15)); }
 fitMap();
 
