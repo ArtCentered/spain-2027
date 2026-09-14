@@ -1,12 +1,13 @@
 /* Sol y Norte — offline trip companion (Spain 2027).
    Caches the app shell + photos so the day plans, addresses and bookings work
    with no signal (hiking, on the boat, in the caves). Map tiles still need data. */
-const CACHE = 'solynorte-v10';
+const CACHE = 'solynorte-v11';
 const CORE = [
   './',
   './index.html',
   './manifest.json',
   './budget.js',
+  './routes.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',

@@ -179,6 +179,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="budget.js"></script>
+<script src="routes.js"></script>
 <script>
 /* =====================================================================
    Sol y Norte — Spain 2027 trip companion (Travis & Mike)
@@ -306,49 +307,28 @@ const ALL_PHOTOS=[]; DAYS.forEach(d=>d.events.forEach(e=>(e.photos||[]).forEach(
 
 /* ---------- Stays ---------- */
 const STAYS=[
- { city:"Fuengirola / Los Boliches", when:"Sun 1 Aug · 1 night — the eclipse night", key:"fue", ll:[36.5450,-4.6150],
-   why:"✅ BOOKED & PAID: Jomarijo Boutique Rooms (first card) — found by Mike after Hotel Reyesol cancelled our confirmed booking and closed its calendar. Eclipse morning is a 5-minute walk to the sand. The seafront hotels below are kept for reference only — nothing further needed for this night.",
+ { city:"Fuengirola", when:"Sun 1 Aug · 1 night — eclipse eve", key:"fue", ll:[36.5384,-4.6273],
+   why:"Booked & paid. Eclipse morning is a 5-minute walk to the sand.",
    list:[
-    {name:"✅ Jomarijo Boutique Rooms — BOOKED & PAID", area:"C/ Dionisia Redondo 6, central Fuengirola · 5 min walk to Fuengirola Beach · 8 min to the Cercanías terminus", band:"€275 paid", st:"booked", stt:"Paid via Booking.com · non-refundable · Standard Double", why:"Renovated 2026, adults-only, soundproofed; cleanliness 9.3 / staff 9.4. Check-in from 14:00 (self check-in), checkout 11:00 — hand bags over BEFORE walking to the beach (partial runs to 12:02). No meals — café breakfast on the promenade. Tel +34 952 46 44 21.", url:"https://www.booking.com/hotel/es/hostal-jomarijo.html", ll:[36.5384,-4.6273]},
-    {name:"Hotel Yaramar", area:"Paseo Marítimo 64, across the promenade from Playa de los Boliches", band:"€180–260 Aug", st:"pick", stt:"Top pick", why:"4*, adults-oriented, every room has a balcony, many frontal sea view. Los Boliches station ~8–10 min.", url:"https://www.hotelyaramar.es/en/", ll:[36.5455,-4.6135]},
-    {name:"Hotel Ángela", area:"Paseo Marítimo, seafront, infinity pool", band:"€170–250 Aug", st:"pick", stt:"Top pick", why:"Sister of Yaramar; sea-view rooms and balconies. Los Boliches ~10 min.", url:"https://www.hotel-angela.com/en/", ll:[36.5440,-4.6165]},
-    {name:"ILUNION Fuengirola", area:"Paseo Marítimo, seafront on Los Boliches beach", band:"€200–300 Aug", st:"unk", stt:"Design 4*", why:"Sea-facing balconies, outdoor pool. Los Boliches ~10 min.", url:"https://www.ilunionhotels.com/en/hotels/ilunion-fuengirola", ll:[36.5470,-4.6110]},
-    {name:"Hotel Villa de Laredo", area:"Paseo Marítimo 42, seafront, rooftop pool", band:"€150–220 Aug", st:"ok", stt:"Value 4*", why:"Sea-view rooms; rooftop for the partial phases.", url:"https://www.hotelvilladelaredo.es/en/", ll:[36.5430,-4.6180]},
-    {name:"Leonardo Hotel Fuengirola (ex-Florida Spa)", area:"Port end, 50 m from Playa San Francisco", band:"€170–260 Aug", st:"unk", stt:"Spa 4*", why:"Most rooms face the sea; 10 min to the Fuengirola terminus.", url:"https://www.leonardo-hotels.com/costa-del-sol-malaga/leonardo-hotel-fuengirola-costa-del-sol", ll:[36.5395,-4.6250]},
-    {name:"Las Palmeras (FERGUS)", area:"Paseo Marítimo 1, over the marina", band:"€160–240 Aug", st:"unk", stt:"4*", why:"Sea/harbour-view rooms; Fuengirola terminus ~8 min.", url:"https://www.fergushotels.com/en/las-palmeras-affiliated-by-fergus", ll:[36.5405,-4.6260]},
-    {name:"Hotel El Puerto (Pierre & Vacances)", area:"Paseo Marítimo 32, 50 m from beach, rooftop pool", band:"€130–200 Aug", st:"ok", stt:"Value 3*", why:"Rooftop with panoramic views; Fuengirola terminus ~8–10 min.", url:"https://hotel-elpuerto.com/welcome/", ll:[36.5410,-4.6235]},
-    {name:"Occidental Fuengirola (Barceló)", area:"One block behind the Paseo, near the port", band:"€180–280 Aug", st:"unk", stt:"Big 4*", why:"Freshly refurbished; partial sea view upper floors; already a base for eclipse tour groups.", url:"https://www.barcelo.com/en-ww/occidental-fuengirola/", ll:[36.5400,-4.6230]},
-    {name:"Hotel Monarque Torreblanca", area:"Torreblanca beach, 100 m from sand and from Torreblanca station", band:"€150–220 Aug", st:"ok", stt:"Closest to a station", why:"Some sea-view rooms; 2 min to the C-1. Torreblanca beach ~3 m 05 s.", url:"https://www.monarquehotels.com/en/", ll:[36.5545,-4.5960]},
+    {name:"✅ Jomarijo Boutique Rooms — BOOKED & PAID", area:"C/ Dionisia Redondo 6 · 5 min to the beach · 8 min to the Cercanías terminus", band:"€275 paid", st:"booked", stt:"Paid via Booking.com · non-refundable", why:"Renovated 2026, adults-only, soundproofed. Self check-in from 14:00; checkout 11:00 — hand bags over before walking to the beach (partial runs to 12:02). Tel +34 952 46 44 21.", url:"https://www.booking.com/hotel/es/hostal-jomarijo.html", ll:[36.5384,-4.6273]},
    ]},
- { city:"Málaga", when:"Mon 2 → Wed 4 Aug · 2 nights", key:"malaga", ll:MAL,
-   why:"✅ BOOKED & PAID: Catalonia Puerta del Mar. The location is ideal for the plan — 3 min from Atarazanas market, ~350 m from Centro-Alameda station (where Monday's train from Fuengirola arrives), and a 17-min walk (or 5-min taxi) to María Zambrano for Wednesday's 08:09 train.",
+ { city:"Málaga", when:"Mon 2 → Wed 4 Aug · 2 nights", key:"malaga", ll:[36.7177,-4.4213],
+   why:"Booked & paid. 350 m from Centro-Alameda (Monday's train from the beach), 17-min walk to María Zambrano for Wednesday's 08:09.",
    list:[
-    {name:"✅ Catalonia Puerta del Mar — BOOKED", area:"Puerta del Mar 5, old town — by Atarazanas / Calle Larios", band:"€1,054.62 paid", st:"booked", stt:"Paid in full · non-refundable · Superior room + breakfast", why:"4*, Superior room for 2, breakfast included, Mon 2 → Wed 4 Aug. Rooftop plunge pool & bar. Arrive Monday ~16:00 off the C-1; check out Wednesday for the 08:09 train.", url:"https://www.cataloniahotels.com/en/hotel/catalonia-puerta-del-mar", ll:[36.7177,-4.4213]},
+    {name:"✅ Catalonia Puerta del Mar — BOOKED & PAID", area:"Puerta del Mar 5, old town — by Atarazanas / Calle Larios", band:"€1,054.62 paid", st:"booked", stt:"Paid in full · Superior room + breakfast", why:"4* with rooftop plunge pool. Arrive Monday ~16:00 off the C-1; check out Wednesday for the 08:09 train.", url:"https://www.cataloniahotels.com/en/hotel/catalonia-puerta-del-mar", ll:[36.7177,-4.4213]},
    ]},
- { city:"San Sebastián", when:"Wed 4 → Sun 8 Aug · 4 nights", key:"ss", ll:SS,
-   why:"✅ HELD (refundable): Hotel de Londres y de Inglaterra — the splurge, sanctioned by Mike himself. Free cancel until ~28 Jul 2027, pay at reception, so September's flight numbers make the final call. The list below stays as the fallback tier if the budget vetoes the grande dame.",
+ { city:"San Sebastián", when:"Wed 4 → Sun 8 Aug · 4 nights", key:"ss", ll:[43.3184,-1.9846],
+   why:"HELD: Hotel de Londres (Travis's pick — free cancel to ~28 Jul 2027). Final call after the return flight books (Oct–Nov). Two priced standbys below; nothing else needs shopping.",
    list:[
-    {name:"✅ Hotel de Londres y de Inglaterra — HELD", area:"Zubieta 2 — directly ON the La Concha promenade; 5 min to Parte Vieja", band:"€1,998 · pay at reception", st:"booked", stt:"Flexible rate · free cancel/modify to ~28 Jul 2027", why:"The Belle Époque grande dame (9.2 from 4,500+ reviews, location 9.9). Classic city-view double, 4 nights. Arrive Wed ~19:30 by train (noted in booking). Decision point: September, after flights — keep, upgrade to sea view, or drop to the fallback tier.", url:"https://www.hlondres.com/en/", ll:[43.3184,-1.9846]},
-    {name:"One Shot Tabakalera House", area:"Egia/Gros edge, inside Tabakalera", band:"€150–260", st:"pick", stt:"Top pick (art)", why:"Ex-tobacco factory, industrial-chic, art centre + cinema downstairs; 8 min to Zurriola, 3 min to the train.", url:"https://www.oneshothotels.com/en/hotels/san-sebastian/tabakalera-house/", ll:[43.3170,-1.9765]},
-    {name:"Hotel Arrizul Congress (Gros)", area:"Gros, by the Kursaal", band:"€150–230", st:"pick", stt:"Top pick (neighborhood)", why:"Modern 3* in the 'living' neighborhood; sister apartments available.", url:"https://www.hotelarrizulcongress.com/en/", ll:[43.3250,-1.9740]},
-    {name:"Pensión Aida / Pensión Kursaal", area:"Gros, by the Kursaal", band:"€110–170", st:"ok", stt:"Value", why:"Well-reviewed family pensiones a block from Zurriola.", url:"https://www.aidapension.com/en/", links:[["Kursaal","https://www.pensionkursaal.com/"]], ll:[43.3255,-1.9775]},
-    {name:"Hotel Arbaso", area:"Centro, by Buen Pastor cathedral", band:"€220–320", st:"unk", stt:"Design splurge", why:"Sleek design, Narru restaurant downstairs, 5 min to Concha & Parte Vieja.", url:"https://www.hotelarbaso.com/en/", ll:[43.3165,-1.9815]},
-    {name:"Zinema7 Hotel", area:"Centro (Calle Prim)", band:"€130–200", st:"ok", stt:"Value", why:"Former cinema, film-themed; 8 min to La Concha.", url:"https://www.zinema7hotel.com/en", ll:[43.3150,-1.9800]},
-    {name:"Legazpi Doce Rooms & Suites", area:"Centro, C/Legazpi", band:"€150–250", st:"unk", stt:"Boutique", why:"Design pensión-hotel between Concha and Parte Vieja.", url:"https://legazpidoce.com/en/", ll:[43.3200,-1.9830]},
-    {name:"Villa Soro", area:"Ategorrieta / Gros east", band:"€250–350", st:"unk", stt:"Quiet splurge", why:"19th-c. villa with garden; 'residential SS'.", url:"https://www.hotelvillasoro.com/en/", ll:[43.3225,-1.9650]},
-    {name:"Apart-hotel (Sansebay / Feelfree Rentals)", area:"Gros / Centro", band:"€150–280", st:"unk", stt:"Live-here test", why:"A kitchen for La Bretxa market cooking.", url:"https://sansebayhotel.com/apartments/?lang=en", links:[["Feelfree","https://feelfreerentals.com/en/apartments/san-sebastian"]], ll:[43.3235,-1.9760]},
+    {name:"✅ Hotel de Londres y de Inglaterra — HELD", area:"Zubieta 2 — directly ON the La Concha promenade; 5 min to Parte Vieja", band:"€1,998 · pay at reception", st:"booked", stt:"Flexible rate · free cancel/modify to ~28 Jul 2027", why:"The Belle Époque grande dame (9.2, location 9.9). Classic city-view double, 4 nights. Arrive Wed ~19:30 by train (noted in booking).", url:"https://www.hlondres.com/en/", ll:[43.3184,-1.9846]},
+    {name:"Standby · Barceló Costa Vasca", area:"Antiguo, 450 m to Ondarreta — pools, spa, breakfast incl.", band:"~$1,433 · ~$1,232 net of Mike's 14%", st:"unk", stt:"Not held — free-cancel rate was cancellable to 3 Aug 2027", why:"The budget swap if October says so: −~$950 vs Londres. 8.3/4k reviews; 25–30 min walk to the old town.", url:"https://www.barcelo.com/en-us/barcelo-costa-vasca/", ll:[43.3130,-2.0010]},
+    {name:"Standby · Hotel Ilunion San Sebastián", area:"Ondarreta, 200 m from the beach", band:"~$1,100 (+~$170 if breakfasts)", st:"unk", stt:"Not held — refundable rates were showing", why:"Best-reviewed of the value tier (8.9/5k, location 9.0). 20 min walk / easy bus to the Parte Vieja.", url:"https://www.ilunionhotels.com/", ll:[43.3095,-2.0080]},
    ]},
- { city:"Bilbao", when:"Sun 8 → Wed 11 Aug · 3 nights", key:"bilbao", ll:BIO,
-   why:"✅ HELD (refundable): Vincci Consulado de Bilbao — river-view room, booked direct with a 20.8% three-night discount. Free cancel until 7 Aug 2027 14:00; card charged 7 Aug 2027; €4/pp/night city tax paid at the hotel. The rest of the list stays for reference.",
+ { city:"Bilbao", when:"Sun 8 → Wed 11 Aug · 3 nights", key:"bilbao", ll:[43.2680,-2.9315],
+   why:"HELD: Vincci Consulado river view (free cancel to 7 Aug 2027 14:00; card charged 7 Aug 2027; €4/pp/night city tax at the hotel).",
    list:[
-    {name:"✅ Vincci Consulado de Bilbao — HELD", area:"Alameda Mazarredo 22, riverfront — 4 min to the Guggenheim", band:"€849.42 · charged 7 Aug 2027", st:"booked", stt:"River-view room · free cancel to 7 Aug 2027 14:00", why:"4*, nautical design between La Salve bridge and the Guggenheim; terrace observatory; 9.2/6.6k reviews, location 9.8. Room only — café breakfasts per the Mike doctrine. Check-in 15:00; bring the booking credit card. Airport bus at Moyua ~5 min.", url:"https://www.vincciconsuladodebilbao.com/en/", ll:[43.2680,-2.9315]},
-    {name:"Hotel Tayko", area:"Casco Viejo riverfront, next to the market", band:"€160–260", st:"pick", stt:"Top pick (old town)", why:"Ex-warehouse design hotel + rooftop; Ribera market and Plaza Nueva 3 min.", url:"https://taykohotels.com/en/bilbao/", ll:[43.2557,-2.9245]},
-    {name:"Hotel Miró", area:"Abando, opposite the Guggenheim", band:"€170–280", st:"unk", stt:"Design", why:"Antonio Miró interiors, small spa; Fine Arts 3 min.", url:"https://www.mirohotelbilbao.com/en/", ll:[43.2675,-2.9320]},
-    {name:"Iturrienea Ostatua", area:"Casco Viejo, Santa María 14", band:"€110–150", st:"ok", stt:"Value / charm", why:"Antique-filled pensión in an old stone building.", url:"https://iturrieneaostatua.com/en-gb/", ll:[43.2565,-2.9235]},
-    {name:"Pensión Basque Boutique", area:"Casco Viejo", band:"€100–160", st:"ok", stt:"Value", why:"Individually decorated rooms near metro/tram.", url:"https://www.basqueboutique.es/", ll:[43.2570,-2.9225]},
-    {name:"Gran Hotel Domine", area:"Facing the Guggenheim", band:"€250–380", st:"unk", stt:"Art splurge", why:"Mariscal interiors, rooftop breakfast overlooking Puppy.", url:"https://www.hoteldominebilbao.com/", ll:[43.2680,-2.9335]},
-    {name:"Hotel Ercilla (Autograph) / Radisson Collection Gran Vía", area:"Indautxu / Abando", band:"€180–300", st:"unk", stt:"Full-service", why:"Rooftop bars in the Ensanche 'living' grid.", url:"https://www.marriott.com/en-us/hotels/bioak-hotel-ercilla-de-bilbao-autograph-collection/overview/", links:[["Radisson","https://www.radissonhotels.com/en-us/hotels/radisson-collection-gran-via-bilbao"]], ll:[43.2620,-2.9385]},
-    {name:"Getxo option · Hotel Igeretxe", area:"Ereaga beach, Getxo (metro 25 min)", band:"€140–220", st:"unk", stt:"Suburb test-drive", why:"Beachfront suburb living, at the cost of a metro ride to the pintxos.", url:"https://www.hotel-igeretxe.com/", ll:[43.3400,-3.0100]},
+    {name:"✅ Vincci Consulado de Bilbao — HELD", area:"Alameda Mazarredo 22, riverfront — 4 min to the Guggenheim", band:"€849.42 · charged 7 Aug 2027", st:"booked", stt:"River-view room · free cancel to 7 Aug 2027 14:00", why:"4*, nautical design between La Salve bridge and the Guggenheim; terrace observatory; 9.2/6.6k, location 9.8. Room only — café breakfasts. Check-in 15:00; bring the booking credit card. Airport bus at Moyua ~5 min.", url:"https://www.vincciconsuladodebilbao.com/en/", ll:[43.2680,-2.9315]},
+    {name:"Standby · Occidental Bilbao (Mike's 14%)", area:"Begoña hill — Santutxu metro 4 min, one stop to Casco Viejo", band:"~$550 · ~$473 net of 14%", st:"unk", stt:"Not held", why:"8.5/3.4k, famous breakfast, pool. The trade: uphill location = metro/taxi to everything (weeknight metro ends ~23:00; taxi €7–8).", url:"https://www.barcelo.com/en-ww/occidental-bilbao/", ll:[43.2565,-2.9130]},
    ]},
 ];
 
@@ -456,16 +436,16 @@ function budgetCardHTML(){
 }
 function localISO(dt){ const p=n=>String(n).padStart(2,'0'); return dt.getFullYear()+'-'+p(dt.getMonth()+1)+'-'+p(dt.getDate()); }
 const TODOS=[
- {t:"Book the return flight", w:"Bilbao → EUG, Wed 11 Aug · window opens ~14 Sep 2026 · KLM BIO–AMS–PDX is the target (outbound ✅ booked)"},
- {t:"Order eclipse glasses ×4", w:"ISO 12312-2 · from the US"},
- {t:"Oct 13: return-flight decision", w:"Award (if 70k-tier renders for Aug 11) vs cash + 1¢ eraser — one check, one booking, done"},
- {t:"September: final call on the SS splurge", w:"After flights land — keep Londres / upgrade sea view / rebook non-ref (−$175) / drop tier"},
- {t:"Iryo Málaga → Madrid (Wed 4 Aug 08:09)", w:"On sale ~Dec 2026–Feb 2027 · car 3 tables"},
- {t:"Alvia Madrid → Donostia (Wed 4 Aug ~14:00)", w:"On sale ~Mar–May 2027 · check Adif summer-works notices"},
- {t:"Caminito del Rey (Tue 3 Aug) — decide", w:"caminitodelrey.info when 2027 dates open"},
- {t:"Gaztelugatxe reservation (Tue 10 Aug)", w:"Free · Bizkaia Tiketa · spring 2027"},
- {t:"Elkano lunch (Fri 6 Aug)", w:"Weeks ahead"},
- {t:"Guggenheim · Chillida-Leku · Picasso · dinners", w:"July 2027"},
+ {t:"Oct 13 · return-flight decision", w:"Flying Blue award (70k-tier good / 112k-tier skip) vs cash on the Venture + 112,265-mile eraser (~$1,122). One check, one booking, done"},
+ {t:"Oct–Nov · San Sebastián final call", w:"Keep Hotel de Londres (held) or swap to Costa Vasca (~$1,232 net) / Ilunion (~$1,100) — decide once the return flight price is known"},
+ {t:"Add KTN + claim the $120 Global Entry credit", w:"KTN into the BA booking (Manage My Booking); apply for Global Entry on the Venture's credit — Enrollment on Arrival at PDX works"},
+ {t:"Order eclipse glasses ×4", w:"ISO 12312-2 · from the US · well before July"},
+ {t:"Dec 2026–Feb 2027 · Iryo Málaga→Madrid", w:"Wed 4 Aug 08:09 · car 3 (all tables) · Inicial Superior for luggage"},
+ {t:"Mar–May 2027 · Alvia Madrid→Donostia", w:"Wed 4 Aug ~14:00 · Elige Confort · check Adif summer-works notices"},
+ {t:"When 2027 dates open · Caminito del Rey (optional Tue 3 Aug)", w:"caminitodelrey.info — sells out fast; decide vs the full Málaga day"},
+ {t:"Spring 2027 · Gaztelugatxe reservation (free) — or Gorbeia/Otzarreta instead", w:"Tue 10 Aug · Tiketa site · the two compete for the same day"},
+ {t:"~June 2027 · Elkano (Getaria) lunch Fri 6 Aug", w:"Book weeks ahead · the turbot"},
+ {t:"July 2027 · easy tickets + admin", w:"Guggenheim, Chillida-Leku, Picasso, Balenciaga, dinner reservations · ETIAS check · travel insurance · Mugi + Barik cards on arrival"},
 ];
 function renderToday(){
   const today=localISO(new Date());
@@ -536,19 +516,21 @@ function renderInfo(){
 }
 
 /* ---------- Map ---------- */
-const mapTiles=L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap &copy; CARTO',maxZoom:18});
+const mapTiles=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap',maxZoom:19});
 const sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Imagery &copy; Esri',maxZoom:18});
 const map=L.map('map',{scrollWheelZoom:true,layers:[mapTiles]});
 L.control.layers({"🗺️ Map":mapTiles,"🛰️ Satellite":sat},null,{position:'topright'}).addTo(map);
+const G=window.TRIP_ROUTES||{};
 const ROUTES=[
  {pts:[EUG,[47.45,-122.31],[51.47,-0.46],[36.675,-4.499]], style:{color:'#6b7a80',weight:3,opacity:.75,dashArray:'6 8'}, label:"Flights out"},
- {pts:[[36.6749,-4.4991],[36.62,-4.50],[36.60,-4.53],[36.5450,-4.6150]], style:{color:'#4b2a8a',weight:4,opacity:.9}, label:"Sun: Cercanías C-1 airport → Fuengirola"},
- {pts:[[36.5450,-4.6150],[36.60,-4.53],[36.62,-4.50],[36.6749,-4.4991],MAL], style:{color:'#C1660F',weight:4,opacity:.85}, label:"Mon pm: Cercanías C-1 Fuengirola → Málaga"},
- {pts:[[36.7115,-4.4319],[37.0,-4.55],[37.89,-4.79],[38.98,-3.93],[40.4066,-3.6895]], style:{color:'#1F4E5F',weight:4,opacity:.85}, label:"Iryo Málaga → Madrid"},
- {pts:[[40.4722,-3.6825],[40.95,-4.11],[41.65,-4.73],[42.34,-3.70],[42.69,-2.94],[42.85,-2.67],[42.90,-2.17],[43.09,-2.31],[43.13,-2.08],[43.3183,-1.9812]], style:{color:'#1F4E5F',weight:4,opacity:.85}, label:"Alvia Madrid → Donostia"},
- {pts:[[43.3183,-1.9812],[43.20,-2.50],[43.2620,-2.9490]], style:{color:'#2E7D32',weight:4,opacity:.85}, label:"Bus SS → Bilbao"},
+ {pts:G.c1_airport_fuengirola, style:{color:'#4b2a8a',weight:4,opacity:.9}, label:"Sun: Cercanías C-1 airport → Fuengirola"},
+ {pts:G.c1_fuengirola_malaga, style:{color:'#C1660F',weight:4,opacity:.85}, label:"Mon pm: Cercanías C-1 Fuengirola → Málaga"},
+ {pts:G.train_malaga_madrid, style:{color:'#1F4E5F',weight:4,opacity:.85}, label:"Iryo Málaga → Madrid (via Antequera & Córdoba)"},
+ {pts:G.train_madrid_ss, style:{color:'#1F4E5F',weight:4,opacity:.85}, label:"Alvia Madrid → Donostia (via Valladolid, Burgos, Vitoria, Tolosa)"},
+ {pts:G.bus_ss_bilbao, style:{color:'#2E7D32',weight:4,opacity:.85}, label:"Bus SS → Bilbao (AP-8)"},
+ {pts:G.bus_bilbao_airport, style:{color:'#2E7D32',weight:3,opacity:.85}, label:"Bizkaibus A3247 → airport"},
  {pts:[[43.3011,-2.9106],[52.31,4.76],[45.59,-122.60],EUG], style:{color:'#6b7a80',weight:3,opacity:.75,dashArray:'6 8'}, label:"Flights home"},
-];
+].filter(r=>r.pts&&r.pts.length>1);
 ROUTES.forEach(r=>L.polyline(r.pts,r.style).addTo(map).bindTooltip(r.label));
 L.polyline([[37.05,-7.6],[36.78,-5.32],[36.55,-3.6],[36.35,-2.0]],{color:'#4b2a8a',weight:2,dashArray:'3 6',opacity:.8}).addTo(map).bindTooltip('≈ Northern limit of totality');
 L.polyline([[36.05,-7.6],[35.72,-5.60],[35.55,-3.6],[35.35,-2.0]],{color:'#4b2a8a',weight:3,opacity:.9}).addTo(map).bindTooltip('≈ Centreline of totality');
