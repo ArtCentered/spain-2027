@@ -273,7 +273,7 @@ const DAYS=[
    summary:"PESA/ALSA bus 1h15 to Bilbao Intermodal. Barik card. River walk, Guggenheim late afternoon (open to 20:00 in summer), Plaza Nueva pintxos.",
    events:[
     { ic:"🚌", cat:"move", time:"10:00", title:"Bus Donostia → Bilbao Intermodal", place:"Geltokia → San Mamés, 1h15, ~hourly, €12–17", mapq:"Bilbao Intermodal", desc:"Buy a Barik card at the metro machine (€3 + load)." },
-    { ic:"🏨", cat:"rest", time:"12:00", title:"Drop bags", place:"Abando / Indautxu or Casco Viejo", mapq:"Abando Bilbao", desc:"See Stays.", book:[["Hotel","add name + confirmation (3 nights, Sun 8 – Tue 10 Aug)"]] },
+    { ic:"🏨", cat:"rest", time:"12:00", title:"Drop bags — Vincci Consulado ✅", place:"Alameda Mazarredo 22, by the Guggenheim", mapq:"Vincci Consulado de Bilbao", desc:"Held: river-view room, check-in 15:00 (they'll hold bags). Bring the booking credit card. The Guggenheim is a 4-minute walk from the door.", book:[["Hotel","✅ Vincci · held · free cancel to 7 Aug 2027"]] },
     { ic:"🚶", cat:"hike", time:"13:00", title:"River walk", place:"Casco Viejo → Arriaga → Zubizuri → Guggenheim", mapq:"Zubizuri Bilbao", desc:"~3 km flat. Lunch at Mercado de la Ribera's gastro hall on the way.", photos:[cap(8,'ria',"The Ría")] },
     { ic:"🏛", cat:"art", time:"16:00", title:"Guggenheim Bilbao", place:"Abandoibarra", mapq:"Guggenheim Museum Bilbao", desc:"Open to 20:00 (15 Jun–13 Sep), €18. Go late when the coaches have gone; Puppy and the Maman spider outside.", book:[["Guggenheim","book online (easy)"]], photos:[cap(8,'guggenheim',"Guggenheim")] },
     { ic:"🍢", cat:"food", time:"20:30", title:"Plaza Nueva pintxos", place:"Gure Toki · Sorginzulo · Bar Charly · Víctor Montes", mapq:"Plaza Nueva Bilbao", desc:"Or Ledesma/Diputación if you're in Abando: El Globo (txangurro), La Viña del Ensanche.", photos:[cap(8,'plaza-nueva',"Plaza Nueva")] },
@@ -339,9 +339,9 @@ const STAYS=[
     {name:"Apart-hotel (Sansebay / Feelfree Rentals)", area:"Gros / Centro", band:"€150–280", st:"unk", stt:"Live-here test", why:"A kitchen for La Bretxa market cooking.", url:"https://sansebayhotel.com/apartments/?lang=en", links:[["Feelfree","https://feelfreerentals.com/en/apartments/san-sebastian"]], ll:[43.3235,-1.9760]},
    ]},
  { city:"Bilbao", when:"Sun 8 → Wed 11 Aug · 3 nights", key:"bilbao", ll:BIO,
-   why:"Abando/Indautxu for the living-feel (Guggenheim + Fine Arts + Ledesma pintxos walkable, Casco Viejo 10 min); Casco Viejo if you prioritise pintxos + the Euskotren E4 day trips. You're before Aste Nagusia (21–29 Aug).",
+   why:"✅ HELD (refundable): Vincci Consulado de Bilbao — river-view room, booked direct with a 20.8% three-night discount. Free cancel until 7 Aug 2027 14:00; card charged 7 Aug 2027; €4/pp/night city tax paid at the hotel. The rest of the list stays for reference.",
    list:[
-    {name:"Vincci Consulado de Bilbao", area:"Abando / Ensanche", band:"€140–230", st:"pick", stt:"Top pick", why:"#2/57 on TripAdvisor, rooftop terrace, 10 min to Guggenheim and Casco Viejo.", url:"https://www.vinccihoteles.com/en/hotels/bilbao/vincci-consulado-de-bilbao/", ll:[43.2605,-2.9330]},
+    {name:"✅ Vincci Consulado de Bilbao — HELD", area:"Alameda Mazarredo 22, riverfront — 4 min to the Guggenheim", band:"€849.42 · charged 7 Aug 2027", st:"booked", stt:"River-view room · free cancel to 7 Aug 2027 14:00", why:"4*, nautical design between La Salve bridge and the Guggenheim; terrace observatory; 9.2/6.6k reviews, location 9.8. Room only — café breakfasts per the Mike doctrine. Check-in 15:00; bring the booking credit card. Airport bus at Moyua ~5 min.", url:"https://www.vincciconsuladodebilbao.com/en/", ll:[43.2680,-2.9315]},
     {name:"Hotel Tayko", area:"Casco Viejo riverfront, next to the market", band:"€160–260", st:"pick", stt:"Top pick (old town)", why:"Ex-warehouse design hotel + rooftop; Ribera market and Plaza Nueva 3 min.", url:"https://taykohotels.com/en/bilbao/", ll:[43.2557,-2.9245]},
     {name:"Hotel Miró", area:"Abando, opposite the Guggenheim", band:"€170–280", st:"unk", stt:"Design", why:"Antonio Miró interiors, small spa; Fine Arts 3 min.", url:"https://www.mirohotelbilbao.com/en/", ll:[43.2675,-2.9320]},
     {name:"Iturrienea Ostatua", area:"Casco Viejo, Santa María 14", band:"€110–150", st:"ok", stt:"Value / charm", why:"Antique-filled pensión in an old stone building.", url:"https://iturrieneaostatua.com/en-gb/", ll:[43.2565,-2.9235]},
@@ -458,7 +458,7 @@ function localISO(dt){ const p=n=>String(n).padStart(2,'0'); return dt.getFullYe
 const TODOS=[
  {t:"Book the return flight", w:"Bilbao → EUG, Wed 11 Aug · window opens ~14 Sep 2026 · KLM BIO–AMS–PDX is the target (outbound ✅ booked)"},
  {t:"Order eclipse glasses ×4", w:"ISO 12312-2 · from the US"},
- {t:"Bilbao hotel ×3", w:"Refundable · book by Feb–Mar 2027 (SS is held at Hotel de Londres ✅)"},
+ {t:"Oct 13: return-flight decision", w:"Award (if 70k-tier renders for Aug 11) vs cash + 1¢ eraser — one check, one booking, done"},
  {t:"September: final call on the SS splurge", w:"After flights land — keep Londres / upgrade sea view / rebook non-ref (−$175) / drop tier"},
  {t:"Iryo Málaga → Madrid (Wed 4 Aug 08:09)", w:"On sale ~Dec 2026–Feb 2027 · car 3 tables"},
  {t:"Alvia Madrid → Donostia (Wed 4 Aug ~14:00)", w:"On sale ~Mar–May 2027 · check Adif summer-works notices"},
@@ -512,7 +512,7 @@ function renderInfo(){
      <div class="inforow"><span class="ii">🛏️</span><div><b>Fuengirola hotel (Sun 1):</b> ✅ <b>Jomarijo Boutique Rooms</b>, C/ Dionisia Redondo 6 · <a href="tel:+34952464421">+34 952 46 44 21</a> · Standard Double, €275 paid (Booking.com) · check-in 14:00, checkout 11:00 (leave bags before the beach) · <a href="https://www.google.com/maps/search/?api=1&query=Jomarijo%20Boutique%20Rooms%20Fuengirola" target="_blank" rel="noopener">map</a></div></div>
      <div class="inforow"><span class="ii">🛏️</span><div><b>Málaga hotel (Mon 2–Wed 4):</b> ✅ <b>Catalonia Puerta del Mar</b>, Puerta del Mar 5 · Superior + breakfast · paid, non-refundable · <a href="https://www.google.com/maps/search/?api=1&query=Catalonia%20Puerta%20del%20Mar%20M%C3%A1laga" target="_blank" rel="noopener">map</a></div></div>
      <div class="inforow"><span class="ii">🛏️</span><div><b>San Sebastián hotel (Wed 4–Sun 8):</b> ✅ <b>Hotel de Londres y de Inglaterra</b>, Zubieta 2 (on La Concha) · Classic city view, €1,998 flexible, pay at reception · free cancel to ~28 Jul 2027 · <a href="https://www.google.com/maps/search/?api=1&query=Hotel%20de%20Londres%20y%20de%20Inglaterra" target="_blank" rel="noopener">map</a></div></div>
-     <div class="inforow"><span class="ii">🛏️</span><div><b>Bilbao hotel:</b> <span class="todo">add</span></div></div>
+     <div class="inforow"><span class="ii">🛏️</span><div><b>Bilbao hotel (Sun 8–Wed 11):</b> ✅ <b>Vincci Consulado de Bilbao</b>, Alameda Mazarredo 22 · river-view room, €849.42 room-only, charged 7 Aug 2027, free cancel to 7 Aug 14:00 · +€24 city tax at hotel · <a href="tel:+34946442061">+34 946 442 061</a> · <a href="https://www.google.com/maps/search/?api=1&query=Vincci%20Consulado%20de%20Bilbao" target="_blank" rel="noopener">map</a></div></div>
      <div class="inforow"><span class="ii">🎟️</span><div><b>Timed things:</b> Gaztelugatxe (free reservation), Guggenheim, Chillida-Leku, Elkano, Caminito del Rey (optional) · <span class="todo">book per the list on Today</span></div></div>
    </div>
    <div class="infocard"><h3>Getting around</h3>
