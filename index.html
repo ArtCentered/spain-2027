@@ -298,10 +298,12 @@ const DAYS=[
     { ic:"🍽", cat:"food", time:"21:00", title:"Last dinner", place:"Casco Viejo · or Nerua (in the Guggenheim) / Mina to splurge", mapq:"Nerua Guggenheim Bilbao", desc:"Pack for a 06:45 flight." },
    ]},
  { n:11, nick:"Home", iso:"2027-08-11", date:"Wed 11 Aug", title:"Fly home", place:"Bilbao → Eugene", ll:[43.3011,-2.9106], chips:[["Travel","#6b7a80"]],
-   summary:"Bizkaibus A3247 to the airport (every 15 min, ~25 min). KLM BIO 06:45 → AMS → PDX 11:30 (home ~14:00), or LH BIO 06:45 → FRA → SEA 11:55 → EUG.",
+   summary:"✅ BOOKED: Delta conf, Delta Comfort on the long legs. A civilized 10:30 departure — real breakfast, no pre-dawn taxi. BIO → Paris CDG → Seattle → Eugene, landing 23:47. Home in your own bed before 1 AM.",
    events:[
-    { ic:"🚌", cat:"move", time:"05:00", title:"Bizkaibus A3247 → Bilbao Airport", place:"Plaza Moyua / Intermodal, ~€3", mapq:"Bilbao Airport", desc:"Or taxi €25–35, 15–20 min." },
-    { ic:"✈️", cat:"move", time:"06:45", title:"BIO → AMS → PDX (KLM) or BIO → FRA → SEA → EUG (LH)", place:"Home the same day", mapq:"Eugene Airport", desc:"KL615 AMS 10:40 → PDX 11:30; LH490 FRA 10:45 → SEA 11:55 then Alaska to EUG.", book:[["Flights home","add confirmation"]] },
+    { ic:"🚌", cat:"move", time:"~08:00", title:"Moyua → Bilbao Airport", place:"Bizkaibus A3247 (every 15 min, ~25 min) or taxi ~€30", mapq:"Bilbao Airport", desc:"Leave the Vincci ~07:50; at BIO by ~08:30 for the 10:30 international departure." },
+    { ic:"✈️", cat:"move", time:"10:30", title:"DL 8465 · Bilbao → Paris CDG", place:"Operated by Air France HOP", mapq:"Paris Charles de Gaulle", desc:"Short hop over the Pyrenees. Watch the connection pace at CDG — follow signs, passport control, no dawdling.", book:[["Flights","✅ paid · Delta Comfort on the long legs"]] },
+    { ic:"🌍", cat:"move", time:"midday", title:"DL 81 · Paris → Seattle — Delta Comfort", place:"The long leg, extra legroom", mapq:"Seattle-Tacoma International Airport", desc:"Nine-ish hours westbound. US immigration at SEA — Global Entry / Mobile Passport speeds it; bags recheck after customs." },
+    { ic:"🛬", cat:"move", time:"23:47", title:"DL 3855 · Seattle → Eugene, lands 11:47 PM", place:"Home under the flying people on the wall", mapq:"Eugene Airport", desc:"11 days, one eclipse, ~2,000 km of Spanish rails. Home before 1 AM.", photos:[cap(11,'home',"Home")] },
    ]},
 ];
 const ALL_PHOTOS=[]; DAYS.forEach(d=>d.events.forEach(e=>(e.photos||[]).forEach(src=>ALL_PHOTOS.push({src,n:d.n}))));
@@ -486,7 +488,7 @@ function renderInfo(){
      <div class="inforow"><span class="ii">📅</span><div><b>Dates:</b> Sat 31 Jul → Wed 11 Aug 2027 (10 nights on the ground)</div></div>
      <div class="inforow"><span class="ii">🌘</span><div><b>The eclipse:</b> Mon 2 Aug · Fuengirola beach, right outside the hotel · totality 10:47:03–10:50:13 CEST (3 m 10 s)</div></div>
      <div class="inforow"><span class="ii">🏠</span><div><b>Bases:</b> Fuengirola ×1 (beachfront, eclipse eve) → Málaga ×2 (Soho) → San Sebastián ×4 (Gros) → Bilbao ×3 (Abando / Casco Viejo)</div></div>
-     <div class="inforow"><span class="ii">✈️</span><div><b>Flights out ✅:</b> Sat 31 Jul — BA 7562 EUG 10:18 → SEA · BA 52 SEA 13:35 → LHR 06:50+1 · BA 422 LHR 08:40 → Málaga 12:30 · one ticket, bags through, seats together. <b>Return:</b> Bilbao → EUG, book ~mid-Sep 2026 (KLM via AMS–PDX or LH via FRA–SEA) · <span class="todo">to book</span></div></div>
+     <div class="inforow"><span class="ii">✈️</span><div><b>Flights ✅ both ways:</b> Out — BA 7562/52/422, EUG 10:18 Sat 31 Jul → Málaga 12:30 Sun. Home — Delta, BIO 10:30 Wed 11 Aug → CDG → SEA → EUG 23:47, <b>Delta Comfort</b> on the long legs.</div></div>
      <div class="inforow"><span class="ii">🚄</span><div><b>Trains:</b> Iryo Málaga 08:09 → Madrid Atocha 10:56 · Cercanías to Chamartín · Alvia ~14:00 → Donostia ~19:15 · <span class="todo">book Dec 2026–May 2027</span></div></div>
    </div>
    <div class="infocard"><h3>Key bookings</h3>

@@ -8,7 +8,7 @@
 window.TRIP_BUDGET = {
   totalUSD: 10000,
   eurUsd: 1.10,
-  updated: "2026-09-14",
+  updated: "2026-09-19",
   note: "Splurge zone (Mike-approved, within reason): San Sebastián. Rule for everything still unbooked: refundable rates only.",
   items: [
     { cat:"Lodging",         name:"Jomarijo Boutique Rooms, Fuengirola — Sun 1 Aug (1 nt)",      eur:275,     status:"paid" },
@@ -16,8 +16,8 @@ window.TRIP_BUDGET = {
     { cat:"Lodging",         name:"Hotel de Londres y de Inglaterra, SS ×4 — THE SPLURGE (city view, flexible; free cancel to ~28 Jul 2027)", eur:1998, status:"booked" },
     { cat:"Lodging",         name:"Vincci Consulado de Bilbao ×3 — RIVER VIEW (held; free cancel to 7 Aug 2027; +€24 city tax at hotel)", eur:873.42, status:"booked" },
     { cat:"Flights",         name:"Outbound EUG→Málaga ×2 — BA via SEA & LHR, lands 12:30 Sun",  usd:1605.20, status:"paid" },
-    { cat:"Flights",         name:"Return Bilbao→EUG ×2 (decide 13 Oct: award vs cash)",          usd:1400,    status:"estimate" },
-    { cat:"Flights",         name:"Venture miles redemption — 112,265 mi (eraser or award; decide 13 Oct)", usd:-1122,   status:"estimate" },
+    { cat:"Flights",         name:"Return BIO→EUG ×2 — Delta via CDG & SEA, Delta Comfort, lands 23:47", eur:2154.84, status:"paid" },
+    { cat:"Flights",         name:"Venture miles eraser — 112,265 mi vs the BA outbound (FIRE BY ~6 DEC 2026)", usd:-1122,   status:"estimate" },
     { cat:"Trains & transit",name:"Iryo Málaga→Madrid ×2 (car 3)",                               usd:120,     status:"estimate" },
     { cat:"Trains & transit",name:"Alvia Madrid→Donostia ×2 (Elige Confort)",                    usd:120,     status:"estimate" },
     { cat:"Trains & transit",name:"Cercanías · Euskotren · buses · Barik/Mugi · SS→Bilbao",      usd:160,     status:"estimate" },
